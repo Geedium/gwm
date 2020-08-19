@@ -1,0 +1,2 @@
+GWM
+CORE

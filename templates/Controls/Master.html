@@ -1,0 +1,104 @@
+<div class="grid-4 grid-sm grid-sm-gap">
+    <div class="panel bg-green selector">
+        <div class="widget-toolbar" id="dragable">
+            <i style="cursor: all-scroll;" id="move" class="right toolbar-close fas fa-arrows-alt"></i>
+            <span class="toolbar-header left">Vartotojai</span>
+            <i class="right toolbar-close fas fa-window-close"></i>
+            <i class="right toolbar-close fas fa-cogs"></i>
+        </div>
+        <div class="panel-icon-left">
+            <i class="fas fa-users"></i>
+        </div>
+    </div>
+    <div class="panel">
+
+    </div>
+    <div class="panel">
+
+    </div>
+    <div class="panel">
+
+    </div>
+</div>
+
+<div class="widget-grid">
+    <div class="grid-item">
+        <div class="grid-header">Sistema</div>
+        <p class="mt-3 ml-4">PHP Versija: { Version }</p>
+    </div>
+    <div class="grid-item">
+        <div class="grid-header" style="overflow: hidden;">Pasaulio Žemėlapis</div>
+            <div id="map"></div>
+    </div>
+</div>
+
+<script async>
+dragElement(document.getElementById("dragable"));
+
+function dragElement(elmnt) {
+  var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+  if (document.getElementById('move')) {
+    // if present, the header is where you move the DIV from:
+    document.getElementById('move').onmousedown = dragMouseDown;
+  } else {
+    // otherwise, move the DIV from anywhere inside the DIV:
+    elmnt.onmousedown = dragMouseDown;
+  }
+}
+function dragMouseDown(e) {
+    e = e || window.event;
+    e.preventDefault();
+    // get the mouse cursor position at startup:
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    document.onmouseup = closeDragElement;
+    // call a function whenever the cursor moves:
+    document.onmousemove = elementDrag;
+}
+function elementDrag(e) {
+    e = e || window.event;
+    e.preventDefault();
+    // calculate the new cursor position:
+    pos1 = pos3 - e.clientX;
+    pos2 = pos4 - e.clientY;
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    // set the element's new position:
+    elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+    elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+  }
+
+  function closeDragElement() {
+    // stop moving when mouse button is released:
+    document.onmouseup = null;
+    document.onmousemove = null;
+  }
+
+$(function() {
+    jQuery.migrateMute = true;
+    $('#map').vectorMap({
+        map: 'world_mill',
+        backgroundColor: '#a5bfdd',
+        borderColor: '#818181',
+        borderOpacity: 0.25,
+        borderWidth: 1,
+        color: '#f4f3f0',
+        enableZoom: true,
+        hoverColor: '#c9dfaf',
+        hoverOpacity: null,
+        normalizeFunction: 'linear',
+        scaleColors: ['#b6d6ff', '#005ace'],
+        selectedColor: '#c9dfaf',
+        selectedRegions: null,
+        showTooltip: true,
+        onRegionTipShow: function(e, el, code)
+        {
+            el.html(el.html() + ' (Vartotojų: 0)');
+        }
+    })
+    jQuery.migrateMute = false;
+})
+</script>
+
+<script type="application/javascript" src="js/jquery-jvectormap-2.0.3.min.js" async></script>
+<script type="application/javascript" src="js/jquery-jvectormap-world-mill.js" async></script>

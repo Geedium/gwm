@@ -1,0 +1,34 @@
+<style type="text/css" media="screen">
+    .card-body { position: relative !important; height: 250px;}
+        #editor { 
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            overflow-x: hidden;
+        }
+    </style>
+
+<div class="card-body">
+    <div id="editor">{ Loaded }</div>
+</div>
+
+<button id="compile" style="background: gray; color:white;">Compile</button>
+
+<script async>
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/github");
+    editor.getSession().setUseWrapMode(true);
+    editor.setOption("indentedSoftWrap", false);
+    editor.session.setMode("ace/mode/{ Lang }");
+    $('#editor').keydown(function(e) {
+    if ((e.key == 's' || e.key == 'S' ) && (e.ctrlKey || e.metaKey))
+    {
+        alert('Saved!');
+        e.preventDefault();
+        return false;
+    }
+    return true;
+    });
+</script>

@@ -1,0 +1,37 @@
+extends Master
+
+mixin product(id, name, image, price, quantity)
+    tr
+        th(scope="row")= id
+        td
+            img(width=64, height=64, src=image, alt="...")
+        td= name
+        td
+            input(type="number" name="quantity" value=quantity)
+        td= price + '€'
+
+block page
+    .card
+        .card-header Krepšelis
+        .card-body
+            table.table
+                thead
+                    tr
+                        th(scope="col")= "Nr."
+                        th(scope="col") Nuotrauka
+                        th(scope="col") Pavadinimas
+                        th(scope="col") Kiekis
+                        th(scope="col") Kaina
+                        th(scope="col") Veiksmai
+                tbody
+                    - var n = 0;
+                    each product in products
+                        +product(n++,
+                                 product.product_title,
+                                 product.product_image,
+                                 product.product_price,
+                                 "1")
+        .card-footer
+            b Viso 0€
+            .float-right
+                button.btn.btn-primary Atsiskaityti

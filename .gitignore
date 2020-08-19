@@ -1,0 +1,10 @@
+master.code-workspace
+**/.vscode
+**.lock
+**/composer.lock
+**/vendor/**
+**/.well-known
+.well-known
+**/.well-known/**
+.well-known/**
+/vendor/

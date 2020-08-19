@@ -1,0 +1,16 @@
+extends Master
+
+block page
+    .col-lg-12
+        h1= "Login"
+        form(method="POST")
+            .form-group
+                label(for="username") Username
+                input.form-control(type="text", name="username", value="")
+            .form-group
+                label(for="pass") Password
+                input.form-control(type="password", name="pass")
+            .form-group
+                .btn-group
+                    button.btn.btn-primary(type="submit") Login
+                    a.btn.btn-secondary(href="/register") Register

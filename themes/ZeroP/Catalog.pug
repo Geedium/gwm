@@ -1,0 +1,34 @@
+extends Master
+
+mixin product(id, name, image, price, description)
+    .col-lg-4.col-md-6.mb-4
+        .card.h-100
+            img.card-img-top(src=image, alt="")
+            .card-body
+                h4.card-title
+                    a(href='/products?id=' + id)= name
+                p.card-text= description
+            .card-footer
+                small.text-muted= '€ ' + price
+                .row
+                    button.btn.btn-sm.btn-primary Į krepšelį
+
+mixin catalog(id)
+    a.list-group-item(href="http://")= "Catalog " + id
+
+block nav
+    .col-lg-3
+        h1.my-4= 'Shop Name'
+        .list-group
+            +catalog(1)
+            +catalog(2)
+            +catalog(3)
+            +catalog(4)
+            
+block page
+    each product in products
+        +product(product.product_id,
+                 product.product_title,
+                 product.product_image,
+                 product.product_price,
+                 product.product_description)

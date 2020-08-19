@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=yes">
+    <link rel="stylesheet" type="text/css" href="dist/dashboard/css/fonts.css">
+    <link rel="stylesheet" type="text/css" href="dist/dashboard/css/style.css">
+    <link href="data:image/x-icon;base64,AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAcoHvAGpZ+wBwdvIAaEz/AG5s9QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABEREQAAAABRMzEREQAAACUzMzERAAACJVU1MzMQAAQiVVVVUxAABCIiIlVVUAAEQiIiIiJQAARERCIkIiAAAEREQgBEQAAARERAAEQAAAAEREAAQAAAAABEQAAAAAAAAAREAAAAAAAAAERAAAAAAAAABEAAAAAAAAAABAAAD4HwAA4AcAAOAHAADAAwAAwAMAAMADAADAAwAAwAMAAOBjAADg5wAA8O8AAPj/AAD8fwAA/j8AAP8/AAD/3wAA" rel="icon" type="image/x-icon" />
+    <title>GWM | {{ title }}</title>
+    <style>
+    * {
+        box-sizing: border-box;
+    }
+
+    .overlay {
+        background: rgba(0, 0, 0, 0.75);
+        width: 100vw;
+        height: 100vh;
+    }
+    .modal {
+        position: absolute;
+        transform: translate(-50%, -50%);
+        left: 50%;
+        top: 50%;
+        width: 500px;
+        height: 265px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        background: white;
+    }
+
+    h1 {
+        position: relative;
+        top: 10px;
+        left: 10px;
+    }
+    form {
+        position: absolute;
+        top: 60px;
+        left: 10px;
+        right: 10px;
+        float: left;
+    }
+    .form-group {
+        display: block;
+        margin-bottom: 0.3rem;
+    }
+    label {
+        display: inline-block;
+        width: 150;
+    }
+
+    select {
+        width: 100%; 
+        outline: none;
+        border: none;
+    }
+
+    select > option {
+        border: 1px solid gray;
+        border-radius: 3px;
+    }
+
+    input {
+        width: 100%;
+        border-top: none;
+        border-left: none;
+        border-right: none;
+        border-bottom: 1px solid blue;
+    }
+
+    /*input[type=text] {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    }*/
+
+    .btn {
+        border: 1px solid #a3a3a3;
+        border-radius: 3px;
+        padding: 0.4rem;
+        margin-top: 1rem;
+        float: right;
+        width: 100%;
+    }
+    .btn:focus { outline: none; }
+    </style>
+</head>
+
+<body>
+    <div class="overlay">
+        <div class="modal">
+            <h1>Login</h1>
+            <form method="POST">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password">
+                </div>
+                <div class="form-group">
+                    <label>Role</label>
+                    <select name="auth" value="*">
+                        <option value="*">Owner</option>
+                        <option value="admin">Administrator</option>
+                    </select> 
+                </div>
+                <button class="btn">Login</button>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>
