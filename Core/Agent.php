@@ -34,4 +34,17 @@ class Agent
         ? $_SERVER['HTTP_X_FORWARDED_FOR']
         : $_SERVER['REMOTE_ADDR'];
     }
+
+    /**
+     * Undocumented function
+     *
+     * @return void
+     */
+    public static function has_ajax()
+    {
+        $httpx_req = isset($_SERVER['HTTP_X_REQUESTED_WITH'])
+        ? $_SERVER['HTTP_X_REQUESTED_WITH'] : null;
+        return (!empty($httpx_req) &&
+        strtolower($httpx_req) == 'xmlhttprequest');
+    }
 }
