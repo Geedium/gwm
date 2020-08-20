@@ -13,9 +13,6 @@ namespace GWM
         public function __construct()
         {
             self::enable();
-
-            session_set_cookie_params(900, '/', 'localhost', true, true);
-            session_start();
         }
 
         /**
@@ -38,7 +35,6 @@ namespace GWM
          */
         public static function disable()
         {
-            echo '@event-disabled<br/>';
             spl_autoload_unregister('Core::_autoload');
         }
 

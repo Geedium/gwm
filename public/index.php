@@ -4,17 +4,20 @@
 [
     'DIR_ROOT' => dirname(__DIR__),
     'START_TIME' => microtime(true),
-    'ERROR_LEVEL' => error_reporting(E_ALL)
+    'ERROR_LEVEL' => error_reporting(E_ALL),
+    'USE_COMPOSER' => false
 ]) : exit;
 
 chdir(GWM['DIR_ROOT']);
 
 require 'Core.php';
 
-$reader2 = new GWM\Core\Reader('templates/Security.html');
+if(GWM['USE_COMPOSER']) require 'Core/Composer/index.php';
 
-$reader = new GWM\Core\Reader('templates/Dependencies.html');
-$reader->Merge('{{ dependencies }}', $reader2);
+//$reader2 = new GWM\Core\Reader('templates/Security.html');
+
+//$reader = new GWM\Core\Reader('templates/Dependencies.html');
+//$reader->Merge('{{ dependencies }}', $reader2);
 
 $router = new GWM\Core\Router();
 
