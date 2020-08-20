@@ -12,3 +12,10 @@ DB_DRIVER | ☒ | No description.
 DB_HOST | ☒  | No description.
 DB_USERNAME | ☒ | No description.
 DB_PASSWORD | ☒ | No description.
+
+Nginx Quick Start
+```properties
+location / {
+    try_files $uri /index.php$is_args$args;
+}
+```
