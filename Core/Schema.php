@@ -5,19 +5,47 @@ namespace GWM\Core;
 /**
  * Undocumented class
  */
-class Schema
+class Schema extends \PDO
 {
-    private static $database;
-
     /**
      * Undocumented function
      *
-     * @param Database $database
-     * @return void
+     * @param string $name
+     * @param array $options
      */
-    public function Bind(Database &$database) : void
+    public function __construct(string $name, array $options = null)
     {
-        self::$database = $database;
+        if (!$options) {
+            try {
+                parent::__construct(
+                    "{$_ENV['DB_DRIVER']}:host={$_ENV['DB_HOST']};dbname=$name",
+                    $_ENV['DB_USERNAME'],
+                    $_ENV['DB_PASSWORD']
+                );
+            } catch (PDOException $e) {
+                throw new \PDOException(
+                    $e->getMessage(),
+                    (int)$e->getCode()
+                );
+            }
+        } else {
+            if (count($options) < 4) {
+                die("Not enough parameters to bind schema.");
+            }
+        
+            try {
+                parent::__construct(
+                    "{$options['driver']}:host={$options['host']};dbname=$name",
+                    $options['username'],
+                    $options['password']
+                );
+            } catch (PDOException $e) {
+                throw new \PDOException(
+                    $e->getMessage(),
+                    (int)$e->getCode()
+                );
+            }
+        }
     }
 
     /**
@@ -29,7 +57,7 @@ class Schema
     public function Exists(string $table) :? bool
     {
         try {
-            $results = self::$database->query("SHOW TABLES LIKE '$table'");
+            $results = parent::query("SHOW TABLES LIKE '$table'");
             return $results->rowCount() > 0;
         }
         catch(Exception $e)

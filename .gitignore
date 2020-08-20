@@ -8,3 +8,5 @@ master.code-workspace
 **/.well-known/**
 .well-known/**
 /vendor/
+.cache
+.env

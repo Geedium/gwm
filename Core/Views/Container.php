@@ -4,18 +4,22 @@ namespace GWM\Core\Views;
 
 class Container
 {
-    function index($model = null)
+    function index($engine = '.pug')
     {
-        if (GWM['USE_COMPOSER']) {
+        if ($engine == '.pug') {
             \GWM\Core::disable();
 
             global $composer;
             if ($composer['pug-php/pug'] != null) {
+                
                 $pug = new \Pug([
-                    
+                    'pretty' => false,
+                    'cache' => '.cache'
                 ]);
 
-                $pug->displayFile('Core/Assets/templates/default/template.pug');
+                echo $pug->render('Core/Assets/templates/default/template.pug', [
+                    
+                ]);
             }
 
             \GWM\Core::enable();
