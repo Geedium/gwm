@@ -16,8 +16,21 @@ class Response
      */
     public function __construct()
     {
-        $this->content = '';
-        $this->headers = [];
+        $this->content = <<<EOF
+        <html>
+            <body>
+                Bad Request.
+            </body>
+        </html>
+EOF;
+
+        $this->status = 400;
+
+        $this->headers = [
+            'X-Frame-Options: SAMEORIGIN',
+            'X-XSS-Protection: 1; mode=block',
+            'X-Content-Type-Options: nosniff'
+        ];
     }
 
     /**

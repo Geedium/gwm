@@ -7,7 +7,7 @@ namespace GWM\Core;
  */
 class Reader
 {
-    private string $text = '';
+    protected string $text = '';
 
     /**
      * @magic
@@ -15,7 +15,10 @@ class Reader
     function __construct($path)
     {
         \ob_start();
-        @readfile($path, true);
+
+        // Prevent XSS (Cross-site Scripting)
+        htmlspecialchars(@readfile($path, true), ENT_QUOTES, 'UTF-8');
+
         $this->text = \ob_get_clean();
     }
 

@@ -11,7 +11,19 @@ chdir(GWM['DIR_ROOT']);
 
 require 'Core.php';
 
-$response = new Response();
-$response->setContent('Hello world!')->send(200)
+$reader2 = new GWM\Core\Reader('templates/Security.html');
+
+$reader = new GWM\Core\Reader('templates/Dependencies.html');
+$reader->Merge('{{ dependencies }}', $reader2);
+
+$router = new GWM\Core\Router();
+
+$router->Match('/dashboard', function() {
+    $request = new GWM\Core\Request();
+    $dash = new GWM\Core\Controllers\Dashboard();
+    $dash->index($request);
+});
+
+//echo $reader;
 
 ?>

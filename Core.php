@@ -13,6 +13,9 @@ namespace GWM
         public function __construct()
         {
             self::enable();
+
+            session_set_cookie_params(900, '/', 'localhost', true, true);
+            session_start();
         }
 
         /**
@@ -47,20 +50,14 @@ namespace GWM
          */
         private static function _autoload($className)
         {
-            $namespaces = [__NAMESPACE__, 'Core'];
-            $classNamespaces = explode('\\', $className);
-            $namespace = array_diff($classNamespaces, $namespaces);
-            $value = implode('\\', $namespace);
-            $result = str_replace('\\', '/', $value);
-            
-            if(!@include_once("Core/$result.php"))
-            {
-                echo "Failed to include $result.php<br/>";
-            }
-            else
-            {
-                \class_alias("GWM\\Core\\$className", $className);
-            }
+            $include = explode('\\', $className);
+            $exclude = [ __NAMESPACE__, 'Core'];
+            $diff = array_diff($include, $exclude);
+            $value = implode('/', $diff);
+            $ivalue = str_replace('/', '\\', $value);
+
+            !@include_once("Core/$value.php");
+            \class_alias("GWM\\Core\\$ivalue", $ivalue);
         }
     }
 

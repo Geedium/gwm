@@ -36,4 +36,18 @@ class Database extends PDO
             );
         }
     }
+
+    /**
+     * Undocumented function
+     *
+     * @param [type] $table
+     * @return void
+     */
+    public function fetchRows($table)
+    {
+        $query = parent::prepare("SELECT * FROM $table");
+        $query->execute();
+        $rows = $query->fetchAll(\PDO::FETCH_ASSOC);
+        return $rows;
+    }
 }

@@ -1,0 +1,3 @@
+{
+    "/": ["GET", "Dashboard", "index"]
+}
