@@ -24,7 +24,6 @@ $dotenv->required([
 ]);
 
 $schema = new Schema('test_app');
-echo $schema->Exists('pohu');
 
 //$reader2 = new GWM\Core\Reader('templates/Security.html');
 
@@ -33,11 +32,21 @@ echo $schema->Exists('pohu');
 
 $router = new GWM\Core\Router();
 
+$router->Match('/', function() {
+    $home = new GWM\Core\Controllers\Home();
+    $home->index();
+    exit;
+});
+
 $router->Match('/dashboard', function() {
     $request = new GWM\Core\Request();
     $dash = new GWM\Core\Controllers\Dashboard();
     $dash->index($request);
+    exit;
 });
+
+$response = new Response();
+$response->setContent('Page was not found. (404)')->send(404);
 
 //echo $reader;
 

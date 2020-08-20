@@ -2,11 +2,11 @@
 
 namespace GWM\Core\Controllers;
 
-class Dashboard
+class Home
 {
-    public function index($request)
+    public function index()
     {
         $view = new \GWM\Core\Views\Container;
-        $view->index('.pug', 'admin');
+        $view->index('.pug');
     }
 }
