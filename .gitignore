@@ -10,3 +10,4 @@ master.code-workspace
 /vendor/
 .cache
 .env
+*.bat
