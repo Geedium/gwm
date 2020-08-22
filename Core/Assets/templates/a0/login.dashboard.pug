@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+html(lang="en")
+    head
+        link(rel="stylesheet", href="build/css/style.css")
+
+        style(type="text/css").
+            html, body {
+                padding: 0;
+                margin: 0;
+                height: 100vh;
+                overflow-x: hidden;
+            }
+
+            body {
+                background: #4d555e;
+            }
+
+            aside {
+                width: 350px;
+                position: absolute;
+                left: 0;
+                bottom: 0;
+                top: 0;
+                background: #6a7884;
+            }
+
+            section {
+                position: absolute;
+                display: block;
+                left: 350px;
+                right: 0;
+                bottom: 0;
+                top: 0;
+                padding: 2px;
+            }
+
+            .container {
+                background: #a4a4a4;
+                position: relative;
+                display: block;
+            }
+
+            .side-nav {
+                background: #a3a3a3;
+                display: flex;
+                flex-flow: column wrap;
+                align-items: stretch;
+            }
+
+            .side-li {
+                background: red;
+                display: flex;
+                flex: 1 1;
+                margin: auto;
+            }
+
+            .side-li > .btn {
+                border: none;
+                background: none;
+                line-height: 30px;
+                float: right;
+            }
+
+            .click:hover {
+                background: yellow;
+            }
+            
+            .icon-center {
+                line-height: 30px;
+                float: left;
+            }
+
+        meta(charset="UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        title Dashboard
+    body
+        section
+            div(class="container")
+                
+        aside
+            div(class="side-nav")
+                div(class="side-li click")
+                    span(class="icon-dashboard")
+                    button(class="btn click") Overview
+                div(class="side-li click")
+                    span(class="icon-analytics icon-center")
+                    button(class="btn click") Analytics
+                div(class="side-li click")
+                    span(class="icon-Users")
+                    button(class="btn click") Users
+                div(class="side-li click")
+                    span(class="icon-settings-01")
+                    button(class="btn click") Settings
+
+
+            

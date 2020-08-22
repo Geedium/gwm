@@ -11,6 +11,10 @@ class Home
         $model = new \GWM\Core\Models\User($schema);
 
         $view = new \GWM\Core\Views\Container;
+
+        $dist = new \GWM\Core\Distributor;
+        unset($dist);
+
         $view->index('.pug');
     }
 }

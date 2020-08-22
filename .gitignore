@@ -11,3 +11,4 @@ master.code-workspace
 .cache
 .env
 *.bat
+**/desktop.ini

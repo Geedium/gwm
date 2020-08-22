@@ -1,11 +1,12 @@
 <?php
 
 declare(strict_types=1);
-
-namespace GWM\Core;
+namespace GWM\Core\Utils;
 
 /**
  * Undocumented class
+ * 
+ * @version 1.0.0
  */
 class Str
 {
@@ -17,6 +18,7 @@ class Str
      * @param string $dest
      * @param string $src
      * @return string
+     * @since 1.0.0
      */
     static function cat(string &$dest, string &$src) : string
     {
@@ -30,6 +32,7 @@ class Str
      *
      * @param string $value
      * @return string
+     * @since 1.0.0
      */
     static function join(string $value) : string
     {
