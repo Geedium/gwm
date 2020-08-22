@@ -48,29 +48,36 @@ class Schema extends \PDO
         }
     }
 
+    function addColumn($column, $type, $table)
+    {
+        parent::query("ALTER TABLE $table ADD $column $type");
+    }
+
     public function Create($model, $table)
     {
+        $vars = get_class_vars($model);
+
+        $data = [];
+
+        foreach ($vars as $name => $value) {
+            $comment_string = (new \ReflectionClass($model))->getProperty('username')->getDocComment();
+            $pattern = "#(@[a-zA-Z]+\s*[a-zA-Z0-9, ()_].*)#";
+            preg_match_all($pattern, $comment_string, $matches, PREG_PATTERN_ORDER);
+          
+            $data[$name] = $matches[0][0];
+        }
+
         if(!$this->Exists('TABLES', "{$_ENV['DB_PREFIX']}_$table"))
         {
-            $vars = get_class_vars($model);
-
-            $data = [];
-
-            foreach ($vars as $name => $value) {
-                $comment_string = (new \ReflectionClass($model))->getProperty('username')->getDocComment();
-                $pattern = "#(@[a-zA-Z]+\s*[a-zA-Z0-9, ()_].*)#";
-                preg_match_all($pattern, $comment_string, $matches, PREG_PATTERN_ORDER);
-              
-                $data[$name] = $matches[0][0];
-            }
-
             try {
                 $sql = "CREATE TABLE `{$_ENV['DB_PREFIX']}_$table` (";
 
                 foreach($data as $name => $value)
                 {
                     if (strcasecmp($value, '@string') == 3) {
+                        //  if (!$this->Exists("`{$_ENV['DB_PREFIX']}_$table`", $name, 'COLUMNS FROM')) {
                         $sql .= "`$name` VARCHAR(255) NULL DEFAULT NULL";
+                        //  }
                     }
                 }
 
@@ -83,8 +90,32 @@ class Schema extends \PDO
             {
                 die($e);
             }
+        } else {
+            try {
+                $tablename = "{$_ENV['DB_PREFIX']}_$table";
+
+                foreach($data as $name => $value)
+                {
+                    if (strcasecmp($value, '@string') == 3) {
+                        if (!$this->Exists($tablename, $name, 'COLUMNS FROM')) {
+                            $this->addColumn($name, 'VARCHAR(255) NULL DEFAULT NULL', $tablename);
+                        }
+                    }
+                }
+            }
+            catch(Exception $e)
+            {
+                die($e);
+            }
         }
     }
+
+    /*
+            $query = parent::prepare("SELECT * FROM $table");
+        $query->execute();
+        $rows = $query->fetchAll(\PDO::FETCH_ASSOC);
+        return $rows;
+        */
 
     /**
      * Undocumented function
@@ -94,10 +125,11 @@ class Schema extends \PDO
      * @throws Exception
      * @return boolean
      */
-    public function Exists(string $access, string $name) : bool
+    public function Exists(string $access, string $name, string $alt = '') : bool
     {
         try {
-            $results = parent::query("SHOW $access LIKE '$name'");
+            $query = "SHOW $alt $access LIKE '$name'";
+            $results = parent::query($query);
             return $results->rowCount() > 0;
         }
         catch(Exception $e)

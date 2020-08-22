@@ -12,12 +12,12 @@ class Container
             global $composer;
             if ($composer['pug-php/pug'] != null) {
                 $pug = new \Pug([
-                    'pretty' => false,
-                    'cache' => '.cache'
+                    'pretty' => true,
+                    'cache' => '.cache/pug'
                 ]);
 
                 if ($view != null) {
-                    echo $pug->render('Core/Assets/Templates/default/template.admin.pug', [
+                    echo $pug->render('Core/Assets/Templates/a1/template.dashboard.pug', [
                         
                     ]);
                 }

@@ -9,7 +9,7 @@
 
 chdir(GWM['DIR_ROOT']);
 
-require 'Core.php';
+require 'apps/Core.php';
 require 'Core/Composer/index.php';
 
 $dotenv = Dotenv\Dotenv::createImmutable(GWM['DIR_ROOT']);

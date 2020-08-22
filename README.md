@@ -12,6 +12,13 @@ DB_DRIVER | ☒ | No description.
 DB_HOST | ☒  | No description.
 DB_USERNAME | ☒ | No description.
 DB_PASSWORD | ☒ | No description.
+DB_PREFIX | ☐ | No description.
+
+Core Dependencies
+
+Name    | Version
+[pug-php/pug](https://packagist.org/packages/pug-php/pug) | ^3.4
+[vlucas/phpdotenv](https://packagist.org/packages/vlucas/phpdotenv) | ^5.1
 
 Nginx Quick Start
 ```properties
