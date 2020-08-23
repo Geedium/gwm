@@ -31,7 +31,7 @@ class User
     /**
      * Undocumented variable
      *
-     * @var DateTime (now)
+     * @var DateTime
      */
     public $created_at;
 

@@ -55,29 +55,23 @@ class Schema extends \PDO
 
     public function Create($model, $table)
     {
-        $vars = get_class_vars($model);
-
-        $data = [];
-
-        foreach ($vars as $name => $value) {
-            $comment_string = (new \ReflectionClass($model))->getProperty('username')->getDocComment();
-            $pattern = "#(@[a-zA-Z]+\s*[a-zA-Z0-9, ()_].*)#";
-            preg_match_all($pattern, $comment_string, $matches, PREG_PATTERN_ORDER);
-          
-            $data[$name] = $matches[0][0];
-        }
+        new Annotations($model, $data);
 
         if(!$this->Exists('TABLES', "{$_ENV['DB_PREFIX']}_$table"))
         {
             try {
                 $sql = "CREATE TABLE `{$_ENV['DB_PREFIX']}_$table` (";
 
-                foreach($data as $name => $value)
+                foreach($data as $property)
                 {
-                    if (strcasecmp($value, '@string') == 3) {
-                        //  if (!$this->Exists("`{$_ENV['DB_PREFIX']}_$table`", $name, 'COLUMNS FROM')) {
-                        $sql .= "`$name` VARCHAR(255) NULL DEFAULT NULL";
-                        //  }
+                    foreach($property as $key => $value)
+                    {
+                        echo $value;
+                        if (strcasecmp($value, '@string') == 3) {
+                            //  if (!$this->Exists("`{$_ENV['DB_PREFIX']}_$table`", $name, 'COLUMNS FROM')) {
+                            $sql .= "`$name` VARCHAR(255) NULL DEFAULT NULL";
+                            //  }
+                        }   
                     }
                 }
 
@@ -94,11 +88,32 @@ class Schema extends \PDO
             try {
                 $tablename = "{$_ENV['DB_PREFIX']}_$table";
 
-                foreach($data as $name => $value)
+                foreach($data as $key => $value)
                 {
-                    if (strcasecmp($value, '@string') == 3) {
-                        if (!$this->Exists($tablename, $name, 'COLUMNS FROM')) {
-                            $this->addColumn($name, 'VARCHAR(255) NULL DEFAULT NULL', $tablename);
+                    if (!$this->Exists($tablename, $key, 'COLUMNS FROM')) {
+                        // Remove whitespaces from a string.
+                        $value[0] = preg_replace('/\s+/', '', $value[0]);
+
+                        switch ($value[0]) {
+                        case 'string':
+                            {
+                                $this->addColumn($key, "VARCHAR($value[1]) NULL DEFAULT NULL", $tablename);
+                                break;
+                            }
+                        case 'int':
+                            {
+                                $value[1] = preg_replace('/\s+/', '', $value[1]);
+                                
+                                if ($value[1] == 'primary') {
+                                    $this->addColumn($key, "INT PRIMARY KEY AUTO_INCREMENT", $tablename);
+                                }
+                                break;
+                            }
+                            case 'DateTime':
+                            {
+                                $this->addColumn($key, "DATE NULL DEFAULT NULL", $tablename);
+                                break;
+                            }
                         }
                     }
                 }

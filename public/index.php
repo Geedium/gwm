@@ -9,6 +9,19 @@
 
 chdir(GWM['DIR_ROOT']);
 
+if (file_exists('.env') == false) {
+    file_put_contents('.env', <<<EOF
+    DB_DRIVER=
+    DB_HOST=
+    DB_USERNAME=
+    DB_PASSWORD=
+    DB_PREFIX=
+    EOF);
+    
+    trigger_error('You need to update .env variables!');
+    exit;
+}
+
 require 'apps/Core.php';
 require 'Core/Composer/index.php';
 
@@ -22,8 +35,6 @@ $dotenv->required([
     'DB_USERNAME',
     'DB_PASSWORD'
 ]);
-
-$schema = new Schema('test_app');
 
 //$reader2 = new GWM\Core\Reader('templates/Security.html');
 
