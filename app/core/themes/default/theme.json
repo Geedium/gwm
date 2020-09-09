@@ -1,5 +1,6 @@
 {
     "author": "Gediminas",
     "scripts": "TypeScript",
-    "styles": "Sass"
+    "styles": "Sass",
+    "scope": "dashboard"
 }

@@ -17,10 +17,10 @@ class Str
      *
      * @param string $dest
      * @param string $src
-     * @return string
+     * @return string|null
      * @since 1.0.0
      */
-    static function cat(string &$dest, string &$src) : string
+    static function cat(string &$dest, string &$src) :? string
     {
         return $dest.= $src;
     }
@@ -31,10 +31,10 @@ class Str
      * Concatenates multiple strings.
      *
      * @param string $value
-     * @return string
+     * @return string|null
      * @since 1.0.0
      */
-    static function join(string $value) : string
+    static function join(string $value) :? string
     {
         $argruments = \func_get_args();
         return function () use (&$value) {

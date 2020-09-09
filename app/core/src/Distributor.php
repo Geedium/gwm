@@ -11,9 +11,15 @@ class Distributor
 {
     function __construct()
     {
-        echo $this->compile_typescript();
+        $public = GWM['DIR_ROOT'].'/public';
+        $assets = dirname(__DIR__);
+        $theme = "$assets/themes/default/styles";
 
-        chdir(__DIR__.'\\Assets');
+        $sass .= "sass $theme/_index.sass:$public/css/dashboard.css --style compressed";
+
+        echo Utils::exec($sass);
+
+        echo $this->compile_typescript();
     }
 
     /**
@@ -38,7 +44,7 @@ class Distributor
     {
         chdir(GWM['DIR_ROOT']);
 
-        Utils::exec('tsc');
+        Utils::exec('tsc --outFile public/js/dashboard.generated.js');
     }
 
     function __destruct() 
@@ -51,27 +57,5 @@ class Distributor
         \ob_start();
         @readfile("$filename.json");
         return json_decode(\ob_get_clean());
-    }
-
-    /**
-     * Undocumented function
-     *
-     * @param string $src
-     * @param string $dest
-     * @param integer $quality
-     * @return string
-     */
-    static function Compress(string $src, string $dest, int $quality = 100) : string
-    {
-        \getimagesize($src, $info);
-
-        switch ($info['mime']) {
-            case 'image/jpeg': $image = imagecreatefromjpeg($src); break;
-            case 'image/gif': $image = imagecreatefromgif($src); break;
-            case 'image/png': $image = imagecreatefrompng($src); break;
-        }
-
-        imagejpeg($image, $dest, $quality);
-        return $dest;
     }
 }

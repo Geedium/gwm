@@ -7,6 +7,11 @@
     'ERROR_LEVEL' => error_reporting(E_ALL)
 ]) : exit;
 
+if (version_compare(PHP_VERSION, '7.0.0') < 0) {
+    trigger_error('Your PHP version unreliable. Please update your PHP to atleast v7.0.0!');
+    exit;
+}
+
 chdir(GWM['DIR_ROOT']);
 
 if (file_exists('.env') == false) {
@@ -64,6 +69,11 @@ $router->Match('/auth', function() {
 
     $auth = new GWM\Core\Controllers\Auth();
     $auth->index();
+    exit;
+});
+
+$router->Match('/dashboard/build', function() {
+    $dist = new \GWM\Core\Distributor;
     exit;
 });
 

@@ -1,13 +1,14 @@
 {
     "compilerOptions": {
+        "baseUrl": ".",
         "module": "commonjs",
-        "noImplicitAny": true,
+        "noImplicitAny": false,
         "removeComments": true,
         "preserveConstEnums": true,
-        "sourceMap": true,
-        "outDir": "public/js"
+        "sourceMap": true
     },
-    "files": [
-        "Core/Assets/scripts/index.ts"
+    "include": [
+        "**/*.ts", 
+        "**/*.tsx"
     ]
 }
