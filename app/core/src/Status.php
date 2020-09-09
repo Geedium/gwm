@@ -5,7 +5,7 @@ namespace GWM\Core;
 /**
  * Undocumented class
  */
-class Status extends SplEnum
+class Status extends \SplEnum
 {
     const __default = self::OK;
 

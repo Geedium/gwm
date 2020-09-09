@@ -5,7 +5,7 @@ namespace GWM
     /**
      * Core
      */
-    class Core
+    class Commerce
     {
         /**
          * @magic
@@ -22,7 +22,7 @@ namespace GWM
          */
         public static function enable()
         {
-            $namespaces = [__NAMESPACE__, 'Core'];
+            $namespaces = [__NAMESPACE__, 'Commerce'];
             $namespace = implode('\\', $namespaces);
             $target = "$namespace::_autoload";
             spl_autoload_register($target);
@@ -45,7 +45,7 @@ namespace GWM
          */
         public static function disable()
         {
-            spl_autoload_unregister('Core::_autoload');
+            spl_autoload_unregister('Commerce::_autoload');
         }
 
         /**
@@ -61,20 +61,20 @@ namespace GWM
             $exec = false;
 
             foreach ($include as $param) {
-                if ($param == 'Core') {
+                if ($param == 'Commerce') {
                     $exec = true;
                 }
             }
 
             if(!$exec) return;
 
-            $exclude = [ __NAMESPACE__, 'Core'];
+            $exclude = [ __NAMESPACE__, 'Commerce'];
             $diff = array_diff($include, $exclude);
             $value = implode('/', $diff);
             $ivalue = str_replace('/', '\\', $value);
 
-            !@include_once("app/core/src/$value.php");
-            \class_alias("GWM\\Core\\$ivalue", $ivalue);
+            !@include_once("app/commerce/src/$value.php");
+            \class_alias("GWM\\Commerce\\$ivalue", $ivalue);
         }
     }
 
@@ -90,5 +90,5 @@ namespace GWM
 
     chdir(GWM['DIR_ROOT']);
     
-    return new Core;
+    return new Commerce;
 }

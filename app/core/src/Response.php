@@ -24,7 +24,7 @@ class Response
         </html>
 EOF;
 
-        $this->status = GWM\Core\Status::BAD_REQUEST;
+        $this->status = 400;
 
         $this->headers = [
             'X-Frame-Options: SAMEORIGIN',

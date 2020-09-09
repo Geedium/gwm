@@ -4,6 +4,8 @@ namespace GWM\Core\Models;
 
 /**
  * Undocumented class
+ * 
+ * @version 1.0.0
  */
 class User
 {
@@ -12,28 +14,28 @@ class User
      *
      * @var int (primary)
      */
-    public $id;
+    protected $id;
 
     /**
      * Undocumented variable
      *
      * @var string (255)
      */
-    public $username;
+    protected $username;
 
     /**
      * Undocumented variable
      *
      * @var string (255)
      */
-    public $password;
+    protected $password;
 
     /**
      * Undocumented variable
      *
      * @var DateTime
      */
-    public $created_at;
+    protected $created_at;
 
     /**
      * @magic
@@ -41,13 +43,53 @@ class User
     function __construct(&$schema)
     {
         $this->created_at = (new \DateTime())->format("Y-m-d");
-
         $schema->Create(User::class, 'users');
+    }
 
-        return function () use ($username, $password) {
-            $username = \filter_var($username, FILTER_SANITIZE_STRING);
-            $password = \filter_var($password, PASSWORD_DEFAULT);
-        };
+    /**
+     * Undocumented function
+     *
+     * @param string $username
+     * @return self
+     * @since 1.0.0
+     */
+    public function setUserName(string $username) : self
+    {
+        $this->username = $username;
+        return $this;
+    }
+
+    /**
+     * Undocumented function
+     *
+     * @return string|null
+     * @since 1.0.0
+     */
+    public function getUserName() :? string
+    {
+        return $this->username;
+    }
+
+    /**
+     * Undocumented function
+     *
+     * @param string $password
+     * @return self
+     */
+    public function setPassword(string $password) : self
+    {
+        $this->password = password_hash($password, PASSWORD_DEFAULT);
+        return $this;
+    }
+
+    /**
+     * Undocumented function
+     *
+     * @return string|null
+     */
+    public function getPassword() :? string
+    {
+        return $this->password;
     }
 
     /**

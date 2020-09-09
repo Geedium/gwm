@@ -4,6 +4,8 @@ namespace GWM\Core;
 
 /**
  * Undocumented class
+ * 
+ * @version 1.0.0
  */
 class Schema extends \PDO
 {
