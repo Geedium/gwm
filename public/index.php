@@ -10,20 +10,26 @@
 chdir(GWM['DIR_ROOT']);
 
 if (file_exists('.env') == false) {
+    $generated = bin2hex(random_bytes(5));
+
     file_put_contents('.env', <<<EOF
     DB_DRIVER=
     DB_HOST=
     DB_USERNAME=
     DB_PASSWORD=
-    DB_PREFIX=
+    DB_PREFIX=$generated
     EOF);
     
     trigger_error('You need to update .env variables!');
     exit;
 }
 
-require 'apps/Core.php';
-require 'Core/Composer/index.php';
+$json_apps = file_get_contents('apps.json');
+$apps = json_decode($json_apps);
+
+foreach ($apps as $key => $value) {
+    require_once "app/$key/index.php";
+}
 
 $dotenv = Dotenv\Dotenv::createImmutable(GWM['DIR_ROOT']);
 
@@ -35,11 +41,6 @@ $dotenv->required([
     'DB_USERNAME',
     'DB_PASSWORD'
 ]);
-
-//$reader2 = new GWM\Core\Reader('templates/Security.html');
-
-//$reader = new GWM\Core\Reader('templates/Dependencies.html');
-//$reader->Merge('{{ dependencies }}', $reader2);
 
 $router = new GWM\Core\Router();
 
@@ -53,6 +54,22 @@ $router->Match('/dashboard', function() {
     $request = new GWM\Core\Request();
     $dash = new GWM\Core\Controllers\Dashboard();
     $dash->index($request);
+    exit;
+});
+
+$router->Match('/auth', function() {
+    $user = $_POST['username'];
+    $pw = $_POST['password'];
+    echo $user.','.$pw.'<br/>';
+
+    $auth = new GWM\Core\Controllers\Auth();
+    $auth->index();
+    exit;
+});
+
+$router->Match('/dashboard/media', function() {
+    $dash = new GWM\Core\Controllers\Dashboard();
+    $dash->media();
     exit;
 });
 
