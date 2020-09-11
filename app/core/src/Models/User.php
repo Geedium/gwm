@@ -14,28 +14,28 @@ class User
      *
      * @var int (primary)
      */
-    protected $id;
+    public $id;
 
     /**
      * Undocumented variable
      *
      * @var string (255)
      */
-    protected $username;
+    public $username;
 
     /**
      * Undocumented variable
      *
      * @var string (255)
      */
-    protected $password;
+    public $password;
 
     /**
      * Undocumented variable
      *
      * @var DateTime
      */
-    protected $created_at;
+    public $created_at;
 
     /**
      * @magic

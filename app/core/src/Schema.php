@@ -9,6 +9,9 @@ namespace GWM\Core;
  */
 class Schema extends \PDO
 {
+    public $update;
+    private $sid;
+
     /**
      * Undocumented function
      *
@@ -84,7 +87,7 @@ class Schema extends \PDO
             }
             catch(Exception $e)
             {
-                die($e);
+                die($e->getMessage() );
             }
         } else {
             try {
@@ -92,9 +95,36 @@ class Schema extends \PDO
 
                 foreach($data as $key => $value)
                 {
+                    $value[0] = preg_replace('/\s+/', '', $value[0]);
+
+                    switch ($value[0]) {
+                        case 'string':
+                            {
+                                break;
+                            }
+                        case 'int':
+                            {
+                                $value[1] = preg_replace('/\s+/', '', $value[1]);
+                                
+                                if ($value[1] == 'primary') {
+                                    $this->sid = $key;
+                                }
+                                break;
+                            }
+                            case 'DateTime':
+                            {
+                                break;
+                            }
+                    }
+
+                    $id = $this->sid;
+
+                    if ($id == '') {
+                        die('Primary key can not be NULL!');
+                    }
+
                     if (!$this->Exists($tablename, $key, 'COLUMNS FROM')) {
                         // Remove whitespaces from a string.
-                        $value[0] = preg_replace('/\s+/', '', $value[0]);
 
                         switch ($value[0]) {
                         case 'string':
@@ -119,11 +149,33 @@ class Schema extends \PDO
                         }
                     }
                 }
+
+                $this->update = parent::prepare("UPDATE $tablename SET title = ? WHERE $id = ?");
+                var_dump($this->update);
             }
             catch(Exception $e)
             {
-                die($e);
+                die($e->getMessage() );
             }
+        }
+    }
+
+    /**
+     * Save or update changes to the database.
+     *
+     * @param string ...$params
+     * @throws Exception
+     * @return void
+     * @since 1.0.0
+     */
+    public function Save(string ...$params)
+    {
+        try {
+            $this->update->execute($params);
+            return true;
+        } catch (Exception $e) {
+            \trigger_error($e->getMessage(), E_USER_ERROR);
+            return false;
         }
     }
 

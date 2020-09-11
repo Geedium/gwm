@@ -18,8 +18,6 @@ class Distributor
         $sass .= "sass $theme/_index.sass:$public/css/dashboard.css --style compressed";
 
         echo Utils::exec($sass);
-
-        echo $this->compile_typescript();
     }
 
     /**
@@ -44,7 +42,9 @@ class Distributor
     {
         chdir(GWM['DIR_ROOT']);
 
-        Utils::exec('tsc --outFile public/js/dashboard.generated.js');
+        $dir = GWM['DIR_ROOT'];
+
+        echo Utils::exec("tsc --project $dir");
     }
 
     function __destruct() 

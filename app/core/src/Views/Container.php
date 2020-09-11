@@ -4,6 +4,27 @@ namespace GWM\Core\Views;
 
 class Container
 {
+    function detach()
+    {
+        $paths = explode('/', $_SERVER['REQUEST_URI']);
+        array_shift($paths);
+
+        $root = GWM['DIR_ROOT'];
+        $level = '';
+
+        foreach ($paths as $path) {
+            $up = "$root/$path";
+
+            if (is_dir($up)) {
+                continue;
+            } else {
+                $level .= '..\\';
+            }
+        }
+
+        return $level;
+    }
+
     function index($engine = '.pug', $view = null)
     {
         if ($engine == '.pug') {
@@ -31,6 +52,7 @@ class Container
             \GWM\Core::enable();
         } else {
             $reader = new \GWM\Core\Reader('app/core/themes/default/templates/default/index.tpl');
+            $reader->Replace('{{ assetPath }}', $this->detach());
             echo $reader;
         }
     }

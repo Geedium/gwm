@@ -72,8 +72,20 @@ $router->Match('/auth', function() {
     exit;
 });
 
+$router->Match('/api/articles', function() {
+    $dash = new GWM\Core\Controllers\Dashboard();
+    $dash->articles();
+    exit;
+});
+
 $router->Match('/dashboard/build', function() {
     $dist = new \GWM\Core\Distributor;
+    exit;
+});
+
+$router->Match('/dashboard/articles', function() {
+    $dash = new GWM\Core\Controllers\Dashboard();
+    $dash->articles();
     exit;
 });
 

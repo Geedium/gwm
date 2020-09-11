@@ -12,3 +12,4 @@ master.code-workspace
 .env
 *.bat
 **/desktop.ini
+**/node_modules
