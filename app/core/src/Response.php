@@ -87,6 +87,15 @@ EOF;
         echo $this->content;
         ob_end_flush();
     }
+
+    public function sendJson($data, $status = null) : void
+    {
+        if(!$status) $status = $this->status;
+
+        header('Content-Type: application/json');
+        
+        echo json_encode($data);
+    }
 }
 
 ?>

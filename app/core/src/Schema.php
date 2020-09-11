@@ -129,7 +129,14 @@ class Schema extends \PDO
                         switch ($value[0]) {
                         case 'string':
                             {
-                                $this->addColumn($key, "VARCHAR($value[1]) NULL DEFAULT NULL", $tablename);
+                                $value[1] = preg_replace('/\s+/', '', $value[1]);
+
+                                if($value[1] == 'text')
+                                {
+                                    $this->addColumn($key, "TEXT NULL DEFAULT NULL", $tablename);
+                                } else {
+                                    $this->addColumn($key, "VARCHAR($value[1]) NULL DEFAULT NULL", $tablename);
+                                }
                                 break;
                             }
                         case 'int':
@@ -150,14 +157,30 @@ class Schema extends \PDO
                     }
                 }
 
-                $this->update = parent::prepare("UPDATE $tablename SET title = ? WHERE $id = ?");
-                var_dump($this->update);
+                $this->update = parent::prepare("UPDATE $tablename SET title = ?, content = ? WHERE $id = ?");
             }
             catch(Exception $e)
             {
                 die($e->getMessage() );
             }
         }
+    }
+
+    public function Insert(string $table, string $title, $date, string $content)
+    {
+        $tablename = "{$_ENV['DB_PREFIX']}_$table";
+        $pdo = parent::prepare("INSERT INTO $tablename (title, created_at, content) VALUES (?, ?, ?)");
+        $pdo->execute([$title, $date, $content]);
+    }
+
+    public function Select(string $table)
+    {
+        $tablename = "{$_ENV['DB_PREFIX']}_$table";
+        $pdo = parent::prepare("SELECT * FROM $tablename");
+        $pdo->execute();
+
+        $result = $pdo->fetchAll(\PDO::FETCH_ASSOC);
+        return $result;
     }
 
     /**

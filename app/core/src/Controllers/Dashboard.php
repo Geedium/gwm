@@ -38,7 +38,8 @@ class Dashboard
     public function articles()
     {
         if(\filter_has_var(INPUT_POST, 'title')
-        && \filter_has_var(INPUT_POST, 'content'))
+        && \filter_has_var(INPUT_POST, 'content')
+        && !\filter_has_var(INPUT_POST, 'id'))
         {
             try {
                 $title = filter_input(INPUT_POST, 'title', FILTER_SANITIZE_STRING);
@@ -49,13 +50,47 @@ class Dashboard
                 $model = new \GWM\Core\Models\Article($schema);
                 $model->setTitle($title);
                 $model->setContent($content);
-                $model->Save($schema);
+                $model->Create($schema);
+
+                $response = new \GWM\Core\Response();
+                $json = [
+                    'success' => true
+                ];
+                $response->sendJson($json, 201);
+
             } catch (\Exception $e) {
                 \trigger_error($e->getMessage, E_USER_ERROR);
             }
         }
+        else if(\filter_has_var(INPUT_POST, 'id'))
+        {
+            try {
+                $title = filter_input(INPUT_POST, 'title', FILTER_SANITIZE_STRING);
+                $content = filter_input(INPUT_POST, 'content', FILTER_SANITIZE_STRING);
+                $id = filter_input(INPUT_POST, 'id', FILTER_SANITIZE_STRING);
 
-        $article = new \GWM\Core\Views\ArticleManager;
-        $article->index();
+                $schema = new \GWM\Core\Schema('test_app');
+                
+                $model = new \GWM\Core\Models\Article($schema);
+                $model->setTitle($title);
+                $model->setContent($content);
+                $model->Save($schema, $id);
+
+                $response = new \GWM\Core\Response();
+                $response->setContent('')->send(201);
+
+            } catch (\Exception $e) {
+                \trigger_error($e->getMessage, E_USER_ERROR);
+            }
+        }
+        else {
+            $schema = new \GWM\Core\Schema('test_app');
+                
+            $model = new \GWM\Core\Models\Article($schema);
+            $articles = $model->Select($schema);
+
+            $article = new \GWM\Core\Views\ArticleManager;
+            $article->index($articles);
+        }
     }
 }

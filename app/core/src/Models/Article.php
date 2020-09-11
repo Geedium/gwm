@@ -5,7 +5,7 @@ namespace GWM\Core\Models;
 /**
  * Undocumented class
  */
-class Article
+class Article extends \GWM\Core\Model implements \GWM\Core\IModel
 {
     /**
      * Undocumented variable
@@ -66,14 +66,24 @@ class Article
         $this->content = $content;
     }
 
+    public function Create(&$schema)
+    {
+        return $schema->Insert('articles', $this->title, $this->created_at, $this->content);
+    }
+
+    public function Select(&$schema)
+    {
+        return $schema->Select('articles');
+    }
+
     /**
      * Save Object
      *
      * @param [type] $schema
      * @return void
      */
-    public function Save(&$schema)
+    public function Save(&$schema, $id)
     {
-        $schema->Save($this->title, 1);
+        $schema->Save($this->title, $this->content, $id);
     }
 }

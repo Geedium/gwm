@@ -18,6 +18,10 @@
                 }     
             }
 
+            td, th {
+                color: white;
+            }
+
             form {
                 border: 1px solid #a3a3a3;
                 position: relative;

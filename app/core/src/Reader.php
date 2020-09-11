@@ -55,11 +55,11 @@ class Reader
      * Undocumented function
      *
      * @param string $key
-     * @param string $value
+     * @param string|null $value
      * @return Reader
      * @since 1.0.0
      */
-    public function Replace(string $key, string $value) : Reader
+    public function Replace(string $key, ?string $value) : Reader
     {
         $this->text = str_replace($key, $value, $this->text);
         return $this;
