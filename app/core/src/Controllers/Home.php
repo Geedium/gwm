@@ -8,13 +8,11 @@ class Home
     {
         $schema = new \GWM\Core\Schema('test_app');
 
-        $model = new \GWM\Core\Models\User($schema);
+        $model = new \GWM\Core\Models\Article($schema);
+        $articles = $model->Select($schema);
 
-        $view = new \GWM\Core\Views\Container;
-
-        $dist = new \GWM\Core\Distributor;
-        unset($dist);
-
-        $view->index('.pug');
+        echo '<pre>';
+        \var_dump($articles);
+        echo '</pre>';
     }
 }

@@ -50,11 +50,16 @@ class Dashboard
                 $model = new \GWM\Core\Models\Article($schema);
                 $model->setTitle($title);
                 $model->setContent($content);
-                $model->Create($schema);
+                $id = $model->Create($schema);
 
                 $response = new \GWM\Core\Response();
                 $json = [
-                    'success' => true
+                    'success' => true,
+                    'data' => [
+                        "_id" => $id,
+                        "title" => $title,
+                        "content" => $content
+                    ]
                 ];
                 $response->sendJson($json, 201);
 

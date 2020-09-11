@@ -171,6 +171,7 @@ class Schema extends \PDO
         $tablename = "{$_ENV['DB_PREFIX']}_$table";
         $pdo = parent::prepare("INSERT INTO $tablename (title, created_at, content) VALUES (?, ?, ?)");
         $pdo->execute([$title, $date, $content]);
+        return parent::lastInsertId();
     }
 
     public function Select(string $table)

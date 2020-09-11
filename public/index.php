@@ -50,7 +50,7 @@ $dotenv->required([
 $router = new GWM\Core\Router();
 
 $router->Match('/', function() {
-    $home = new \GWM\Commerce\Controllers\Home();
+    $home = new \GWM\Core\Controllers\Home();
     $home->index();
     exit;
 });
@@ -65,7 +65,6 @@ $router->Match('/dashboard', function() {
 $router->Match('/auth', function() {
     $user = $_POST['username'];
     $pw = $_POST['password'];
-    echo $user.','.$pw.'<br/>';
 
     $auth = new GWM\Core\Controllers\Auth();
     $auth->index();
@@ -95,7 +94,7 @@ $router->Match('/dashboard/media', function() {
     exit;
 });
 
-$response = new Response();
+$response = new GWM\Core\Response();
 $response->setContent('Page was not found. (404)')->send(404);
 
 //echo $reader;
