@@ -1,0 +1,27 @@
+{extends 'basis.latte'}
+
+{block articles}
+
+<div class="container-fluid no-gutters">
+
+{foreach $articles as $article}
+
+<div class="card mb-3">
+    <div class="card-header">
+        <b>{$article['title']}</b>
+    </div>
+
+    <div class="card-body">
+        <b>{$article['content']}</b>
+    </div>
+
+    <div class="card-footer">
+        <b>{$article['created_at']}</b>
+    </div>
+</div>
+
+{/foreach}
+
+</div>
+
+{/block}

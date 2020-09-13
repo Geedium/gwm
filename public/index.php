@@ -12,6 +12,11 @@ if (version_compare(PHP_VERSION, '7.0.0') < 0) {
     exit;
 }
 
+if (PHP_SAPI != 'cli-server') { 
+  //  trigger_error('Run webserver from CLI.');
+  //  exit;
+}
+
 chdir(GWM['DIR_ROOT']);
 
 if (file_exists('.env') == false) {

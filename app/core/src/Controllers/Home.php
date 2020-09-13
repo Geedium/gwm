@@ -11,8 +11,13 @@ class Home
         $model = new \GWM\Core\Models\Article($schema);
         $articles = $model->Select($schema);
 
-        echo '<pre>';
-        \var_dump($articles);
-        echo '</pre>';
+        $latte = new \Latte\Engine;
+        $latte->setTempDirectory('tmp');
+
+        $params = [
+            'articles' => $articles
+        ];
+
+        $latte->render('themes/default/templates/index.latte', $params);
     }
 }
