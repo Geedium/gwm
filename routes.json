@@ -1,0 +1,16 @@
+{
+    "*": {
+        "/": {
+            "methods": "GET",
+            "controller": "Home",
+            "entry": "index",
+            "source": "Core"
+        },
+        "/api/articles": {
+            "methods": "GET",
+            "controller": "Dashboard",
+            "entry": "articles",
+            "source": "Core"
+        }
+    }
+}

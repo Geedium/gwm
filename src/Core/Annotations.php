@@ -4,6 +4,10 @@ namespace GWM\Core;
 
 /**
  * Annotations
+ * 
+ * @package GWM\Core
+ * @subpackage Annotations
+ * @version 1.0.0
  */
 class Annotations
 {
