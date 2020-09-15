@@ -6,6 +6,12 @@
     <div class="card">
         <div class="card-header"><b>Auth</b></div>
 
+        <div>
+            User: {$user}<br/>
+            Password: {$pass}<br/>
+            CSRF: {$csrf}
+        </div>
+
         <div class="card-body">
             <form method="POST" action="/auth">
                 <div class="form-group">

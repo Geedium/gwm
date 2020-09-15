@@ -1,0 +1,78 @@
+{extends 'basis.latte'}
+
+{block styles}
+    <link rel="stylesheet" href="/css/stripe.css">
+{/block}
+
+{block scripts}
+    <script src="https://js.stripe.com/v3/"></script>
+{/block}
+
+{block content}
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h3>Products</h3>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        Title
+                    </div>
+
+                    <div class="card-body">
+                        ....
+                    </div>
+
+                    <div class="card-footer">
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col">
+            <div class="card">
+                    <div class="card-header">
+                        Title
+                    </div>
+
+                    <div class="card-body">
+                        <form id="payment-form">
+                            <div class="form-row">
+                                <label for="name">
+                                Name
+                                </label>
+                                <input id="name" name="name" placeholder="Jenny Rosen" required>
+                            </div>
+
+                            <div class="form-row">
+                                <label for="ideal-bank-element">
+                                iDEAL Bank
+                                </label>
+                                <div id="ideal-bank-element">
+                                <!-- A Stripe Element will be inserted here. -->
+                                </div>
+                            </div>
+
+                            <button>Submit Payment</button>
+
+                            <!-- Used to display form errors. -->
+                            <div id="error-message" role="alert"></div>
+                        </form>
+                    </div>
+
+                    <div class="card-footer">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{/block}
+
+{block afterscripts}
+    <script src="/js/store.js"></script>
+{/block}

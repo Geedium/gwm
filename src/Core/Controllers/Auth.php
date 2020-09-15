@@ -21,14 +21,26 @@ class Auth extends \GWM\Core\Controller
             $model->setPassword($pass_input);
         }
 
-        return $this->register();
+        return $this->register( $user_input, $model->getPassword() );
     }
     
-    private function register()
+    private function register($a, $b)
     {
         $latte = new \Latte\Engine;
         $latte->setTempDirectory('tmp/latte');
 
-        $latte->render('themes/default/templates/auth.latte');
+        session_start();
+        if (empty($_SESSION['token'])) {
+            $_SESSION['token'] = bin2hex(random_bytes(32));
+        }
+        $token = $_SESSION['token'];
+
+        $params = [
+            'user' => $a,
+            'pass' => $b,
+            'csrf' => $token
+        ];
+
+        $latte->render('themes/default/templates/auth.latte', $params);
     }
 }

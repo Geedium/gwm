@@ -52,7 +52,7 @@ $dotenv->required([
 $router = new GWM\Core\Router();
 
 $router->Match('/', function() {
-    $home = new \GWM\Core\Controllers\Home();
+    $home = new \GWM\Commerce\Controllers\Store();
     $home->index();
     exit;
 });
@@ -65,9 +65,6 @@ $router->Match('/dashboard', function() {
 });
 
 $router->Match('/auth', function() {
-    $user = $_POST['username'];
-    $pw = $_POST['password'];
-
     $auth = new GWM\Core\Controllers\Auth();
     $auth->index();
     exit;
