@@ -7,14 +7,16 @@
     'ERROR_LEVEL' => error_reporting(E_ALL)
 ]) : exit;
 
-if (version_compare(PHP_VERSION, '7.0.0') < 0) {
-    trigger_error('Your PHP version unreliable. Please update your PHP to atleast v7.0.0!');
-    exit;
-}
+if(version_compare(PHP_VERSION, '7.0.0') < 0) exit;
 
-if (PHP_SAPI != 'cli-server') { 
-  //  trigger_error('Run webserver from CLI.');
-  //  exit;
+chdir(GWM['DIR_ROOT']);
+
+define('PREREQUISITES', [
+    'autoloader' => 'index'
+]);
+
+foreach (PREREQUISITES as $key => $value) {
+    require_once "prerequisites/$key/$value.php";
 }
 
 chdir(GWM['DIR_ROOT']);
@@ -34,13 +36,6 @@ if (file_exists('.env') == false) {
     exit;
 }
 
-$json_apps = file_get_contents('apps.json');
-$apps = json_decode($json_apps);
-
-foreach ($apps as $key => $value) {
-    require_once "app/$key/index.php";
-}
-
 $dotenv = Dotenv\Dotenv::createImmutable(GWM['DIR_ROOT']);
 
 $dotenv->load();
@@ -49,7 +44,9 @@ $dotenv->required([
     'DB_DRIVER',
     'DB_HOST',
     'DB_USERNAME',
-    'DB_PASSWORD'
+    'DB_PASSWORD',
+    'DB_NAME',
+    'DB_PREFIX'
 ]);
 
 $router = new GWM\Core\Router();
@@ -100,8 +97,26 @@ $router->Match('/dashboard/media', function() {
 });
 
 $response = new GWM\Core\Response();
-$response->setContent('Page was not found. (404)')->send(404);
 
-//echo $reader;
+$latte = new \Latte\Engine;
+$latte->setTempDirectory('tmp/latte');
+$err404 = $latte->renderToString('themes/default/templates/404.latte');
+
+/*
+$fp = fopen("render.lock", "a+");
+
+if (flock($fp, LOCK_EX)) {  // acquire an exclusive lock
+    ftruncate($fp, 0);      // truncate file
+    fwrite($fp, $err404);
+    fflush($fp);            // flush output before releasing the lock
+    flock($fp, LOCK_UN);    // release the lock
+} else {
+    echo "Couldn't get the lock!";
+}
+
+fclose($fp);
+*/
+
+$response->setContent($err404)->send(404);
 
 ?>

@@ -1,7 +1,0 @@
-{
-    "require": {
-        "pug-php/pug": "^3.4",
-        "vlucas/phpdotenv": "^5.1",
-        "latte/latte": "^2.8"
-    }
-}

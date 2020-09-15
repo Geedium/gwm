@@ -16,10 +16,10 @@ class Router
     {
         $url = filter_var(rtrim($_SERVER['REQUEST_URI'], '/'), FILTER_SANITIZE_URL);
 
-        $json = \file_get_contents('routes.json');
-        $data = \json_decode($json);
+        //$json = \file_get_contents('routes.json');
+        //$data = \json_decode($json);
 
-        $this->routes = $data;
+         // $this->routes = $data;
 
         $URI = explode('/', $url);
         $URI[0] = $_SERVER['REQUEST_METHOD'];

@@ -12,7 +12,7 @@ class Home
         $articles = $model->Select($schema);
 
         $latte = new \Latte\Engine;
-        $latte->setTempDirectory('tmp');
+        $latte->setTempDirectory('tmp/latte');
 
         $params = [
             'articles' => $articles

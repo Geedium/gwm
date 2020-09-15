@@ -1,5 +1,6 @@
 {
     "require": {
-        "latte/latte": "^2.8"
+        "latte/latte": "^2.8",
+        "vlucas/phpdotenv": "^5.2"
     }
 }

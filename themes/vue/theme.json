@@ -1,3 +1,6 @@
 {
-    "framework": "vue"
+    "assets": {
+        "framework": "vue",
+        "scripts": "rollup"
+    }
 }

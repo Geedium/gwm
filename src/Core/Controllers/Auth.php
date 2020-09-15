@@ -26,53 +26,9 @@ class Auth extends \GWM\Core\Controller
     
     private function register()
     {
-        echo <<<HTML
+        $latte = new \Latte\Engine;
+        $latte->setTempDirectory('tmp/latte');
 
-<!DOCTYPE html>
-<html>
-
-<head>
-    <style>
-
-body {
-    background: lightgrey;
-}
-
-.login {
-    translate: -50% -50%;
-    width: 350px;
-    height: 210px;
-    background: grey;
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    border-radius: 3px;
-    padding: 6px;
-    color: white;
-}
-
-    </style>
-</head>
-
-<body>
-
-    <div class="login">
-        <h1>Auth</h1>
-
-        <form method="POST" action="/auth">
-        Username:<br>
-        <input type="text" name="username"><br>
-        Password:<br>
-        <input type="password" name="password">
-        <br><br>
-        <input type="submit" value="Login">
-      </form> 
-
-    </div>
-</body>
-
-</html>
-
-HTML;
+        $latte->render('themes/default/templates/auth.latte');
     }
 }
