@@ -1,0 +1,15 @@
+{
+    "name": "geedium/gwm",
+    "description": "None",
+    "type": "project",
+    "require": {
+        "latte/latte": "^3.0@dev",
+        "vlucas/phpdotenv": "^5.2@dev"
+    },
+    "autoload": {
+        "psr-4": { 
+            "GWM\\": "src/"
+        }
+    },
+    "minimum-stability": "dev"
+}

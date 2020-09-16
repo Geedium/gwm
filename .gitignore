@@ -7,10 +7,11 @@ master.code-workspace
 .well-known
 **/.well-known/**
 .well-known/**
-/vendor/
 .cache
 .env
 *.bat
 **/desktop.ini
 tmp/**
 **/node_modules
+
+!vendor/index.php

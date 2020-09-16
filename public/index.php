@@ -11,13 +11,7 @@ if(version_compare(PHP_VERSION, '7.0.0') < 0) exit;
 
 chdir(GWM['DIR_ROOT']);
 
-define('PREREQUISITES', [
-    'autoloader' => 'index'
-]);
-
-foreach (PREREQUISITES as $key => $value) {
-    require_once "prerequisites/$key/$value.php";
-}
+require_once 'vendor/index.php';
 
 chdir(GWM['DIR_ROOT']);
 
@@ -52,6 +46,12 @@ $dotenv->required([
 $router = new GWM\Core\Router();
 
 $router->Match('/', function() {
+    $home = new \GWM\Core\Controllers\Home();
+    $home->index();
+    exit;
+});
+
+$router->Match('/store', function() {
     $home = new \GWM\Commerce\Controllers\Store();
     $home->index();
     exit;

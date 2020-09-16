@@ -9,11 +9,13 @@ class Dashboard
         try {
             $schema = new \GWM\Core\Schema('test_app');
             $model = new \GWM\Core\Models\User($schema);
-        } 
-        catch(\Exception $e) {}
+        }
+        catch (\Exception $e) {
+        }
 
-        $view = new \GWM\Core\Views\Container;
-        $view->index('.html', 'admin');
+        $latte = new \Latte\Engine;
+        $latte->setTempDirectory('tmp/latte');
+        $latte->render('themes/admin/templates/index.latte');
     }
 
     public function media()
@@ -94,8 +96,13 @@ class Dashboard
             $model = new \GWM\Core\Models\Article($schema);
             $articles = $model->Select($schema);
 
-            $article = new \GWM\Core\Views\ArticleManager;
-            $article->index($articles);
+            $params = [
+                'articles' => $articles
+            ];
+
+            $latte = new \Latte\Engine;
+            $latte->setTempDirectory('tmp/latte');
+            $latte->render('themes/admin/templates/articles.latte', $params);
         }
     }
 }

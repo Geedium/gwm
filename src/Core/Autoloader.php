@@ -1,7 +1,5 @@
 <?php
 
-require_once 'plugins/composer/plugin.php';
-
 /**
  * Undocumented interface
  */
@@ -15,8 +13,9 @@ interface ILoader
  * Undocumented class
  * 
  * @version 1.0.0
+ * @deprecated 1.0.0
  */
-final class Loader implements ILoader
+final class Autoloader implements ILoader
 {
     /**
      * @magic
