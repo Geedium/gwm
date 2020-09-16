@@ -1,7 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use GWM\Core\Schema;
+//use GWM\Core\Schema;
 
 final class BasicTest extends TestCase
 {
@@ -14,7 +14,7 @@ final class BasicTest extends TestCase
             'password' => 'admin'
         ];
 
-        new Schema('test_app', $options);
+        //new Schema('test_app', $options);
         
         $this->assertTrue(true);
     }
