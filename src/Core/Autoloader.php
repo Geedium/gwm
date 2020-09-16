@@ -1,50 +1,45 @@
 <?php
 
-/**
- * Undocumented interface
- */
-interface ILoader
-{
-    public static function Enable();
-    public static function Disable();
-}
+namespace GWM\Core;
 
 /**
- * Undocumented class
+ * Autoloader
+ * 
+ * Custom autoloader. Might improve
+ * performance if no third-party
+ * dependencies used.
  * 
  * @version 1.0.0
- * @deprecated 1.0.0
+ * @final
  */
-final class Autoloader implements ILoader
+final class Autoloader
 {
     /**
-     * @magic
+     * Undocumented function
+     *
+     * Enable custom autoloading.
+     *
+     * @return boolean
+     * @since 1.0.0
+     * @final
      */
-    public function __construct()
+    final public static function Enable() : bool
     {
-        self::Enable();
+        return spl_autoload_register([__CLASS__, 'Load']);
     }
 
     /**
      * Undocumented function
      *
-     * @return void
-     * @since 1.0.0
-     */
-    public static function Enable() : void
-    {
-        spl_autoload_register([__CLASS__, 'Load']);
-    }
-
-    /**
-     * Undocumented function
+     * Disable custom autoloading.
      *
-     * @return void
+     * @return boolean
      * @since 1.0.0
+     * @final
      */
-    public static function Disable() : void
+    final public static function Disable() : bool
     {
-        spl_autoload_unregister([__CLASS__, 'Load']);
+        return spl_autoload_unregister([__CLASS__, 'Load']);
     }
 
     /**
@@ -53,8 +48,9 @@ final class Autoloader implements ILoader
      * @param string $classname
      * @return void
      * @since 1.0.0
+     * @final
      */
-    private static function Load(string $classname) : void
+    final private static function Load(string $classname) : void
     {
         $namespace = explode('\\', $classname);
         $namespaces = sizeof($namespace);
@@ -72,6 +68,27 @@ final class Autoloader implements ILoader
         !include_once("src/$filename.php");
         class_alias("GWM\\$invert", $invert);
     }
-}
 
-return new Loader;
+    /**
+     * Undocumented function
+     * 
+     * Exposes classes like global scope.
+     *
+     * @return void
+     * @since 1.0.0
+     * @final
+     */
+    final public static function Preload() : void
+    {
+        $prerequisites = [
+            'Distributor' => Distributor::class,
+            'Annotations' => Annotations::class,
+            'Router' => Router::class,
+            'Request' => Request::class
+        ];
+
+        foreach ($prerequisites as $key => $value) {
+            class_exists($key) ?: class_alias($value, $key);
+        }
+    }
+}

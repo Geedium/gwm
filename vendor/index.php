@@ -1,23 +1,6 @@
 <?php
 
-/*
-interface IPlugin
-{
-    public function Load() : bool;
-}
-
-class Plugin implements IPlugin
-{
-    private function __construct()
-    {
-        $this->Load();
-    }
-
-    public function Load() : bool
-    {
-        echo 'loading Plugin...';
-    }
-} */
+defined('GWM') or exit;
 
 if (!@include_once 'vendor/autoload.php') {
     if (file_exists('composer.json') == false) {

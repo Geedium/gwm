@@ -1,6 +1,6 @@
 <?php
 
-!defined('GWM') ? define('GWM',
+!defined('GWM') ? define('GWM', 
 [
     'DIR_ROOT' => dirname(__DIR__),
     'START_TIME' => microtime(true),
@@ -12,6 +12,8 @@ if(version_compare(PHP_VERSION, '7.0.0') < 0) exit;
 chdir(GWM['DIR_ROOT']);
 
 require_once 'vendor/index.php';
+
+GWM\Core\Autoloader::Preload();
 
 chdir(GWM['DIR_ROOT']);
 
@@ -43,76 +45,14 @@ $dotenv->required([
     'DB_PREFIX'
 ]);
 
-$router = new GWM\Core\Router();
-
-$router->Match('/', function() {
-    $home = new \GWM\Core\Controllers\Home();
-    $home->index();
-    exit;
-});
-
-$router->Match('/store', function() {
-    $home = new \GWM\Commerce\Controllers\Store();
-    $home->index();
-    exit;
-});
-
-$router->Match('/dashboard', function() {
-    $request = new GWM\Core\Request();
-    $dash = new GWM\Core\Controllers\Dashboard();
-    $dash->index($request);
-    exit;
-});
-
-$router->Match('/auth', function() {
-    $auth = new GWM\Core\Controllers\Auth();
-    $auth->index();
-    exit;
-});
-
-$router->Match('/api/articles', function() {
-    $dash = new GWM\Core\Controllers\Dashboard();
-    $dash->articles();
-    exit;
-});
-
-$router->Match('/dashboard/build', function() {
-    $dist = new \GWM\Core\Distributor;
-    exit;
-});
-
-$router->Match('/dashboard/articles', function() {
-    $dash = new GWM\Core\Controllers\Dashboard();
-    $dash->articles();
-    exit;
-});
-
-$router->Match('/dashboard/media', function() {
-    $dash = new GWM\Core\Controllers\Dashboard();
-    $dash->media();
-    exit;
-});
+$router = new Router();
+$router->Resolve();
 
 $response = new GWM\Core\Response();
 
 $latte = new \Latte\Engine;
 $latte->setTempDirectory('tmp/latte');
 $err404 = $latte->renderToString('themes/default/templates/404.latte');
-
-/*
-$fp = fopen("render.lock", "a+");
-
-if (flock($fp, LOCK_EX)) {  // acquire an exclusive lock
-    ftruncate($fp, 0);      // truncate file
-    fwrite($fp, $err404);
-    fflush($fp);            // flush output before releasing the lock
-    flock($fp, LOCK_UN);    // release the lock
-} else {
-    echo "Couldn't get the lock!";
-}
-
-fclose($fp);
-*/
 
 $response->setContent($err404)->send(404);
 
