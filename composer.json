@@ -9,7 +9,11 @@
     "autoload": {
         "psr-4": { 
             "GWM\\": "src/"
-        }
+        },
+        "classmap": ["lib"]
     },
-    "minimum-stability": "dev"
+    "minimum-stability": "dev",
+    "require-dev": {
+        "phpunit/phpunit": "9"
+    }
 }

@@ -4,23 +4,26 @@
 
 <div class="container-fluid no-gutters">
 
-{foreach $articles as $article}
+{ifset $articles}
 
-<div class="card mb-3">
-    <div class="card-header">
-        <b>{$article['title']}</b>
+    <div n:if="!$articles">
+        <b>No articles found.</b>
     </div>
 
-    <div class="card-body">
-        <b>{$article['content']}</b>
-    </div>
+    <div class="card mb-3" n:foreach="$articles as $article">
+        <div class="card-header">
+            <b>{$article['title']}</b>
+        </div>
 
-    <div class="card-footer">
-        <b>{$article['created_at']}</b>
-    </div>
-</div>
+        <div class="card-body">
+            <b>{$article['content']}</b>
+        </div>
 
-{/foreach}
+        <div class="card-footer">
+            <b>{$article['created_at']}</b>
+        </div>
+    </div>
+{/ifset}
 
 </div>
 
