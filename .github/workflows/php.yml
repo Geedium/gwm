@@ -1,4 +1,4 @@
-name: PHP Composer
+name: PHP Composer & PHPUnit
 
 on:
   push:
@@ -16,6 +16,9 @@ jobs:
 
     - name: Validate composer.json and composer.lock
       run: composer validate
+      
+    - name: PHPUnit (php-actions)
+      uses: php-actions/phpunit@v9
 
     - name: Cache Composer packages
       id: composer-cache
