@@ -15,5 +15,11 @@
     "minimum-stability": "dev",
     "require-dev": {
         "phpunit/phpunit": "9"
+    },
+    "scripts": {
+        "test": "phpunit tests"
+    },
+    "scripts-descriptions": {
+        "test": "PHPUnit tests."
     }
 }
