@@ -1,4 +1,4 @@
-name: PHP Composer & PHPUnit
+name: PHP Composer
 
 on:
   push:
@@ -30,9 +30,8 @@ jobs:
       if: steps.composer-cache.outputs.cache-hit != 'true'
       run: composer install --prefer-dist --no-progress --no-suggest
 
-    - name: PHPUnit (php-actions)
-      uses: php-actions/phpunit@v9
-
+    - name: PHPUnit
+      run: php bin/phpunit tests
     # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
     # Docs: https://getcomposer.org/doc/articles/scripts.md
 
