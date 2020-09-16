@@ -1,6 +1,9 @@
 <?php
 
-defined('GWM') or exit;
+if (defined('GWM') == false) {
+    http_response_code(500);
+    exit;
+}
 
 if (!@include_once 'vendor/autoload.php') {
     if (file_exists('composer.json') == false) {
