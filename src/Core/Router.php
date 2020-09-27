@@ -6,14 +6,19 @@ namespace GWM\Core;
  * Undocumented class
  */
 class Router
-{
-    protected $routes = [];
+{    
+    protected static $routes = [];
 
     /**
      * @magic
      */
     function __construct()
     {
+        $req = [
+            'url' => rtrim($_SERVER['REQUEST_URI'], '/'),
+            'method' => $_SERVER['REQUEST_METHOD']
+        ];
+
         $url = filter_var(rtrim($_SERVER['REQUEST_URI'], '/'), FILTER_SANITIZE_URL);
 
         //$json = \file_get_contents('routes.json');
@@ -23,6 +28,26 @@ class Router
 
         $URI = explode('/', $url);
         $URI[0] = $_SERVER['REQUEST_METHOD'];
+    }
+    
+    /**
+     * Undocumented function
+     *
+     * @return void
+     */
+    public static function Route()
+    {
+        foreach (self::routes as $route) 
+        {
+            $pattern = "@^" . preg_replace('/\\\:[a-zA-Z0-9\_\-]+/', '([a-zA-Z0-9\-\_]+)', preg_quote($route['url'])) . "$@D";
+            $matches = [];
+
+            if($req['method'] == $route['method'] && preg_match($pattern, $req['url'], $matches))
+            {
+                array_shift($matches);
+                return call_user_func_array($route['callback'], $matches);
+            }
+        }
     }
 
     function Resolve()

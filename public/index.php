@@ -1,4 +1,4 @@
-<?php
+<?php 
 
 !defined('GWM') ? define('GWM', 
 [
@@ -7,7 +7,7 @@
     'ERROR_LEVEL' => error_reporting(E_ALL)
 ]) : exit;
 
-if(version_compare(PHP_VERSION, '7.0.0') < 0) exit;
+if(version_compare(PHP_VERSION, '7.4.0') < 0) exit;
 
 chdir(GWM['DIR_ROOT']);
 
@@ -26,7 +26,7 @@ if (file_exists('.env') == false) {
     DB_USERNAME=
     DB_PASSWORD=
     DB_PREFIX=$generated
-    EOF);
+EOF);
     
     trigger_error('You need to update .env variables!');
     exit;
