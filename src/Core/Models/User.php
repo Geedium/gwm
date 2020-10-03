@@ -2,9 +2,14 @@
 
 namespace GWM\Core\Models;
 
+use GWM\Core\Schema;
+
 /**
- * Undocumented class
- * 
+ * Class User
+ *
+ * No description.
+ *
+ * @package GWM\Core\Models
  * @version 1.0.0
  */
 class User
@@ -14,21 +19,21 @@ class User
      *
      * @var int (primary)
      */
-    public $id;
+    public int $id;
 
     /**
      * Undocumented variable
      *
      * @var string (255)
      */
-    public $username;
+    public string $username;
 
     /**
      * Undocumented variable
      *
      * @var string (255)
      */
-    public $password;
+    public string $password;
 
     /**
      * Undocumented variable
@@ -39,8 +44,9 @@ class User
 
     /**
      * @magic
+     * @param $schema
      */
-    function __construct(&$schema)
+    function __construct($schema)
     {
         $this->created_at = (new \DateTime())->format("Y-m-d");
         $schema->Create(User::class, 'users');
@@ -78,7 +84,8 @@ class User
      */
     public function setPassword(string $password) : self
     {
-        $this->password = password_hash($password, PASSWORD_DEFAULT);
+        $hash = password_hash($password, PASSWORD_DEFAULT, ['cost' => 15]);
+        $this->password = is_string($hash) ? $hash : '';
         return $this;
     }
 
@@ -92,13 +99,8 @@ class User
         return $this->password;
     }
 
-    /**
-     * Undocumented function
-     *
-     * @return boolean
-     */
-    function isLoggedIn()
+    function register($schema)
     {
-
+        return $schema->InsertUser($this->username, $this->password);
     }
 }

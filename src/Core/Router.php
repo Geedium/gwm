@@ -6,15 +6,16 @@ namespace GWM\Core;
  * Undocumented class
  */
 class Router
-{    
-    protected static $routes = [];
+{
+    protected static array $routes = [];
+    private static array $req = [];
 
     /**
      * @magic
      */
     function __construct()
     {
-        $req = [
+        self::$req = [
             'url' => rtrim($_SERVER['REQUEST_URI'], '/'),
             'method' => $_SERVER['REQUEST_METHOD']
         ];
@@ -29,7 +30,7 @@ class Router
         $URI = explode('/', $url);
         $URI[0] = $_SERVER['REQUEST_METHOD'];
     }
-    
+
     /**
      * Undocumented function
      *
@@ -42,7 +43,7 @@ class Router
             $pattern = "@^" . preg_replace('/\\\:[a-zA-Z0-9\_\-]+/', '([a-zA-Z0-9\-\_]+)', preg_quote($route['url'])) . "$@D";
             $matches = [];
 
-            if($req['method'] == $route['method'] && preg_match($pattern, $req['url'], $matches))
+            if(self::$req['method'] == $route['method'] && preg_match($pattern, self::$req['url'], $matches))
             {
                 array_shift($matches);
                 return call_user_func_array($route['callback'], $matches);

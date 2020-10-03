@@ -1,6 +1,8 @@
-<?php 
+<?php
 
-!defined('GWM') ? define('GWM', 
+use GWM\Core\Router;
+
+!defined('GWM') ? define('GWM',
 [
     'DIR_ROOT' => dirname(__DIR__),
     'START_TIME' => microtime(true),
@@ -12,8 +14,6 @@ if(version_compare(PHP_VERSION, '7.4.0') < 0) exit;
 chdir(GWM['DIR_ROOT']);
 
 require_once 'vendor/index.php';
-
-GWM\Core\Autoloader::Preload();
 
 chdir(GWM['DIR_ROOT']);
 
@@ -45,7 +45,7 @@ $dotenv->required([
     'DB_PREFIX'
 ]);
 
-$router = new Router();
+$router = new GWM\Core\Router();
 $router->Resolve();
 
 $response = new GWM\Core\Response();

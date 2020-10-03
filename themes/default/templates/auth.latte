@@ -9,7 +9,6 @@
         <div>
             User: {$user}<br/>
             Password: {$pass}<br/>
-            CSRF: {$csrf}
         </div>
 
         <div class="card-body">
@@ -19,12 +18,14 @@
                     <input type="text" class="form-control" id="user" name="username">
                 </div>
 
+                <input type="hidden" class="form-control" name="csrf" value="{$csrf}">
+
                 <div class="form-group">
                     <label for="pass">Password</label>
                     <input type="password" class="form-control" id="pass" name="password">
                 </div>
 
-                <button type="submit" class="btn btn-primary">Login</button>
+                <input type="submit" name="submit" class="btn btn-primary">Register</input>
             </form>
         </div>
     </div>

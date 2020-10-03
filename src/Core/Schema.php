@@ -62,21 +62,18 @@ class Schema extends \PDO
     {
         new Annotations($model, $data);
 
-        if(!$this->Exists('TABLES', "{$_ENV['DB_PREFIX']}_$table"))
-        {
+        if (!$this->Exists('TABLES', "{$_ENV['DB_PREFIX']}_$table")) {
             try {
                 $sql = "CREATE TABLE `{$_ENV['DB_PREFIX']}_$table` (";
 
-                foreach($data as $property)
-                {
-                    foreach($property as $key => $value)
-                    {
+                foreach ($data as $property) {
+                    foreach ($property as $key => $value) {
                         echo $value;
                         if (strcasecmp($value, '@string') == 3) {
                             //  if (!$this->Exists("`{$_ENV['DB_PREFIX']}_$table`", $name, 'COLUMNS FROM')) {
-                            $sql .= "`$name` VARCHAR(255) NULL DEFAULT NULL";
+                            $sql .= "`$value` VARCHAR(255) NULL DEFAULT NULL";
                             //  }
-                        }   
+                        }
                     }
                 }
 
@@ -84,37 +81,34 @@ class Schema extends \PDO
 
                 $results = parent::query($sql);
                 return true;
-            }
-            catch(Exception $e)
-            {
-                die($e->getMessage() );
+            } catch (Exception $e) {
+                die($e->getMessage());
             }
         } else {
             try {
                 $tablename = "{$_ENV['DB_PREFIX']}_$table";
 
-                foreach($data as $key => $value)
-                {
+                foreach ($data as $key => $value) {
                     $value[0] = preg_replace('/\s+/', '', $value[0]);
 
                     switch ($value[0]) {
                         case 'string':
-                            {
-                                break;
-                            }
+                        {
+                            break;
+                        }
                         case 'int':
-                            {
-                                $value[1] = preg_replace('/\s+/', '', $value[1]);
-                                
-                                if ($value[1] == 'primary') {
-                                    $this->sid = $key;
-                                }
-                                break;
+                        {
+                            $value[1] = preg_replace('/\s+/', '', $value[1]);
+
+                            if ($value[1] == 'primary') {
+                                $this->sid = $key;
                             }
-                            case 'DateTime':
-                            {
-                                break;
-                            }
+                            break;
+                        }
+                        case 'DateTime':
+                        {
+                            break;
+                        }
                     }
 
                     $id = $this->sid;
@@ -127,22 +121,21 @@ class Schema extends \PDO
                         // Remove whitespaces from a string.
 
                         switch ($value[0]) {
-                        case 'string':
+                            case 'string':
                             {
                                 $value[1] = preg_replace('/\s+/', '', $value[1]);
 
-                                if($value[1] == 'text')
-                                {
+                                if ($value[1] == 'text') {
                                     $this->addColumn($key, "TEXT NULL DEFAULT NULL", $tablename);
                                 } else {
                                     $this->addColumn($key, "VARCHAR($value[1]) NULL DEFAULT NULL", $tablename);
                                 }
                                 break;
                             }
-                        case 'int':
+                            case 'int':
                             {
                                 $value[1] = preg_replace('/\s+/', '', $value[1]);
-                                
+
                                 if ($value[1] == 'primary') {
                                     $this->addColumn($key, "INT PRIMARY KEY AUTO_INCREMENT", $tablename);
                                 }
@@ -158,12 +151,18 @@ class Schema extends \PDO
                 }
 
                 $this->update = parent::prepare("UPDATE $tablename SET title = ?, content = ? WHERE $id = ?");
-            }
-            catch(Exception $e)
-            {
-                die($e->getMessage() );
+            } catch (Exception $e) {
+                die($e->getMessage());
             }
         }
+    }
+
+    public function InsertUser(string $username, string $password)
+    {
+        $table = "{$_ENV['DB_PREFIX']}_users";
+        $pdo = parent::prepare("INSERT INTO $table (username, password) VALUES(?, ?)");
+        $pdo->execute([$username, $password]);
+        return parent::lastInsertId();
     }
 
     public function Insert(string $table, string $title, $date, string $content)

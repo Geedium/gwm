@@ -2,45 +2,48 @@
 
 namespace GWM\Core\Models;
 
+use DateTime;
+
 /**
  * Undocumented class
  */
-class Article extends \GWM\Core\Model implements \GWM\Core\IModel
+class Article
 {
     /**
      * Undocumented variable
      *
      * @var int (primary)
      */
-    public $id;
+    public int $id;
 
     /**
      * Undocumented variable
      *
      * @var string (255)
      */
-    public $title;
+    public string $title;
 
     /**
      * Undocumented variable
      *
      * @var string (text)
      */
-    public $content;
+    public string $content;
 
     /**
      * Undocumented variable
      *
-     * @var DateTime
+     * @var string
      */
-    public $created_at;
+    public string $created_at;
 
     /**
      * @magic
+     * @param $schema
      */
-    function __construct(&$schema)
+    function __construct($schema)
     {
-        $this->created_at = (new \DateTime())->format("Y-m-d");
+        $this->created_at = (new DateTime())->format("Y-m-d");
         $schema->Create(Article::class, 'articles');
     }
 
@@ -66,12 +69,12 @@ class Article extends \GWM\Core\Model implements \GWM\Core\IModel
         $this->content = $content;
     }
 
-    public function Create(&$schema)
+    public function Create($schema)
     {
         return $schema->Insert('articles', $this->title, $this->created_at, $this->content);
     }
 
-    public function Select(&$schema)
+    public function Select($schema)
     {
         return $schema->Select('articles');
     }
@@ -79,10 +82,11 @@ class Article extends \GWM\Core\Model implements \GWM\Core\IModel
     /**
      * Save Object
      *
-     * @param [type] $schema
+     * @param $schema
+     * @param $id
      * @return void
      */
-    public function Save(&$schema, $id)
+    public function Save($schema, $id)
     {
         $schema->Save($this->title, $this->content, $id);
     }
