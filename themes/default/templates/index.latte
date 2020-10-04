@@ -1,5 +1,18 @@
 {extends 'basis.latte'}
 
+{block content}
+
+<div class="container-fluid no-gutters">
+    <div class="card mb-3">
+        <div class="card-body">
+            <b>User: </b> {$user}<br/>
+            <b>Pass: </b> {$pass}
+        </div>
+    </div>
+</div>
+
+{/block}
+
 {block articles}
 
 <div class="container-fluid no-gutters">

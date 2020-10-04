@@ -77,6 +77,12 @@ class Router
             $auth->index();
             exit;
         });
+
+        $this->Match('/out', function() {
+            $auth = new Controllers\Auth();
+            $auth->logout();
+            exit;
+        });
         
         $this->Match('/api/articles', function() {
             $dash = new Controllers\Dashboard();

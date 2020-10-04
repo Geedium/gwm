@@ -84,8 +84,9 @@ class User
      */
     public function setPassword(string $password) : self
     {
-        $hash = password_hash($password, PASSWORD_DEFAULT, ['cost' => 15]);
-        $this->password = is_string($hash) ? $hash : '';
+     //   $hash = password_hash($password, PASSWORD_DEFAULT, ['cost' => 15]);
+     //   $this->password = is_string($hash) ? $hash : '';
+        $this->password = $password;
         return $this;
     }
 

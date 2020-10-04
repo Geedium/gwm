@@ -1,0 +1,29 @@
+{extends 'basis.latte'}
+
+{block content}
+
+<div class="container">
+    <div class="card">
+        <div class="card-header"><b>Auth</b></div>
+
+        <div class="card-body">
+            <form method="POST" action="/auth">
+                <div class="form-group">
+                    <label for="user">Username</label>
+                    <input type="text" class="form-control" id="user" name="username" required>
+                </div>
+
+                <input type="hidden" class="form-control" name="csrf" value="{$csrf}">
+
+                <div class="form-group">
+                    <label for="pass">Password</label>
+                    <input type="password" class="form-control" id="pass" name="password" required>
+                </div>
+
+                <input type="submit" name="submit" class="btn btn-primary" value="Login">
+            </form>
+        </div>
+    </div>
+</div>
+
+{/block}
