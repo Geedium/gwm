@@ -56,32 +56,32 @@ class Router
         $this->Match('/', function() {
             $home = new \GWM\Core\Controllers\Home();
             $home->index();
-            exit;
+            $this->Profiler();
         });
-        
+
         $this->Match('/store', function() {
             $home = new \GWM\Commerce\Controllers\Store();
             $home->index();
-            exit;
+            $this->Profiler();
         });
         
         $this->Match('/dashboard', function() {
             $request = new Request();
             $dash = new Controllers\Dashboard();
             $dash->index($request);
-            exit;
+            $this->Profiler();
         });
         
         $this->Match('/auth', function() {
             $auth = new Controllers\Auth();
             $auth->index();
-            exit;
+            $this->Profiler();
         });
 
         $this->Match('/out', function() {
             $auth = new Controllers\Auth();
             $auth->logout();
-            exit;
+            $this->Profiler();
         });
         
         $this->Match('/api/articles', function() {
@@ -91,21 +91,40 @@ class Router
         });
         
         $this->Match('/dashboard/build', function() {
-            $dist = new Distributor;
-            exit;
+            die(new Distributor);
         });
         
         $this->Match('/dashboard/articles', function() {
             $dash = new Controllers\Dashboard();
             $dash->articles();
-            exit;
+            $this->Profiler();
         });
         
         $this->Match('/dashboard/media', function() {
             $dash = new GWM\Core\Controllers\Dashboard();
             $dash->media();
-            exit;
+            $this->Profiler();
         });
+    }
+
+    private function Profiler()
+    {
+        $time = round(microtime(true) - GWM['START_TIME'], 2);
+
+        echo <<<EOL
+
+        <div style="position: fixed; z-index: 99; bottom: 0; left: 60vw; right:0 ; height: 45px; background: #a3a3a3;">
+            <div style="color: white; float: left;">
+                <div>GWM Profiler | <a href="#" class="btn" style="color: whitesmoke;">Backtrace</a>
+                </div>
+            </div>
+            
+            <div style="color: white; float: right;">Time pased: $time ms.</div>
+        </div>
+
+EOL;
+
+        exit;
     }
 
     function Match($url, $function)

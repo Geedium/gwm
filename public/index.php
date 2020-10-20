@@ -45,6 +45,8 @@ $dotenv->required([
     'DB_PREFIX'
 ]);
 
+new \GWM\Core\Bootstrap();
+
 $router = new GWM\Core\Router();
 $router->Resolve();
 

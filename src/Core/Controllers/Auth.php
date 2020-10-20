@@ -39,7 +39,7 @@ class Auth
             //$model->register($schema);
         }
 
-        $this->login($user_input, $pass_input);
+        $this->login($user_input, '');
     }
 
     public function logout()
@@ -89,6 +89,7 @@ class Auth
             if (hash_equals($csrf, $_POST['csrf']) == true) {
 
                 $_SESSION['user'] = $a;
+                $_SESSION['pass'] = '';
 
                 $response = new Response();
                 $response->setHeaders([

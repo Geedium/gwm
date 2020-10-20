@@ -17,6 +17,17 @@
 
 <div class="container-fluid no-gutters">
 
+<div class="card mb-3">
+
+    <div class="card-header">
+        Generated Form { Model: Article }
+    </div>
+
+    <div class="card-body">
+        {$form|noescape}
+    </div>
+</div>
+
 {ifset $articles}
 
     <div n:if="!$articles">

@@ -15,14 +15,27 @@
     {block scripts}
     {/block}
 
+    <script type="text/javascript">
+      document.addEventListener("DOMContentLoaded", function(event) {
+            document.getElementById("toggle").addEventListener("click", function(e) {
+                var navbar = document.getElementById("color-swap")
+                if(navbar.className === 'navbar navbar-expand-lg navbar-dark bg-dark mb-3') {
+                    navbar.className = 'navbar navbar-expand-lg navbar-light bg-light mb-3';
+                } else {
+                    navbar.className = 'navbar navbar-expand-lg navbar-dark bg-dark mb-3';
+                }
+            })
+      });
+    </script>
+
     <title>Homepage</title>
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light mb-3">
+    <nav id="color-swap" class="navbar navbar-expand-lg navbar-dark bg-dark mb-3">
         <a class="navbar-brand" href="/">Navbar</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-         <span class="navbar-toggler-icon"></span>
+             <span class="navbar-toggler-icon"></span>
         </button>
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -33,6 +46,12 @@
 
                 <li class="nav-item">
                     <a class="nav-link" href="/out">Logout</a>
+                </li>
+            </ul>
+
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <button id="toggle" class="btn nav-link">Toggle</button
                 </li>
             </ul>
         </div>

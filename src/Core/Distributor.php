@@ -11,11 +11,18 @@ class Distributor
 {
     function __construct()
     {
-        $public = GWM['DIR_ROOT'].'/public';
-        $assets = dirname(__DIR__);
-        $theme = "$assets/themes/default/styles";
+        $public = GWM['DIR_ROOT'] . '/public';
+        $themes = GWM['DIR_ROOT'] . '/themes';
 
-        $sass .= "sass $theme/_index.sass:$public/css/dashboard.css --style compressed";
+        $theme = "$themes/admin/styles";
+
+        if(file_exists("$public/css/dashboard.generated.css") == true) {
+            if(!unlink("$public/css/dashboard.generated.css")) {
+                throw \Exception('failed to unlink file');
+            }
+        }
+
+        $sass = "sass $theme/_index.sass:$public/css/dashboard.generated.css --style compressed";
 
         /*
 $fp = fopen("render.lock", "a+");
@@ -32,7 +39,9 @@ if (flock($fp, LOCK_EX)) {  // acquire an exclusive lock
 fclose($fp);
 */
 
-        echo Utils::exec($sass);
+        Utils::exec($sass);
+
+        header('Location: /dashboard', true);
     }
 
     /**

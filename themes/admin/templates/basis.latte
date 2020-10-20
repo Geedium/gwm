@@ -1,32 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
         <link rel="stylesheet" href="/vendor/css/fontawesome.min.css">
         <link rel="stylesheet" href="/vendor/css/Chart.min.css">
-        <link rel="stylesheet" href="/css/dashboard.css">
+        <link rel="stylesheet" href="/css/dashboard.generated.css">
         <link rel="stylesheet" href="/css/dashboard.extra.css">
 
         <script src="/vendor/js/Chart.min.js"></script>
 
         {include '_doc.latte'}
 
+        <script type="text/javascript">
+        document.addEventListener("DOMContentLoaded", function(event) {
+            document.getElementById("drop-click").addEventListener("click", function(e) {
+                if(document.getElementById("drop").className === 'fas fa-caret-right') {
+                    document.getElementById("drop").className = 'fas fa-caret-down';
+                } else {
+                    document.getElementById("drop").className = 'fas fa-caret-right';
+                }
+            })
+        })
+        </script>
+
         <title>Dashboard</title>
     </head>
 
     <body>
-        <div class="navbar">
-            <ul>
-                <li>
-                    <button>
-                        <i class="fas fa-home"></i>
-                        <span>Home</span>
-                    </button>
-                </li>
-            </ul>
+        <div class="contents">
+            <div class="container-wrapper">
+                {block content}
+                {/block}
+            </div>
         </div>
-
-        {block content}
-        {/block}
 
         <aside>
             <div class="hAside">
@@ -34,13 +42,21 @@
             </div>
 
             <nav>
-                <ul>
+                <label for="nav-tab-core" class="nav-tab">CORE</label>
+
+                <ul id="nav-tab-core">
                     <li>
                         <div>
-                            <button onclick="window.location='/dashboard'">
+                            <button id="drop-click">
                                 <i class="fas fa-project-diagram"></i>
                                 <span>Dashboard</span>
+                                <span><i id="drop" class="fas fa-caret-right"></i></span>
                             </button>
+                            <div class="dropdown">
+                                <ul>
+                                    <li>...</li>
+                                </ul>
+                            </div>
                         </div>
                     </li>
                     <li>
@@ -81,6 +97,25 @@
                                 <i class="fas fa-cogs"></i>
                                 <span>Settings</span>
                             </button>
+                        </div>
+                    </li>
+                </ul>
+
+                <label for="nav-tab-core" class="nav-tab">COMMERCE</label>
+
+                <ul id="nav-tab-core">
+                    <li>
+                        <div>
+                            <button>
+                                <i class="fas fa-shopping-cart"></i>
+                                <span>Products</span>
+                                <span><i class="fas fa-caret-right"></i></span>
+                            </button>
+                            <div class="dropdown">
+                                <ul>
+                                    <li>...</li>
+                                </ul>
+                            </div>
                         </div>
                     </li>
                 </ul>

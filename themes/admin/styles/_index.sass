@@ -1,10 +1,12 @@
 @import basis, fonts
 
-$background: #575a60
-$side: #272c33
+@import tones/dark
+
+@import elements/table
 
 body, html
-    scrollbar-color: #353535 #6d6d6d
+    height: 100vh
+    position: relative
 
 body
     background: $background
@@ -12,30 +14,46 @@ body
 a:hover, a:visited, a:focus, a:link
     text-decoration: none
 
+input[type="checkbox"]
+    -webkit-appearance: none
+
+.nav-tab
+    display: block
+    height: 35px
+    background: $background
+    color: white
+
 .hAside
     position: relative
     top: 15px
     left: 15px
     width: 320px
-    height: 150px
+    height: 50px
     font-size: larger
     color: white
 
 .navbar
-    position: relative
+    position: absolute
     left: 350px
     right: 0
     top: 0
     background: #a3a3a3
     height: 45px
 
+.container-wrapper
+    height: inherit
+    margin-left: 350px
+
+.contents
+    height: inherit
+
 aside
-    position: absolute
-    top: 0
-    bottom: 0
-    left: 0
     width: 350px
+    min-height: 100vh
     background: $side
+    position: absolute
+    left: 0
+    top: 0
 
     nav
         margin-top: 15px
