@@ -2,6 +2,8 @@
 
 namespace GWM\Core;
 
+use GWM\Core\Utils\Debug;
+
 /**
  * Undocumented class
  */
@@ -101,7 +103,7 @@ class Router
         });
         
         $this->Match('/dashboard/media', function() {
-            $dash = new GWM\Core\Controllers\Dashboard();
+            $dash = new Controllers\Dashboard();
             $dash->media();
             $this->Profiler();
         });
@@ -110,6 +112,14 @@ class Router
     private function Profiler()
     {
         $time = round(microtime(true) - GWM['START_TIME'], 2);
+
+        $exceptions = Debug::$log;
+
+        echo '<div style="position: fixed; z-index: 99; bottom: 45px; left: 60vw; right:0 ; height: 45px; background: #cacaca;">';
+        foreach($exceptions as $exception) {
+            echo $exception . PHP_EOL;
+        }
+        echo '</div>';
 
         echo <<<EOL
 

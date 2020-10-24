@@ -3,6 +3,7 @@
 namespace GWM\Core\Controllers;
 
 use GWM\Core\Utils\Form;
+use GWM\Core\Utils\Table;
 
 class Home
 {
@@ -26,6 +27,10 @@ class Home
         $form = new Form;
         $form->Hint($model);
 
+        $table = new Table;
+        $table->Hint($model);
+        $table->All($articles);
+
         $user = 'undefined';
         $pass = 'undefined';
 
@@ -39,7 +44,8 @@ class Home
             'articles' => $articles,
             'user' => $user,
             'pass' => $pass,
-            'form' => $form
+            'form' => $form,
+            'table' => $table,
         ];
 
         $latte->render('themes/default/templates/index.latte', $params);

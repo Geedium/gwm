@@ -36,6 +36,9 @@ class Form
             $form .= '<div class="form-group row">';
             $name = $value['name'];
 
+            $name = \str_replace('_', ' ', $name);
+            $name = \ucwords($name);
+
             if ($value['type'] == 'string') {
                 $form .= "<label for='$name'>$name</label>";
                 $form .= "<div class='col-sm-10'>";

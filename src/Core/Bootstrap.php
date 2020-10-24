@@ -2,6 +2,8 @@
 
 namespace GWM\Core;
 
+use GWM\Core\Exceptions\Basic;
+
 /**
  * Class Bootstrap
  *
@@ -13,6 +15,7 @@ class Bootstrap
     /**
      * Bootstrap constructor.
      * @magic
+     * @throws Basic
      */
     function __construct()
     {
@@ -21,5 +24,16 @@ class Bootstrap
             ini_set('max_execution_time', 0);
             ini_set('max_input_time', -1);
         }
+
+        try {
+            $this->test();
+        } catch(Basic $e) {
+            
+        }
+    }
+
+    function test()
+    {
+        throw new Basic('Test.');
     }
 }

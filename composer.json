@@ -2,6 +2,11 @@
     "name": "geedium/gwm",
     "description": "None",
     "type": "project",
+    "config": {
+        "platform": {
+            "php": ">=7.4"
+        }
+    },
     "require": {
         "latte/latte": "^3.0@dev",
         "vlucas/phpdotenv": "^5.2@dev"

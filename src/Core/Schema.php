@@ -2,6 +2,9 @@
 
 namespace GWM\Core;
 
+use GWM\Core\Exceptions\Basic;
+use GWM\Core\Utils\Debug;
+
 /**
  * Undocumented class
  * 
@@ -17,6 +20,7 @@ class Schema extends \PDO
      *
      * @param string $name
      * @param array $options
+     * @throws Basic
      */
     public function __construct(string $name, array $options = null)
     {
@@ -27,11 +31,8 @@ class Schema extends \PDO
                     $_ENV['DB_USERNAME'],
                     $_ENV['DB_PASSWORD']
                 );
-            } catch (PDOException $e) {
-                throw new \PDOException(
-                    $e->getMessage(),
-                    (int)$e->getCode()
-                );
+            } catch (\PDOException $e) {
+                throw new Basic($e->getMessage(), true);
             }
         } else {
             if (count($options) < 4) {
@@ -187,19 +188,19 @@ class Schema extends \PDO
      * Save or update changes to the database.
      *
      * @param string ...$params
-     * @throws Exception
-     * @return void
-     * @since 1.0.0
+     * @return bool
+     * @throws Basic
+     * @throws Exception*@since 1.0.0
      */
     public function Save(string ...$params)
     {
         try {
             $this->update->execute($params);
             return true;
-        } catch (Exception $e) {
-            \trigger_error($e->getMessage(), E_USER_ERROR);
-            return false;
+        } catch (\Exception $e) {
+            throw new Basic($e->getMessage(), true);
         }
+        return false;
     }
 
     /*
@@ -214,8 +215,9 @@ class Schema extends \PDO
      *
      * @param string $access
      * @param string $name
-     * @throws Exception
      * @return boolean
+     * @throws Basic
+     * @throws \Exception
      */
     public function Exists(string $access, string $name, string $alt = '') : bool
     {
@@ -224,9 +226,8 @@ class Schema extends \PDO
             $results = parent::query($query);
             return $results->rowCount() > 0;
         }
-        catch(Exception $e)
-        {
-            die($e);
+        catch(\Exception $e) {
+            throw new Basic($e->getMessage(), true);
         }
     }
 

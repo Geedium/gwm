@@ -31,16 +31,16 @@ class Str
      * Concatenates multiple strings.
      *
      * @param string $value
-     * @return string|null
+     * @return \Closure
      * @since 1.0.0
      */
-    static function join(string $value) :? string
+    static function join(string $value) : \Closure
     {
-        $argruments = \func_get_args();
-        return function () use (&$value) {
-            for ($i = 0; $i < $argruments; $i++) {
-                $argrument = &$argruments[$i];
-                static::cat($value, $argrument);
+        $arguments = \func_get_args();
+        return function () use ($arguments, &$value) {
+            for ($i = 0; $i < $arguments; $i++) {
+                $argument = &$arguments[$i];
+                static::cat($value, $argument);
             }
         };
     }

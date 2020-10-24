@@ -33,6 +33,13 @@ class Article
     /**
      * Undocumented variable
      *
+     * @var string (text)
+     */
+    public string $description;
+
+    /**
+     * Undocumented variable
+     *
      * @var string
      */
     public string $created_at;

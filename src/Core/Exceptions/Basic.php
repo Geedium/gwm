@@ -2,20 +2,37 @@
 
 namespace GWM\Core\Exceptions
 {
+    use GWM\Core\Utils\Debug;
+
     /**
      * Undocumented class
      */
     class Basic extends \Exception
     {
-        /**
-         * @magic
-         * @param string $message
-         * @param int $code
-         * @param \Throwable|null $previous
-         */
-        public function __construct($message = "", $code = 0, \Throwable $previous = null)
+        public function __construct($message = "", $fatal = false)
         {
-            parent::__construct($message, $code, $previous);
+            if($fatal) {
+                echo <<<ERROR
+                
+<style>
+.die {
+    background: red;
+    color: white;
+    padding: 6px;
+    border: 1px solid #c44242;
+}
+</style>
+                
+                <div class="die">
+
+ERROR;
+
+                die("[$this->line, $this->file]: " . $message. '</div>');
+            }
+
+            Debug::$log[] = "[$this->line, $this->file]: " . $message;
+
+            parent::__construct($message);
         }
 
         /**

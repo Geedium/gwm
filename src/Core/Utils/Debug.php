@@ -14,6 +14,8 @@ class Debug
 {
     private static $trace = [];
 
+    public static $log = [];
+
     static function Register() : void
     {
         self::$trace = array_merge(debug_backtrace(), self::$trace);
@@ -36,7 +38,7 @@ class Debug
         echo '<pre>';
         foreach ($params as $key => $value) {
             if (isset($value) & is_array($value) & $key != null) {
-                Dump($value);
+                self::Dump($value);
                 continue;
             }
             var_dump($key, $value);
