@@ -3,9 +3,7 @@
     "description": "None",
     "type": "project",
     "config": {
-        "platform": {
-            "php": ">=7.4"
-        }
+
     },
     "require": {
         "latte/latte": "^3.0@dev",
