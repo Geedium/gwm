@@ -2,6 +2,8 @@
 
 namespace GWM\Core\Controllers;
 
+use GWM\Core\Response;
+
 class Dashboard
 {
     public function index($request)
@@ -16,6 +18,74 @@ class Dashboard
         $latte = new \Latte\Engine;
         $latte->setTempDirectory('tmp/latte');
         $latte->render('themes/admin/templates/index.latte');
+    }
+
+    public function models(Response $response)
+    {
+        $latte = new \Latte\Engine;
+        $latte->setTempDirectory('tmp/latte');
+
+        $action = $_POST['action'] ?? false;
+
+        if($action) {
+
+            $filename = GWM['DIR_ROOT'] . '/src/Core/Models/NewModel.php';
+
+            $fp = fopen($filename, "w+");
+
+            $name = 'newmodel';
+            $classname = ucfirst($name);
+
+            if (flock($fp, LOCK_EX | LOCK_NB)) {  // acquire an exclusive lock
+                ftruncate($fp, 0);      // truncate file
+                fwrite($fp, '
+<?php
+   
+   class ' . $classname . '
+   {
+        /**
+         * Undocumented variable
+         *
+         * @var string (255)
+         */
+        public string $title;
+        
+        /**
+         * @magic
+         * @param $schema
+         */
+        function __construct($schema)
+        {
+            $schema->Create(' . $classname . '::class, "' . $name . '");
+        }
+   }
+');
+                fflush($fp);            // flush output before releasing the lock
+                flock($fp, LOCK_UN);    // release the lock
+            } else {
+                echo "Couldn't get the lock!";
+            }
+
+            fclose($fp);
+
+            $response->setStatus(302);
+            $response->setHeaders([
+                'Location: /dashboard/models'
+            ]);
+            $response->send();
+            exit;
+        }
+
+        $models = new \FilesystemIterator(GWM['DIR_ROOT'].'/src/Core/Models');
+        $list = '';
+
+        foreach($models as $model) {
+            $list .= '<tr><td>' . $model->getBasename('.php') . '</td></tr>';
+        }
+
+        $latte->render('themes/admin/templates/models.latte', [
+            'list' => $list,
+        ]);
     }
 
     public function media()

@@ -7,3 +7,5 @@
 /img/
 /uploads/
 /fonts/
+
+!.sys.js

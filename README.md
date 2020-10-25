@@ -11,35 +11,6 @@ location / {
 }
 ```
 
-Features
----
-- __Core__
-    1. _Controllers_
-        1. [Home]()
-        2. [Dashboard]()
-        3. [Auth]()
-    2. _Models_
-    3. _Exceptions_
-        1. [Basic]()
-    4. _Models_
-        1. [Article]()
-        2. [User]()
-    5. _Utils_
-    6. _Readers_
-        1. [DOM]()
-    - [Annotations]()
-    - [Bootstrap]()
-    - [Distributor]()
-    - [Plugin]()
-    - [Reader]()
-    - [Request]()
-    - [Response]()
-    - [Router]()
-    - [Schema]()
-    - [Session]()
-    - [Utils]()
-    - [XML]()
-
 Requirements
 ---
 1. [PHP](https://www.php.net/) >= 7.4

@@ -1,3 +1,12 @@
+{define tab, $name, $icon, $url}
+    <div>
+        <button onclick="window.location='{$url|noescape}'">
+            <i class="fas fa-{$icon}"></i>
+            <span>{$name}</span>
+        </button>
+    </div>
+{/define}
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -10,6 +19,7 @@
         <link rel="stylesheet" href="/css/dashboard.extra.css">
 
         <script src="/vendor/js/Chart.min.js"></script>
+        <script src="/js/gwm.sys.js"></script>
 
         {include '_doc.latte'}
 
@@ -59,6 +69,7 @@
                             </div>
                         </div>
                     </li>
+                    <li>{include tab, 'Models', 'bezier-curve', '/dashboard/models'}</li>
                     <li>
                         <div>
                             <button onclick="window.location='/dashboard/analytics'">

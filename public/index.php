@@ -47,10 +47,10 @@ $dotenv->required([
 
 new \GWM\Core\Bootstrap();
 
-$router = new GWM\Core\Router();
-$router->Resolve();
-
 $response = new GWM\Core\Response();
+
+$router = new GWM\Core\Router();
+$router->Resolve($response);
 
 $latte = new \Latte\Engine;
 $latte->setTempDirectory('tmp/latte');

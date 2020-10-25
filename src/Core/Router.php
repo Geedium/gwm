@@ -53,7 +53,7 @@ class Router
         }
     }
 
-    function Resolve()
+    function Resolve(Response $response)
     {
         $this->Match('/', function() {
             $home = new \GWM\Core\Controllers\Home();
@@ -91,7 +91,13 @@ class Router
             $dash->articles();
             exit;
         });
-        
+
+        $this->Match('/dashboard/models', function() use ($response) {
+            $dash = new Controllers\Dashboard();
+            $dash->models($response);
+            exit;
+        });
+
         $this->Match('/dashboard/build', function() {
             die(new Distributor);
         });
