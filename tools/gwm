@@ -1,14 +1,38 @@
 #!/usr/bin/env php
 <?php
 
-$status = 0;
-
 if (php_sapi_name() !== 'cli') {
     exit;
 }
 
+set_time_limit(0);
+$status = 0;
+$task = -1;
+$options = [];
+$n = sizeof($argv);
+
 if (PHP_OS_FAMILY == 'Windows') {
     echo chr(27).chr(91).'H'.chr(27).chr(91).'J';
+}
+
+for ($i = 0; $i < $n; $i++) {
+    $arg = strcmp($argv[$i], 'cron') == 0 ? $argv[$i] : false;
+
+    if (!$arg) {
+        continue;
+    }
+
+    switch ($arg) {
+        case 'cron':
+            $task = 0;
+
+            if ($i + 2 <= $n) {
+                if ($argv[$i + 1] == '-f') {
+                    $options['f'] = $argv[$i + 2];
+                }
+            }
+        break;
+    }
 }
 
 $string = '';
@@ -18,6 +42,39 @@ $string .= "\033[0;41m";
 $string .= "Running CLI!";
 $string .= "\033[m";
 
+if (PHP_OS_FAMILY == 'Windows') {
+    $string .= "\r\n";
+}
+
 echo $string;
+
+$time = time();
+$interval = 1 * 60; // 1 minute
+
+switch ($task) {
+    case 0:
+        
+        $string = '';
+
+        $string .= "\033[1;37m";
+        $string .= "\033[0;41m";
+        $string .= "Executing CRON Job!\r\n";
+        $string .= "Timer: Minute";
+        $string .= "\033[m";
+
+        if (PHP_OS_FAMILY == 'Windows') {
+            $string .= "\r\n";
+        }
+
+        echo $string;
+
+        while (true) {
+            if ($time + $interval < time()) {
+                echo $options['f']."\r\n";
+                $time = time();
+            }
+        }
+        break;
+}
 
 exit($status);
