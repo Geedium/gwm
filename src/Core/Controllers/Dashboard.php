@@ -17,7 +17,7 @@ class Dashboard
 
         $latte = new \Latte\Engine;
         $latte->setTempDirectory('tmp/latte');
-        $latte->render('themes/admin/templates/index.latte');
+        $latte->render('themes/bootstrap/dashboard/templates/index.latte');
     }
 
     public function models(Response $response)

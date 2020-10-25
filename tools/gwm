@@ -15,8 +15,25 @@ if (PHP_OS_FAMILY == 'Windows') {
     echo chr(27).chr(91).'H'.chr(27).chr(91).'J';
 }
 
+function out($message)
+{
+    $string = '';
+
+    $string .= "\033[1;37m";
+    $string .= "\033[0;41m";
+    $string .= $message;
+    $string .= "\033[m";
+
+    if (PHP_OS_FAMILY == 'Windows') {
+        $string .= "\r\n";
+    }
+
+    echo $string;
+}
+
 for ($i = 0; $i < $n; $i++) {
     $arg = strcmp($argv[$i], 'cron') == 0 ? $argv[$i] : false;
+    $arg = strcmp($argv[$i], 'dev') == 0 ? $argv[$i] : false;
 
     if (!$arg) {
         continue;
@@ -32,28 +49,26 @@ for ($i = 0; $i < $n; $i++) {
                 }
             }
         break;
+        case 'dev':
+            out("Starting PHP development server at 127.0.0.1:8080");
+            \shell_exec("start http://127.0.0.1:8080/ 2>&1");
+
+            if(basename(getcwd()) == 'tools') {
+                chdir('../');
+            }
+            
+            \shell_exec("php -S 127.0.0.1:8080 -t public 2>&1");
+            exit($status);
+        break;
     }
 }
-
-$string = '';
-
-$string .= "\033[1;37m";
-$string .= "\033[0;41m";
-$string .= "Running CLI!";
-$string .= "\033[m";
-
-if (PHP_OS_FAMILY == 'Windows') {
-    $string .= "\r\n";
-}
-
-echo $string;
 
 $time = time();
 $interval = 1 * 60; // 1 minute
 
 switch ($task) {
     case 0:
-        
+
         $string = '';
 
         $string .= "\033[1;37m";
@@ -70,11 +85,10 @@ switch ($task) {
 
         while (true) {
             if ($time + $interval < time()) {
-                echo $options['f']."\r\n";
+                echo $options['f'] . "\r\n";
                 $time = time();
             }
         }
-        break;
 }
 
 exit($status);

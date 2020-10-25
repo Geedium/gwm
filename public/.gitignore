@@ -1,6 +1,9 @@
 js/*.js
+js/*.map.js
 !js/*.min.js
 !js/*.min.map.js
+!js/*.generated.js
+!js/*.generated.map.js
 
 /build/
 /.well-known/

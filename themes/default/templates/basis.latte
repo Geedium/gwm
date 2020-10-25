@@ -57,14 +57,40 @@
         </div>
     </nav>
 
-    {block content}
-    {/block}
+    <div class="row">
+        <div class="col-md-3">
+            <div class="container">
+                <div class="card">
+                    <div class="card-header">Login</div>
+                    <div class="card-body">
+                        
+                    </div>
+                </div>
+            </div>    
+        </div>
+        <div class="col-md-6">
+            <div class="container-fluid no-gutters">
+                {block content}
+                {/block}
 
-    {block tables}    
-    {/block}
+                {block tables}    
+                {/block}
 
-    {block articles}
-    {/block}
+                {block articles}
+                {/block}
+            </div>    
+        </div>
+        <div class="col-md-3">
+            <div class="container">
+                <div class="card">
+                    <div class="card-header">Widget</div>
+                    <div class="card-body">
+                        ...
+                    </div>
+                </div>
+            </div>    
+        </div>
+    </div>
 
     <script src="/vendor/js/bootstrap.min.js"></script>
 
