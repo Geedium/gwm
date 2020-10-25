@@ -1,4 +1,7 @@
+#!/usr/bin/env php
 <?php
+
+$status = 0;
 
 if (php_sapi_name() !== 'cli') {
     exit;
@@ -16,3 +19,5 @@ $string .= "Running CLI!";
 $string .= "\033[m";
 
 echo $string;
+
+exit($status);
