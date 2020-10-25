@@ -1,11 +1,12 @@
+js/*.js
+!js/*.min.js
+!js/*.min.map.js
+
 /build/
 /.well-known/
 /css/
 /dist/
 /images/
-/js/
 /img/
 /uploads/
 /fonts/
-
-!.sys.js
