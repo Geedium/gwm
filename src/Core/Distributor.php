@@ -1,85 +1,100 @@
 <?php
 
-namespace GWM\Core;
+namespace GWM\Core {
 
-/**
- * Undocumented class
- * 
- * @version 1.0.0
- */
-class Distributor
-{
-    function __construct()
+    use GWM\Core\Exceptions\Basic;
+
+    /**
+     * Class Distributor
+     *
+     * This class provides user-interface to user.
+     *
+     * @internal
+     * @package GWM\Core
+     * @version 1.0.0
+     */
+    class Distributor
     {
-        $public = GWM['DIR_ROOT'] . '/public';
-        $themes = GWM['DIR_ROOT'] . '/themes';
+        protected string $theme;
 
-        $theme = "$themes/admin/styles";
+        /**
+         * Distributor constructor.
+         * @param string $name Theme name.
+         * @throws Basic
+         */
+        function __construct(string $name)
+        {
+            $this->Context($name);
 
-        if(file_exists("$public/css/dashboard.generated.css") == true) {
-            if(!unlink("$public/css/dashboard.generated.css")) {
-                throw \Exception('failed to unlink file');
+            $public = GWM['DIR_ROOT'] . '/public';
+            $themes = GWM['DIR_ROOT'] . '/themes';
+
+            $theme = "$themes/admin/styles";
+
+            if (file_exists("$public/css/dashboard.generated.css") == true) {
+                if (!unlink("$public/css/dashboard.generated.css")) {
+                    throw new Basic('failed to unlink file');
+                }
             }
+
+            $sass = "sass $theme/_index.sass:$public/css/dashboard.generated.css --style compressed";
+
+            Utils::exec($sass);
+
+            header('Location: /dashboard', true);
         }
 
-        $sass = "sass $theme/_index.sass:$public/css/dashboard.generated.css --style compressed";
+        /**
+         * Function Context
+         *
+         * Validates and obtains theme.
+         *
+         * @param string $name Theme name.
+         * @return Distributor
+         */
+        public function Context(string $name) : Distributor
+        {
+            $this->theme = $name;
+            return $this;
+        }
 
-        /*
-$fp = fopen("render.lock", "a+");
+        /**
+         * Undocumented function
+         *
+         * @return boolean
+         * @since 1.0.0
+         */
+        protected function node_installed(): bool
+        {
+            $v = Utils::exec('node --version');
+            return substr($v, 0, 1) === 'v';
+        }
 
-if (flock($fp, LOCK_EX)) {  // acquire an exclusive lock
-    ftruncate($fp, 0);      // truncate file
-    fwrite($fp, $err404);
-    fflush($fp);            // flush output before releasing the lock
-    flock($fp, LOCK_UN);    // release the lock
-} else {
-    echo "Couldn't get the lock!";
-}
+        /**
+         * Undocumented function
+         *
+         * @return void
+         * @since 1.0.0
+         */
+        protected function compile_typescript()
+        {
+            chdir(GWM['DIR_ROOT']);
 
-fclose($fp);
-*/
+            $dir = GWM['DIR_ROOT'];
 
-        Utils::exec($sass);
+            echo Utils::exec("tsc --project $dir");
+        }
 
-        header('Location: /dashboard', true);
-    }
+        function __destruct()
+        {
+            chdir(GWM['DIR_ROOT']);
+        }
 
-    /**
-     * Undocumented function
-     *
-     * @return boolean
-     * @since 1.0.0
-     */
-    protected function node_installed() : bool
-    {
-        $v = Utils::exec('node --version');
-        return substr($v, 0, 1) === 'v';
-    }
-
-    /**
-     * Undocumented function
-     *
-     * @return void
-     * @since 1.0.0
-     */
-    protected function compile_typescript()
-    {
-        chdir(GWM['DIR_ROOT']);
-
-        $dir = GWM['DIR_ROOT'];
-
-        echo Utils::exec("tsc --project $dir");
-    }
-
-    function __destruct() 
-    {
-        chdir(GWM['DIR_ROOT']);
-    }
-
-    static function Json(string $filename)
-    {
-        \ob_start();
-        @readfile("$filename.json");
-        return json_decode(\ob_get_clean());
+        static function Json(string $filename)
+        {
+            \ob_start();
+            @readfile("$filename.json");
+            return json_decode(\ob_get_clean());
+        }
     }
 }

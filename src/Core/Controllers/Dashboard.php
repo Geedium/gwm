@@ -2,22 +2,24 @@
 
 namespace GWM\Core\Controllers;
 
+use GWM\Core\Exceptions\Basic;
+use GWM\Core\Request;
 use GWM\Core\Response;
 
 class Dashboard
 {
-    public function index($request)
+    public function index(Request $request)
     {
         try {
             $schema = new \GWM\Core\Schema('test_app');
             $model = new \GWM\Core\Models\User($schema);
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
+            echo 'Error creating model.';
         }
 
         $latte = new \Latte\Engine;
         $latte->setTempDirectory('tmp/latte');
-        $latte->render('themes/bootstrap/dashboard/templates/index.latte');
+        $latte->render('themes/admin/templates/index.latte');
     }
 
     public function models(Response $response)

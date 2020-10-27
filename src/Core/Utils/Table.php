@@ -42,19 +42,34 @@ class Table
 
         $table .= '<thead><tr>';
 
+        $row = 1;
+
         foreach ($this->fields as $key) {
-            $table .= '<th scope="col">';
+            $table .= '<th scope="'.($row ? 'row' : 'col').'">';
 
-            $table .= '<p>'.$key['name'].'</p>';
+            $row &= ~$row;
 
-            if($key['type'] == 'string') {
-                $table .= '<input type="text">';
-            }
+            $table .= '<label>'.$key['name'].'</label>';
 
             $table .= '</th>';
         }
 
         $table .= '</tr></thead>';
+
+        foreach($this->fields as $key) {
+            $table .= '<th scope="col">';
+
+            $table .= '<div class="form-group row">';
+            $table .= '<div class="col-sm-10">';
+
+            if($key['type'] == 'string') {
+                $table .= '<input type="text" class="form-control">';
+            }
+
+            $table .= '</div></div>';
+
+            $table .= '</th>';
+        }
 
         $table .= '<tbody>';
 

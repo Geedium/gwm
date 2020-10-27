@@ -12,9 +12,9 @@ namespace GWM\Core\Utils;
  */
 class Debug
 {
-    private static $trace = [];
+    private static array $trace = [];
 
-    public static $log = [];
+    public static array $log = [];
 
     static function Register() : void
     {

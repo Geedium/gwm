@@ -10,11 +10,18 @@ namespace GWM\Core\Utils;
  */
 class Form
 {
-    protected $fields = [];
+    protected array $fields = [];
 
     public function Hint($model)
     {
-        $reflect = new \ReflectionClass($model);
+        $reflect = null;
+
+        try {
+            $reflect = new \ReflectionClass($model);
+        } catch (\ReflectionException $e) {
+            Debug::$log[] = $e->getMessage();
+        }
+
         $props = $reflect->getProperties(\ReflectionProperty::IS_PUBLIC | \ReflectionProperty::IS_PROTECTED);
 
         foreach($props as $prop) $this->fields[] = [
@@ -30,6 +37,10 @@ class Form
 
     public function Build()
     {
+        if(sizeof($this->fields) < 0) {
+            return null;
+        }
+
         $form = '<form method="get" action="/">';
 
         foreach ($this->fields as $key => $value) {

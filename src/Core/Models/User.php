@@ -46,7 +46,7 @@ class User
      * @magic
      * @param $schema
      */
-    function __construct($schema)
+    function __construct(Schema $schema)
     {
         $this->created_at = (new \DateTime())->format("Y-m-d");
         $schema->Create(User::class, 'users');

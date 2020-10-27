@@ -5,6 +5,8 @@ if (php_sapi_name() !== 'cli') {
     exit;
 }
 
+require 'vendor/autoload.php';
+
 set_time_limit(0);
 $status = 0;
 $task = -1;
@@ -13,6 +15,21 @@ $n = sizeof($argv);
 
 if (PHP_OS_FAMILY == 'Windows') {
     echo chr(27).chr(91).'H'.chr(27).chr(91).'J';
+}
+
+function textout($message)
+{
+    $string = '';
+
+    $string .= "\033[1;40m";
+    $string .= $message;
+    $string .= "\033[m";
+
+    if (PHP_OS_FAMILY == 'Windows') {
+        $string .= "\r\n";
+    }
+
+    echo $string;
 }
 
 function out($message)
@@ -30,6 +47,16 @@ function out($message)
 
     echo $string;
 }
+
+textout('
+  _____ __          __ __  __ 
+ / ____|\ \        / /|  \/  |
+| |  __  \ \  /\  / / | \  / |
+| | |_ |  \ \/  \/ /  | |\/| |
+| |__| |   \  /\  /   | |  | |
+ \_____|    \/  \/    |_|  |_|
+
+');
 
 for ($i = 0; $i < $n; $i++) {
     $arg = strcmp($argv[$i], 'cron') == 0 ? $argv[$i] : false;

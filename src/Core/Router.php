@@ -99,7 +99,7 @@ class Router
         });
 
         $this->Match('/dashboard/build', function() {
-            die(new Distributor);
+            die(new Distributor('admin'));
         });
         
         $this->Match('/dashboard/articles', function() {

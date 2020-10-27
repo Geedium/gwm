@@ -15,7 +15,6 @@ class Bootstrap
     /**
      * Bootstrap constructor.
      * @magic
-     * @throws Basic
      */
     function __construct()
     {
@@ -28,7 +27,7 @@ class Bootstrap
         try {
             $this->test();
         } catch(Basic $e) {
-            
+
         }
     }
 

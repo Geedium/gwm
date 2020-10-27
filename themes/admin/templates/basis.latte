@@ -13,6 +13,8 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
+        <link rel="stylesheet" href="/css/gwm.min.css">
+
         <link rel="stylesheet" href="/vendor/css/fontawesome.min.css">
         <link rel="stylesheet" href="/vendor/css/Chart.min.css">
         <link rel="stylesheet" href="/css/dashboard.generated.css">
@@ -28,8 +30,10 @@
             document.getElementById("drop-click").addEventListener("click", function(e) {
                 if(document.getElementById("drop").className === 'fas fa-caret-right') {
                     document.getElementById("drop").className = 'fas fa-caret-down';
+                     document.getElementById("drop-click").parentElement.children[1].style = '';
                 } else {
                     document.getElementById("drop").className = 'fas fa-caret-right';
+                    document.getElementById("drop-click").parentElement.children[1].style = 'display: none;';
                 }
             })
         })
@@ -62,9 +66,15 @@
                                 <span>Dashboard</span>
                                 <span><i id="drop" class="fas fa-caret-right"></i></span>
                             </button>
-                            <div class="dropdown">
+                            <div class="dropdown" style="display:none;">
                                 <ul>
-                                    <li>...</li>
+                                    <li>
+                                        <div>
+                                            <button class="dropdown-item" onclick="window.location='/dashboard/analytics'">
+                                                <span>Sub-Element</span>
+                                            </button>
+                                        </div>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
