@@ -1,13 +1,22 @@
 {
     "name": "geedium/gwm",
-    "description": "None",
+    "description": "None.",
     "type": "project",
+    "authors": [
+        {
+            "name": "Gediminas",
+            "email": "geed0000czero@gmail.com"
+        }
+    ],
     "config": {
-
+        "platform": {
+            "php": "7.4"
+        }
     },
     "require": {
         "latte/latte": "^3.0@dev",
-        "vlucas/phpdotenv": "^5.2@dev"
+        "vlucas/phpdotenv": "^5.2@dev",
+        "corneltek/pux": "2.0.x-dev"
     },
     "autoload": {
         "psr-4": { 

@@ -1,0 +1,31 @@
+{layout 'basis.latte'}
+
+{block content}
+
+<section>
+    <div>
+        <h1>File Manager</h1>
+        <div class="container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th><input type="checkbox"></th>
+                        <th>Name</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {foreach $files as $file}
+                        <tr>
+                            <td><input type="checkbox"></td>
+                            <td>{$file}</td>
+                            <td></td>
+                        </tr>
+                    {/foreach}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+{/block}

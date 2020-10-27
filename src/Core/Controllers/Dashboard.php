@@ -5,6 +5,8 @@ namespace GWM\Core\Controllers;
 use GWM\Core\Exceptions\Basic;
 use GWM\Core\Request;
 use GWM\Core\Response;
+use GWM\Core\Router;
+use GWM\Core\Utils\Debug;
 
 class Dashboard
 {
@@ -20,6 +22,26 @@ class Dashboard
         $latte = new \Latte\Engine;
         $latte->setTempDirectory('tmp/latte');
         $latte->render('themes/admin/templates/index.latte');
+    }
+
+    public function files()
+    {
+        $iterator = new \FilesystemIterator(GWM['DIR_ROOT']);
+        $files = array();
+        foreach ($iterator as $info) {
+            $files[] = $info->getBasename();
+        }
+
+        $latte = new \Latte\Engine;
+        $latte->setTempDirectory('tmp/latte');
+        $latte->render('themes/admin/templates/files.latte',
+        [
+            'files' => $files
+        ]);
+
+        Router::Profiler();
+
+        exit;
     }
 
     public function models(Response $response)
@@ -111,16 +133,15 @@ class Dashboard
      */
     public function articles()
     {
-        if(\filter_has_var(INPUT_POST, 'title')
-        && \filter_has_var(INPUT_POST, 'content')
-        && !\filter_has_var(INPUT_POST, 'id'))
-        {
+        if (\filter_has_var(INPUT_POST, 'title')
+            && \filter_has_var(INPUT_POST, 'content')
+            && !\filter_has_var(INPUT_POST, 'id')) {
             try {
                 $title = filter_input(INPUT_POST, 'title', FILTER_SANITIZE_STRING);
                 $content = filter_input(INPUT_POST, 'content', FILTER_SANITIZE_STRING);
 
                 $schema = new \GWM\Core\Schema('test_app');
-                
+
                 $model = new \GWM\Core\Models\Article($schema);
                 $model->setTitle($title);
                 $model->setContent($content);
@@ -140,16 +161,14 @@ class Dashboard
             } catch (\Exception $e) {
                 \trigger_error($e->getMessage, E_USER_ERROR);
             }
-        }
-        else if(\filter_has_var(INPUT_POST, 'id'))
-        {
+        } else if (\filter_has_var(INPUT_POST, 'id')) {
             try {
                 $title = filter_input(INPUT_POST, 'title', FILTER_SANITIZE_STRING);
                 $content = filter_input(INPUT_POST, 'content', FILTER_SANITIZE_STRING);
                 $id = filter_input(INPUT_POST, 'id', FILTER_SANITIZE_STRING);
 
                 $schema = new \GWM\Core\Schema('test_app');
-                
+
                 $model = new \GWM\Core\Models\Article($schema);
                 $model->setTitle($title);
                 $model->setContent($content);
@@ -161,10 +180,9 @@ class Dashboard
             } catch (\Exception $e) {
                 \trigger_error($e->getMessage, E_USER_ERROR);
             }
-        }
-        else {
+        } else {
             $schema = new \GWM\Core\Schema('test_app');
-                
+
             $model = new \GWM\Core\Models\Article($schema);
             $articles = $model->Select($schema);
 
@@ -176,5 +194,8 @@ class Dashboard
             $latte->setTempDirectory('tmp/latte');
             $latte->render('themes/admin/templates/articles.latte', $params);
         }
+
+        Router::Profiler();
+        exit;
     }
 }

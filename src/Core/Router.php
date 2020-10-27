@@ -4,6 +4,9 @@ namespace GWM\Core;
 
 use GWM\Core\Utils\Debug;
 
+use Pux\Mux;
+use Pux\RouteExecutor;
+
 /**
  * Undocumented class
  */
@@ -11,6 +14,7 @@ class Router
 {
     protected static array $routes = [];
     private static array $req = [];
+    private $url;
 
     /**
      * @magic
@@ -22,15 +26,12 @@ class Router
             'method' => $_SERVER['REQUEST_METHOD']
         ];
 
-        $url = filter_var(rtrim($_SERVER['REQUEST_URI'], '/'), FILTER_SANITIZE_URL);
+        $this->url = filter_var(rtrim($_SERVER['REQUEST_URI'], '/'), FILTER_SANITIZE_URL);
 
         //$json = \file_get_contents('routes.json');
         //$data = \json_decode($json);
 
-         // $this->routes = $data;
-
-        $URI = explode('/', $url);
-        $URI[0] = $_SERVER['REQUEST_METHOD'];
+        // $this->routes = $data;
     }
 
     /**
@@ -55,16 +56,20 @@ class Router
 
     function Resolve(Response $response)
     {
+        $mux = new Mux;
+
         $this->Match('/', function() {
             $home = new \GWM\Core\Controllers\Home();
             $home->index();
             $this->Profiler();
+            exit;
         });
 
         $this->Match('/store', function() {
             $home = new \GWM\Commerce\Controllers\Store();
             $home->index();
             $this->Profiler();
+            exit;
         });
         
         $this->Match('/dashboard', function() {
@@ -72,18 +77,36 @@ class Router
             $dash = new Controllers\Dashboard();
             $dash->index($request);
             $this->Profiler();
+            exit;
         });
+
+        $mux->get('/dashboard/files',
+            [
+                Controllers\Dashboard::class,
+                'files'
+            ]);
+
+        $mux->get('/dashboard/articles',
+        [
+            Controllers\Dashboard::class,
+            'articles'
+        ]);
+
+        $route = $mux->dispatch($this->url);
+        $result = RouteExecutor::execute($route);
         
         $this->Match('/auth', function() {
             $auth = new Controllers\Auth();
             $auth->index();
             $this->Profiler();
+            exit;
         });
 
         $this->Match('/out', function() {
             $auth = new Controllers\Auth();
             $auth->logout();
             $this->Profiler();
+            exit;
         });
         
         $this->Match('/api/articles', function() {
@@ -102,20 +125,15 @@ class Router
             die(new Distributor('admin'));
         });
         
-        $this->Match('/dashboard/articles', function() {
-            $dash = new Controllers\Dashboard();
-            $dash->articles();
-            $this->Profiler();
-        });
-        
         $this->Match('/dashboard/media', function() {
             $dash = new Controllers\Dashboard();
             $dash->media();
             $this->Profiler();
+            exit;
         });
     }
 
-    private function Profiler()
+    public static function Profiler()
     {
         $time = round(microtime(true) - GWM['START_TIME'], 2);
 
@@ -138,10 +156,7 @@ class Router
             <div style="color: white; float: right;">Time pased: $time ms.</div>
         </div>
 
-EOL;
-
-        exit;
-    }
+EOL;}
 
     function Match($url, $function)
     {
