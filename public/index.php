@@ -5,6 +5,8 @@ use GWM\Core\Router;
 !defined('GWM') ? define('GWM',
 [
     'DIR_ROOT' => dirname(__DIR__),
+    'DIR_PUBLIC' => dirname(__DIR__).'/public',
+    'DIR_TMP' => dirname(__DIR__).'/tmp',
     'START_TIME' => microtime(true),
     'ERROR_LEVEL' => error_reporting(E_ALL)
 ]) : exit;

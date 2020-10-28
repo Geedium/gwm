@@ -2,6 +2,7 @@
 
 namespace GWM\Core;
 
+use GWM\Commerce\Controllers\Paysera;
 use GWM\Core\Utils\Debug;
 
 use Pux\Mux;
@@ -85,6 +86,12 @@ class Router
                 Controllers\Dashboard::class,
                 'files'
             ]);
+
+        $mux->get('/pay',
+        [
+            Paysera::class,
+            'pay'
+        ]);
 
         $mux->get('/dashboard/articles',
         [

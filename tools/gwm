@@ -5,6 +5,10 @@ if (php_sapi_name() !== 'cli') {
     exit;
 }
 
+if(basename(getcwd()) == 'tools') {
+    chdir('../');
+}
+
 require 'vendor/autoload.php';
 
 set_time_limit(0);
@@ -79,10 +83,6 @@ for ($i = 0; $i < $n; $i++) {
         case 'dev':
             out("Starting PHP development server at 127.0.0.1:8080");
             \shell_exec("start http://127.0.0.1:8080/ 2>&1");
-
-            if(basename(getcwd()) == 'tools') {
-                chdir('../');
-            }
             
             \shell_exec("php -S 127.0.0.1:8080 -t public 2>&1");
             exit($status);

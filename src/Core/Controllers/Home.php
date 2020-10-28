@@ -2,13 +2,37 @@
 
 namespace GWM\Core\Controllers;
 
+use GWM\Core\Excel;
 use GWM\Core\Utils\Form;
 use GWM\Core\Utils\Table;
 
 class Home
 {
+    private function _substr( $str, $start, $length = null ) {
+        return ( ini_get( 'mbstring.func_overload' ) & 2 ) ? mb_substr( $str, $start, ( $length === null ) ? mb_strlen( $str, '8bit' ) : $length, '8bit' ) : substr( $str, $start, ( $length === null ) ? strlen( $str ) : $length );
+    }
+
     public function index()
     {
+        // XLS START
+
+        $file = GWM['DIR_ROOT'].'\\Phonebook.xlsx';
+        echo 'Exists: '.file_exists($file).'<br/>';
+        echo 'Read: '.is_readable($file).'<br/>';
+        echo 'Write: '.is_writable($file).'<br/>';
+
+        $excel = new Excel('Phonebook');
+
+        if($excel->load()) {
+            echo '<pre>';
+            print_r($excel->data);
+            echo '</pre>';
+        } else {
+            print_r(error_get_last());
+        }
+
+        // XLS END
+
         $schema = new \GWM\Core\Schema('test_app');
 
         $model = new \GWM\Core\Models\Article($schema);

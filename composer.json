@@ -16,13 +16,14 @@
     "require": {
         "latte/latte": "^3.0@dev",
         "vlucas/phpdotenv": "^5.2@dev",
-        "corneltek/pux": "2.0.x-dev"
+        "corneltek/pux": "2.0.x-dev",
+        "evp/paysera-wallet-php-client": "dev-master"
     },
     "autoload": {
         "psr-4": { 
             "GWM\\": "src/"
         },
-        "classmap": ["lib"]
+        "classmap": ["lib", "src"]
     },
     "minimum-stability": "dev",
     "require-dev": {
