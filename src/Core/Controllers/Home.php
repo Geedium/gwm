@@ -14,6 +14,10 @@ class Home
 
     public function index()
     {
+        if(session_status() != PHP_SESSION_ACTIVE) {
+            session_start();
+        }
+
         // XLS START
 
         $file = GWM['DIR_ROOT'].'\\Phonebook.xlsx';
@@ -54,6 +58,8 @@ class Home
         $table = new Table;
         $table->Hint($model);
         $table->All($articles);
+
+        $table->Handle($schema);
 
         $user = 'undefined';
         $pass = 'undefined';

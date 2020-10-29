@@ -81,6 +81,43 @@ class Router
             exit;
         });
 
+        $this->Match('/auth', function() {
+            $auth = new Controllers\Auth();
+            $auth->index();
+            $this->Profiler();
+            exit;
+        });
+
+        $this->Match('/out', function() {
+            $auth = new Controllers\Auth();
+            $auth->logout();
+            $this->Profiler();
+            exit;
+        });
+
+        $this->Match('/api/articles', function() {
+            $dash = new Controllers\Dashboard();
+            $dash->articles();
+            exit;
+        });
+
+        $this->Match('/dashboard/models', function() use ($response) {
+            $dash = new Controllers\Dashboard();
+            $dash->models($response);
+            exit;
+        });
+
+        $this->Match('/dashboard/build', function() {
+            die(new Distributor('admin'));
+        });
+
+        $this->Match('/dashboard/media', function() {
+            $dash = new Controllers\Dashboard();
+            $dash->media();
+            $this->Profiler();
+            exit;
+        });
+
         $mux->get('/dashboard/files',
             [
                 Controllers\Dashboard::class,
@@ -99,45 +136,9 @@ class Router
             'articles'
         ]);
 
+
         $route = $mux->dispatch($this->url);
         $result = RouteExecutor::execute($route);
-        
-        $this->Match('/auth', function() {
-            $auth = new Controllers\Auth();
-            $auth->index();
-            $this->Profiler();
-            exit;
-        });
-
-        $this->Match('/out', function() {
-            $auth = new Controllers\Auth();
-            $auth->logout();
-            $this->Profiler();
-            exit;
-        });
-        
-        $this->Match('/api/articles', function() {
-            $dash = new Controllers\Dashboard();
-            $dash->articles();
-            exit;
-        });
-
-        $this->Match('/dashboard/models', function() use ($response) {
-            $dash = new Controllers\Dashboard();
-            $dash->models($response);
-            exit;
-        });
-
-        $this->Match('/dashboard/build', function() {
-            die(new Distributor('admin'));
-        });
-        
-        $this->Match('/dashboard/media', function() {
-            $dash = new Controllers\Dashboard();
-            $dash->media();
-            $this->Profiler();
-            exit;
-        });
     }
 
     public static function Profiler()
@@ -148,7 +149,7 @@ class Router
 
         echo '<div style="position: fixed; z-index: 99; bottom: 45px; left: 60vw; right:0 ; height: 45px; background: #cacaca;">';
         foreach($exceptions as $exception) {
-            echo $exception . PHP_EOL;
+            echo '<p style="margin:0;">'.$exception .'</p>';
         }
         echo '</div>';
 

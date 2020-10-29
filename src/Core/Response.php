@@ -11,6 +11,8 @@ class Response
     private $headers;
     private $status;
 
+    const HEADER_FILE = 'Content-Disposition: attachment; filename=';
+
     /**
      * @magic
      */

@@ -1,6 +1,7 @@
 <?php
 
 use GWM\Core\Router;
+use GWM\Core\Utils\Debug;
 
 !defined('GWM') ? define('GWM',
 [
@@ -16,6 +17,22 @@ if(version_compare(PHP_VERSION, '7.4.0') < 0) exit;
 chdir(GWM['DIR_ROOT']);
 
 require_once 'vendor/index.php';
+
+function exception_handler($exception) {
+    die("Exception Caught: ". $exception->getMessage() ."\n");
+}
+
+function error_handler($errno, $errstr, $errfile, $errline)
+{
+    $errstr = htmlspecialchars($errstr);
+
+    Debug::$log[] = "Error[$errno] - $errstr, Line - $errline, File - $errfile";
+
+    return true;
+}
+
+set_error_handler('error_handler');
+set_exception_handler('exception_handler');
 
 chdir(GWM['DIR_ROOT']);
 

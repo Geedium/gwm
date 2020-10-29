@@ -62,15 +62,13 @@ textout('
 
 ');
 
-for ($i = 0; $i < $n; $i++) {
-    $arg = strcmp($argv[$i], 'cron') == 0 ? $argv[$i] : false;
-    $arg = strcmp($argv[$i], 'dev') == 0 ? $argv[$i] : false;
+for ($i = 1; $i <= $n; $i++) {
 
-    if (!$arg) {
+    if (!$argv[$i]) {
         continue;
     }
 
-    switch ($arg) {
+    switch ($argv[$i]) {
         case 'cron':
             $task = 0;
 
@@ -84,8 +82,13 @@ for ($i = 0; $i < $n; $i++) {
             out("Starting PHP development server at 127.0.0.1:8080");
             \shell_exec("start http://127.0.0.1:8080/ 2>&1");
             
-            \shell_exec("php -S 127.0.0.1:8080 -t public 2>&1");
-            exit($status);
+            $php = popen("php -S 127.0.0.1:8080 -t public 2>&1", 'r');
+
+            while(!feof($php) == true) {
+                out(fread($php, 4096));
+                flush();
+            }
+
         break;
     }
 }

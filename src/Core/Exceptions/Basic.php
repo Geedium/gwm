@@ -11,7 +11,7 @@ namespace GWM\Core\Exceptions
     {
         public function __construct($message = "", $fatal = false)
         {
-            if($fatal) {
+            if ($fatal) {
                 echo <<<ERROR
                 
 <style>
@@ -27,7 +27,7 @@ namespace GWM\Core\Exceptions
 
 ERROR;
 
-                die("[$this->line, $this->file]: " . $message. '</div>');
+                die("[$this->line, $this->file]: " . $message . '</div>');
             }
 
             Debug::$log[] = "[$this->line, $this->file]: " . $message;
