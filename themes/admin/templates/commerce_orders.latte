@@ -1,0 +1,49 @@
+{layout 'basis.latte'}
+
+{block content}
+<div class="wcm-row-p">
+    <div class="wcm-col-12">
+        <div class="panel" style="padding: .5rem;">
+            <div class="tabs">
+
+            </div>
+
+            <div class="panel" style="width: 300px;">
+                <label>Previewing</label>
+                <select>
+                    <option default>All Shops</option>
+                    <option>Test Shop</option>
+                </select>
+            </div>
+
+            <table class="wcms-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Customer</th>
+                        <th>Total</th>
+                        <th>Payment</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                        <th>Shop</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr n:foreach="$orders as $order">
+                        <td>{$order->txn_id}</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{/block}

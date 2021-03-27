@@ -1,0 +1,11 @@
+{
+    "assets": {
+        "styles": "sass",
+        "templates": "latte",
+        "scripts": "",
+        "vendor": {
+            "stripe-js-v3": "https://js.stripe.com/v3/"
+        }
+    },
+    "scope": "core"
+}

@@ -1,0 +1,26 @@
+{layout 'basis.latte'}
+
+{block content}
+<div class="wcm-row-p">
+  <div class="wcm-col-12">
+    <div class="panel">
+      <table class="wcms-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Message</th>
+          </tr>
+        </thead>
+        <tbody>
+        {foreach $logs as $log}
+          <tr>
+            <td>{$log['time']}</td>
+            <td>{$log['message']}</td>
+          </tr>
+        {/foreach}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{/block}

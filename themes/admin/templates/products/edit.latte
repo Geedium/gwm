@@ -1,0 +1,39 @@
+{layout '../basis.latte'}
+
+{block content}
+<div class="wcm-row-p">
+    <div class="wcm-col-12">
+        <div class="panel">
+            <form style="border: 0;" id="form1" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="form" value="{$product->id}"/>
+
+                <div class="form-control">
+                    <label class="block">Title</label>
+                    <input type="text" name="title" value="{$product->title}"/>
+                </div>
+
+                <div class="form-control" style="border: 1px solid gray;">
+                    <img style="width: 100%; height: 256px; max-height: 256px; object-fit: contain;" alt="..." src="{$product->image}"/>
+                    <input style="display: block;" name="imageUpload" type="file" id="imageUpload"/>
+                </div>
+
+                <div class="form-control">
+                    <label class="block">Description</label>
+                    <textarea cols="48" name="description" rows="6">{$product->description}</textarea>
+                </div>
+
+                <div class="form-control">
+                    <label>Manufacturer</label>
+                    <select name="manufacturer" id="manufacturers">
+                      <option value="{$product->manufacturer->id}">{$product->manufacturer}</option>
+                    </select>
+                </div>
+            </form>
+
+            <button class="btn block" type="submit" form="form1">
+                Submit
+            </button>
+        </div>
+    </div>
+</div>
+{/block}

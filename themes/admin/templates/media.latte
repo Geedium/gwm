@@ -1,0 +1,143 @@
+{layout 'basis.latte'}
+
+{block styles}
+{include parent}
+<style>
+.dragover {
+    border: 1px solid #ddd !important;
+    cursor: copy !important;
+}
+.prog {
+    display: flex;
+    background: #f7f7f7;
+    border-radius: 4px;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+    height: 35px;
+}
+.progb2 {
+    display: block;
+    background: #00bf27;
+    color: #484848;
+    border-radius: 4px;
+    height: 25px;
+}
+.prog-bar {
+    position: absolute;
+    background: blue;
+    z-index: 1;
+}
+</style>
+{/block}
+
+{block scripts}
+{include parent}
+
+<script>
+window.onload = function() {
+    var dropzone = document.getElementById('dropzone');
+    var inputFiles = document.getElementById('fileToUpload');
+    var form = document.getElementById('upload_form');
+
+    ["dragleave", "dragend"].forEach(type => {
+        dropzone.addEventListener(type, e => {
+            dropzone.classList.remove('dragover');
+        });
+    });
+
+    dropzone.addEventListener("dragover", e => {
+        e.preventDefault();
+
+        dropzone.classList.add('dragover');
+    });
+
+    dropzone.addEventListener("drop", e => {
+        e.preventDefault();
+
+        if(e.dataTransfer.files.length) {
+            inputFiles.files = e.dataTransfer.files;
+            form.submit();
+        }
+    });
+};
+</script>
+{/block}
+
+{block content}
+<div class="wcm-row-p">
+    <div class="wcm-col-12">
+        <div class="panel">
+            <form style="display: block;" method="post" id="upload_form" enctype="multipart/form-data">
+                <input type="hidden" name="upload_form" value="1"/>
+                <input id="cb" style="display: none !important;" type="text">
+
+                <div style="
+                    border: 2px dashed #ddd;
+                    margin: 9px;
+                    padding-top: 60px;
+                    padding-bottom: 60px;
+                    pointer-events: initial;
+                    line-height: 36px;
+                    cursor: copy;
+                    height: 156px;
+                " id="dropzone" class="drop">
+                    <span class="center block">Drag & Drop</span>
+                    <input style="visibility: hidden;" type="file" name="fileToUpload" id="fileToUpload">
+                </div>
+            </form>
+
+            <div class="panel">
+                <div class="prog prog-bar" style="width: {$perc}%;"></div>
+
+                <div class="prog">
+                    {$space|bytes} / {10737418240|bytes} of storage space
+                </div>
+            </div>
+
+            <script>
+            function copy(txt){
+                var cb = document.getElementById("cb");
+                cb.value = txt;
+                cb.style.display='block';
+                cb.select();
+                document.execCommand('copy');
+                cb.style.display='none';
+            }
+            </script>
+
+            {if count($uploads) > 0}
+                <table class="wcms-table" style="margin-top: 9px;" n:if="count($uploads) > 0">
+                    <thead>
+                        <tr>
+                            <th style="width: 20px;"><input type="checkbox"/></th>
+                            <th style="text-align:center; width: 60px;">{trans('Type')}</th>
+                            <th style="text-align:center; width: 60px;">{trans('Image')}</th>
+                            <th style="text-align:left;">{trans('File')}</th>
+                            <th style="text-align:right;">{trans('Actions')}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr n:foreach="$uploads as $upload">
+                            <td style="width: 20px;"><input type="checkbox"/></td>
+                            <td style="text-align:center; width: 60px;"><i style="font-size: 24px;" class="fa fa-file"></i></td>
+                            <td style="text-align:center; width: 60px;"><img alt="..." style="width: 50px; object-fit: contain; height: 48px;" src="/dist/{$user|noescape}/{$upload['name']|escapeUrl|stripHtml|noescape}/{$upload['ext']|noescape}"/></td>
+                            <td style="text-align:left;">{$upload['name']}</td>
+                            <td style="text-align:right;">
+                                <button class="btn" onClick="window.location='/dist/{$user|noescape}/{$upload['name']|escapeUrl|stripHtml|noescape}/{$upload['ext']|noescape}';"><i class="fa fa-download"></i>{trans('Download')}</button>
+                                <button class="btn" onClick="copy('https://www.geedium.com/dist/{$user|noescape}/{$upload['name']|escapeUrl|stripHtml|noescape}/{$upload['ext']|noescape}')"><i class="fa fa-clipboard"></i>&nbsp;{trans('Copy')}</button>
+                                <button class="btn" style="background: #d30000;"><i class="fa fa-trash-alt"></i>{trans('Delete')}</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            {else}
+                <div class="panel" style="background: #f0f734 !important;">
+                    No uploads.
+                </div>
+            {/if}
+
+        </div>
+    </div>
+</div>
+{/block}

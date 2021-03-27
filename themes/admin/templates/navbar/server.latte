@@ -1,0 +1,56 @@
+{layout '../basis.latte'}
+
+{block content}
+<div class="wcm-row-p">
+    <div class="wcm-col-12">
+        <div class="panel">
+            <h2>Server</h2>
+            <hr>
+            <a href="?reset=1" class="btn"><i class="fa fa-broom"></i>Clear Cache</a>
+            <br/><br/>
+
+            <b>Disk Space</b>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Size</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td>Images</td>
+                        <td>{$image_size} MB</td>
+                    </tr>
+                    <tr>
+                        <td>GWM</td>
+                        <td>{$wcms_size} MB</td>
+                    </tr>
+                    <tr>
+                        <td>Temproary</td>
+                        <td>{$tmp_size} MB</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <b>Extensions</b>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {foreach $conf as $cfg}
+                        <tr>
+                            <td>{$cfg}</td>
+                        </tr>
+                    {/foreach}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{/block}

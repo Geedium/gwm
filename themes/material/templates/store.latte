@@ -1,0 +1,58 @@
+{extends 'basis.latte'}
+
+{block styles}
+    <link rel="stylesheet" href="/css/stripe.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA==" crossorigin="anonymous" />
+
+    <style>
+    .navbar-dark .navbar-nav .nav-link {
+        color: rgba(255, 255, 255, 0.95);
+    }
+    </style>
+{/block}
+
+{block title}GWM Store{/block}
+
+{block scripts}
+{/block}
+
+{define featured, $id, $name, $desc}
+    <div class="card flex-fill m-3" style="width: 350px;">
+        <div class="card-header">{$name}</div>
+        <div class="card-body">
+            <p style="text-align: justify;">
+                {$desc|noescape}
+            </p>
+        </div>
+        <div class="card-footer">
+            <div class="btn-group" role="group" aria-label="Product Options">
+                <a type="button" href="/store/add/{$id}" class="btn btn-primary">Add to Cart</a>
+                <button type="button" class="btn btn-primary">Preview</button>
+            </div>
+        </div>
+    </div>
+{/define}
+
+{block nav-right}
+<li class="nav-item">
+    <a class="nav-link" href="#">
+        <i title="Cart" class="fa fa-shopping-cart"></i>
+        <span style="position: relative; font-size: 0.65em; bottom: 10px; left: 4px;" class="badge small badge-pill badge-primary">{$cart}</span></a>
+</li>
+{/block}
+
+{block container-override}
+<div class="container-fluid">
+    <h3 class="d-block text-center">Products</h3>
+
+   <div class="d-flex align-content-start flex-wrap">
+        {foreach $products as $product}
+            {include featured, $product->id, $product->title, $product->description}
+        {/foreach}
+    </div>
+</div>
+{/block}
+
+{block afterscripts}
+    <script src="/js/store.js"></script>
+{/block}

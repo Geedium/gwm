@@ -1,0 +1,199 @@
+{layout 'basis.latte'}
+
+{block scripts}
+<script>
+
+window.onload = function() {
+    const list = document.querySelectorAll('a[id^="tab_"]');
+    const tabs = document.querySelectorAll('div[id^="tab-"]');
+
+   function activeTab(tab) {
+       tabs.forEach(function(currentValue, currentIndex, listObj) {
+           currentValue.style.display = "none";
+
+           var id = currentValue.id;
+           var name = id.split('tab-')[1];
+
+           if(name == tab) {
+                currentValue.style.display = "block";
+           }
+       });
+   }
+
+    list.forEach(function(element) {
+        element.addEventListener("click", function(e) {
+            var id = this.id;
+            var name = id.split('tab_')[1];
+            activeTab(name);
+        });
+    })
+
+    activeTab('general');
+}
+
+</script>
+{/block}
+
+{block styles}
+<style>
+
+.tabs {
+    padding: 6px;
+    margin: 0;
+}
+
+.tabs li {
+    padding: 6px;
+    margin: 9px;
+}
+
+.tabs li a {
+    background: #f7f7f7;
+    padding: 6px;
+    border: 1px solid #f4f4f4;
+    border-radius: 3px;
+    color: black;
+}
+
+.tabs li a:hover {
+    color: #7597fe;
+}
+
+</style>
+{/block}
+
+{block content}
+<div class="wcm-row-p">
+    <div class="wcm-col-12">
+        <div class="panel">
+            <h1>Settings</h1>
+
+            <div class="wcm-row-p">
+                <div class="wcm-col-3-i">
+                    <div class="panel">
+                        <ul class="tabs">
+                            <li><a id="tab_general" style="display:block; text-align:center;" href="#">General</a></li>
+                            <li><a id="tab_metadata" style="display:block; text-align:center;" href="#">Metadata</a></li>
+                            <li><a id="tab_security" style="display:block; text-align:center;" href="#"><i class="fa fa-lock"></i> Security</a></li>
+                            <li><a id="tab_performance" style="display:block; text-align:center;" href="#">Performance</a></li>
+                            <li>
+                              <a id="tab_migrate" style="display:block; text-align:center;" href="#"><i class="fa fa-location-arrow"></i> Migrate
+                              </a>
+                            </li>
+                            <li>
+                              <a id="tab_advanced" style="display:block; text-align:center;" href="#"><i class="fa fa-wrench"></i> Advanced
+                              </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="wcm-col-9-i">
+                    <div id="tab-general" class="panel">
+                        <h2>General</h2>
+
+                        <div class="panel wcms-panel">
+                         <div class="wcms-toolbar">
+                          <h3>Rest API</h3>
+                          <div class="switch">
+                            <input type="checkbox">
+                            <span class="slider round"></span>
+                          </div>
+                         </div>
+
+                         <p style="margin-top: 0; padding: 10px;">
+                           Your dashboard will no longer be accessible from a browser and site only responds with json. This way site can utilize latest javascript technologies allowing you to modify dashboard to suit responsive needs. This is dangerous action!
+                         </p>
+                       </div>
+                    </div>
+
+                    <div id="tab-metadata" style="display: none;" class="panel">
+                        <h2>SEO</h2>
+
+                        <div class="form-control">
+                            <label>Keywords</label>
+                            <textarea style="width: 100%;"></textarea>
+                        </div>
+
+                        <button class="btn">Save</button>
+                    </div>
+
+                    <div id="tab-security" style="display: none;" class="panel">
+                        <h2 class="panel" style="margin-bottom: 9px;"><i class="fa fa-lock"></i> Security</h2>
+
+                       <div class="panel wcms-panel">
+                         <div class="wcms-toolbar">
+                          <h3>Enforce HTTP Authentication Admin Access</h3>
+                          <div class="switch">
+                            <input type="checkbox">
+                            <span class="slider round"></span>
+                          </div>
+                         </div>
+
+                         <p style="margin-top: 0; padding: 10px;">
+                           It is possible to use the header() function to send an
+                           "Authentication Required" message to the client browser
+                           causing it to pop up a Username/Password input window. Once
+                           the user has filled in a username and a password, the URL
+                           containing the PHP script will be called again with the
+                           predefined variables PHP_AUTH_USER, PHP_AUTH_PW, and
+                           AUTH_TYPE set to the user name, password and authentication
+                           type respectively. These predefined variables are found in
+                           the $_SERVER array. Both "Basic" and "Digest" (since PHP
+                           5.1.0) authentication methods are supported. See the
+                           header() function for more information.
+                         </p>
+                       </div>
+
+                    </div>
+
+                    <div id="tab-performance" style="display: none;" class="panel">
+                        <h2>Performance</h2>
+
+                        <div class="panel redirect-fail">
+                            Not implemented yet.
+                        </div>
+                    </div>
+
+                    <div id="tab-migrate" style="display: none;">
+                      <div class="panel">
+                         Migrate From
+                         <ul>
+                            <li><a href="#">...</a></li>
+                         </ul>
+                      </div>
+
+                      <div class="panel">
+                       <div class="panel redirect-fail">
+                          Be advised that GWM changes a lot when a new commit is out.
+                       </div>
+
+                        <a href="#">Extract Current Schema</a>
+                      </div>
+                    </div>
+
+                    <div id="tab-advanced" style="display: none;" class="panel">
+                        <h2>Advanced</h2>
+
+                        <button class=""><i class="fa fa-plus"></i></button>
+
+                        <table class="wcms-table" n:ifset="$settings">
+                            <tbody>
+                                <tr>
+                                    <td style="width: 40%;"></td>
+                                    <td style="width: 55%;"></td>
+                                    <td><button class=""><i class="fa fa-minus"></i></button></td>
+                                </tr>
+                            </tbody>       
+                        </table>
+
+                        <div n:if="!$settings" class="panel redirect-fail">
+                            Dictionary is empty.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}

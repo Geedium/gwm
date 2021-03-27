@@ -1,0 +1,90 @@
+{layout 'basis.latte'}
+
+{block content}
+<div class="wcm-row-p">
+    <div class="wcm-col-7">
+        <div class="panel wcms-panel">
+            <div class="wcms-toolbar" style="margin-bottom: 3px;">
+                <div class="wcms-title">
+                    <i class="fa fa-feather"></i>
+                    Features
+                </div>
+            </div>
+
+            <div style="padding: 5px;">
+                <table class="wcms-table">
+                    <thead>
+                        <tr>
+                          <th>Feature</th>
+                          <th>Description</th>
+                          <th style="text-align: center !important;">Version</th>
+                          <th style="text-align: center !important;">Routes</th>
+                          <th style="text-align: center !important;">Enabled</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                          <td>Forum</td>
+                          <td>No description.</td>
+                          <td style="text-align: center !important;">1.0.0</td>
+                          <td style="text-align: center !important;"><button class="btn"><i class="fa fa-cog"></i></button></td>
+                          <td style="text-align: center !important;">
+                            <div class="switch">
+                              <input type="checkbox">
+                              <span class="slider round"></span>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>Commerce</td>
+                          <td>No description.</td>
+                          <td style="text-align: center !important;">1.0.0</td>
+                          <td style="text-align: center !important;"><button class="btn"><i class="fa fa-cog"></i></button></td>
+                          <td style="text-align: center !important;">
+                            <div class="switch">
+                              <input type="checkbox">
+                              <span class="slider round"></span>
+                            </div>
+                          </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="wcm-col-5">
+      <div class="panel wcms-panel">
+            <div class="wcms-toolbar" style="margin-bottom: 3px;">
+                <div style="display: block;" class="center wcms-title">
+                   <i class="fa fa-route"></i> Routes
+                </div>
+            </div>
+
+            <div style="padding: 5px;">
+              {foreach $routes as $method => $route}
+                  <div class="panel">HTTP Method: {$method}</div>
+                  <table class="wcms-table">
+                    <thead>
+                      <tr>
+                        <th style="width:15px;">Slug</th>
+                        <th style="width:30px;">Controller</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {foreach $route as $slug => $value}
+                      <tr>
+                        <td style="width: 15px;">{$slug}</td>
+                        <td title="{$value[0]}" style="width:30px;">{$value[0]|truncate:15}</td>
+                        <td>{$value[1]}</td>
+                      </tr>
+                      {/foreach}
+                    </tbody>
+                  </table>
+              {/foreach}
+            </div>
+      </div>
+    </div>
+</div>
+{/block}

@@ -1,0 +1,12 @@
+{
+    "vendor": {
+        "vue.js": {
+            "version": "2.6.12",
+            "filename": "vue",
+            "files": {
+                "js/vue.js": "head",
+                "js/vue.min.js": "head"
+            }
+        }
+    }
+}

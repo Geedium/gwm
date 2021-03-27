@@ -1,0 +1,12 @@
+{
+  "GET": {
+    "/forum": ["Home", "index"],
+    "/dashboard/forum/discussions": ["Dashboard", "Discussions"],
+    "/dashboard/forum/topics": ["Dashboard", "Topics"],
+    "/dashboard/forum/categories": ["Dashboard", "Categories"]
+  },
+  "POST": {
+    "/dashboard/forum/discussions": ["Dashboard", "Discussions"],
+    "/dashboard/forum/categories": ["Dashboard", "Categories"]
+  }
+}

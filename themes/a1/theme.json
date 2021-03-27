@@ -1,0 +1,6 @@
+{
+  "scopes": [
+    "Forum"
+  ],
+  "engine": "twig"
+}

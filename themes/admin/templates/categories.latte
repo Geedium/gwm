@@ -1,0 +1,47 @@
+{layout 'basis.latte'}
+
+{block content}
+<div class="wcm-row-p">
+    <div class="wcm-col-12">
+        <div class="panel wcms-panel">
+            <div class="wcms-toolbar">
+                <div class="wcms-title">Categories</div>
+                <label class="label">{$categories|length}</label>
+
+                <button onclick="window.location = '/dashboard/store/products/create';" class="tooltip" style="color: green;">
+                    <i class="fa fa-plus"></i>
+                    <span class="tooltiptext">Create</span>
+                </button>
+                <button class="tooltip" style="color: red;">
+                    <i class="fa fa-trash"></i>
+                    <span class="tooltiptext">Delete</span>
+                </button>
+            </div>
+
+            <table class="wcms-table">
+                <tr>
+                    <th style="width: 10%;">ID</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                </tr>
+
+                <tr>
+                    <th style="width: 10%;"><input type="checkbox"/><input placeholder="Search ID" type="text"/></th>
+                    <th><input placeholder="Search name" type="text"/></th>
+                    <th><input placeholder="Search description" type="text"/></th>
+                    <th><select><option default>Enabled</option></select></th>
+                </tr>
+
+                <tr n:inner-foreach="$categories as $category">
+                    <td style="width: 10%;"><input type="checkbox"/>{$category->id}</td>
+                    <td>{$category->name}</td>
+                    <td>Description is not implemented yet.</td>
+                    <td>Unknown</td>
+                </tr>
+            </table>
+
+        </div>
+    </div>
+</div>
+{/block}

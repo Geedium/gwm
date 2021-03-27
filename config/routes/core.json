@@ -1,0 +1,18 @@
+{
+  "GET": {
+    "": ["GWM\\Core\\Controllers\\Home", "index"],
+    "/out": ["GWM\\Core\\Controllers\\Auth", "logout"],
+    "/projects": ["GWM\\Core\\Controllers\\Home", "Projects"],
+    "/dashboard": ["GWM\\Core\\Controllers\\Dashboard", "Entry"],
+    "/dashboard/analytics": ["GWM\\Core\\Controllers\\Dashboard", "Analytics"],
+    "/dashboard/users": ["GWM\\Core\\Controllers\\Dashboard", "Users"],
+    "/dashboard/models": ["GWM\\Core\\Controllers\\Dashboard", "Models"],
+    "/dashboard/logs": ["GWM\\Core\\Controllers\\Dashboard", "Logs"],
+    "/dashboard/pages": ["GWM\\Core\\Controllers\\Dashboard", "Pages"],
+    "/dashboard/store/products/create": ["GWM\\Features\\Commerce\\Controllers\\Dashboard", "Create"]
+  },
+  "POST": {
+    "": ["GWM\\Core\\Controllers\\Home", "index"],
+    "/dashboard/store/products/create": ["GWM\\Features\\Commerce\\Controllers\\Dashboard", "Create"]
+  }
+}

@@ -1,0 +1,118 @@
+{layout 'basis.latte'}
+
+{block content}
+<div class="wcm-row-p">
+    <div class="wcm-col-6">
+        <div class="panel">
+            <div class="bold center">User Graph</div>
+
+            <canvas id="myChart" width="21" height="6">
+                Your browser does not support the canvas element.
+            </canvas>
+        </div>
+    </div>
+    <div class="wcm-col-6">
+        <div class="panel">
+            <div class="bold center">Sales Graph</div>
+            <i class="block center">Not implemented yet.</i>
+
+            <canvas id="sales" width="21" height="6">
+                Your browser does not support the canvas element.
+            </canvas>
+        </div>
+    </div>
+</div>
+<div class="wcm-row-p">
+    <div class="wcm-col-6">
+        <div class="panel">
+            <div class="bold center"><i class="fa fa-calendar-alt mr-3"/>Recent Activity</div>
+
+            <i class="block center">Not implemented yet.</i>
+        </div>
+    </div>
+</div>
+{/block}
+
+{block scripts}
+    {include parent}
+
+    <script>
+
+    document.addEventListener("DOMContentLoaded", function(event) {
+
+        new Chart(document.getElementById("myChart"), {
+            "type":"line",
+            "data": {
+                "labels": [
+                    "January",
+                    "February",
+                    "March",
+                    "April",
+                    "May",
+                    "June",
+                    "July",
+                    "August",
+                    "September",
+                    "October",
+                    "November",
+                    "December"
+                ],
+                "datasets":[
+                    {
+                        "label":"Registrations",
+                        "data":[{$users|noescape}],
+                        "fill":false,
+                        "borderColor":"rgb(12, 12, 2)",
+                        "lineTension":0.1
+                    }]
+            }, options: {
+                   scales: {
+                       yAxes: [{
+                           ticks: {
+                               beginAtZero: true
+                           }
+                       }]
+                   }
+               }
+            });
+
+            new Chart(document.getElementById("sales"), {
+            "type":"bar",
+            "data": {
+                "labels": [
+                    "January",
+                    "February",
+                    "March",
+                    "April",
+                    "May",
+                    "June",
+                    "July",
+                    "August",
+                    "September",
+                    "October",
+                    "November",
+                    "December"
+                ],
+                "datasets":[{
+                        "data":[65,59,80,81,56,55,40],
+                        "fill":true,
+                        "borderColor":"rgb(75, 192, 192)",
+                        "lineTension":0.1
+                    }]
+            }, "options":{
+                legend: {
+                    display: false
+                },
+                tooltips: {
+                    callbacks: {
+                       label: function(tooltipItem) {
+                              return tooltipItem.yLabel;
+                       }
+                    }
+                }
+            }
+        });
+    })
+
+    </script>
+{/block}

@@ -1,0 +1,134 @@
+﻿<!DOCTYPE html>
+{block html}<html lang="en">{/block}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Geedium programming services and software products">
+    <meta name="keywords" content="geedium, programming, software">
+    <meta property="og:title" content="Geedium" />
+    <meta property="og:type" content="software" />
+    <meta property="og:url" content="https://www.geedium.com/" />
+    <meta property="og:image" content="" />
+
+    <link rel="stylesheet" href="/css/gwm.min.css">
+
+    <link rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/vendor/css/fontawesome.min.css">
+
+    <link rel="stylesheet" href="/css/ad7c5152e9.css">
+
+    <script src="/vendor/js/jquery-3.5.1.min.js"></script>
+    <script src="/js/gwm.min.js"></script>
+
+    {block styles}
+    {/block}
+
+    {block scripts}
+    {/block}
+
+    <title>{spaceless}{block title}Geedium{/block} - Programming Services And Software Products{/spaceless}</title>
+</head>
+
+{block body}<body>{/block}
+    <nav id="color-swap" class="navbar navbar-expand-lg navbar-dark bg-dark mb-3">
+        <a class="navbar-brand" href="/">{include title}</a>
+
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+             <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto"></ul>
+
+            <ul class="navbar-nav">
+                <li class="dropdown nav-item ml-2">
+                  <button class="btn navButton" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Products
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                    <a class="dropdown-item" href="/dashboard">GWM</a>
+                  </div>
+                </li>
+
+                <li class="dropdown nav-item ml-2">
+                  <button class="btn navButton" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Services
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                    <a class="dropdown-item" href="/dashboard"><i class="fa fa-plus"></i>&nbsp; New Order</a>
+                  </div>
+                </li>
+
+                <li class="dropdown nav-item ml-2">
+                  <button class="btn navButton" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Community
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                    <a class="dropdown-item" href="/forum/"><i class="fa fa-comment-dots"></i>&nbsp; Forum</a>
+                  </div>
+                </li>
+
+                <li class="nav-item">
+                    <a class="btn navButton ml-2" href="#">About</a>
+                </li>
+
+		{block nav-right}{/block}
+            </ul>
+        </div>
+    </nav>
+
+    {block container-override}{/block}
+    {block layoutContent}{/block}
+
+    <div class="container-fluid no-gutters">{block about}{/block}</div>
+
+    <footer class="p-3 bg-dark">
+      <div class="container">
+        <div class="row">
+            <div class="col-md-4 text-white" id="services">
+                <span class="text-muted upper">Services</span>
+
+                <ul class="p-0 capsule">
+                    <li class="footer-link"><a href="http://kompiuteriu-programavimo-veikla-j-62-01.nace-rev2.info/LT/">J.62.01</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4 text-white">
+                <span class="text-muted upper">General</span>
+
+                <ul class="p-0 capsule">
+                    <li class="footer-link"><a href="#">Products</a></li>
+                    <li class="footer-link"><a href="#">Services</a></li>
+                    <li class="footer-link"><a href="/forum">Forum</a></li>
+                    <li class="footer-link"><a href="#">About</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4 text-white">
+                <span class="text-muted upper">Contacts</span>
+
+                <ul class="p-0 capsule">
+                    <li class="footer-link-p">
+                        Telefonas
+                        <i class="fa fa-phone"></i>
+                        +370 6 460 3616
+                    </li>
+                    <li class="footer-link-p">
+                        El. Paštas
+                        <i class="fa fa-envelope"></i>
+                        gediminas.dausynas@gmail.com
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <span class="text-muted">© Copyright 2020 Geedium</span>
+      </div>
+    </footer>
+
+    <script src="/vendor/js/bootstrap.min.js"></script>
+
+    {block afterscripts}
+    {/block}
+</body>
+
+</html>

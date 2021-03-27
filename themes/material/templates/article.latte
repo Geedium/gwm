@@ -1,0 +1,29 @@
+{layout 'basis.latte'}
+
+{block layoutContent}
+
+{ifset $article}
+<div class="container">
+    <div class="card">
+        <div class="card-body">
+            {if $article}
+                <h1>{$article->title}</h1>
+                Posted on {$article->created_at}
+                <p>{$article->content|noescape}</p>
+           {else}
+                <b>No article found.</b>
+           {/if}
+       </div>
+   </div>
+
+   <div class="card mt-3">
+        <div class="card-body">
+            <h3>Comments</h3>
+
+            <b>Comments are not implemented yet.</b>
+        </div>
+   </div>
+</div>
+{/ifset}
+
+{/block}

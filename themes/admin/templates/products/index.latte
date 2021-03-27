@@ -1,0 +1,96 @@
+{layout '../basis.latte'}
+
+{block content}
+<div class="wcm-row-p">
+    <div class="wcm-col-12">
+        <div class="panel wcms-panel">
+            <div class="wcms-toolbar" style="margin-bottom: 3px;">
+                <div class="wcms-title">Products</div>
+            
+                <button onClick="window.location = '/dashboard/store/products/create';"
+                class="tooltip" style="color: green;">
+                    <i class="fa fa-plus"></i>
+                    <span class="tooltiptext">Create</span>
+                </button>
+                <button class="tooltip" style="color: red;">
+                    <i class="fa fa-trash"></i>
+                    <span class="tooltiptext">Delete</span>
+                </button>
+            </div>
+
+            <div style="padding: 5px; overflow: auto;">
+                <table class="table wcms-table">
+                    <thead>
+                        <tr>
+                            <th>
+                                <div class="checkbox">
+                                    <input type="checkbox"/>
+                                    <label><i class="fa fa-check"></i></label>
+                                </div>
+                            </th>
+
+                            <th style="text-align:center;">Image</th>
+                            <th style="text-align:center;">Title</th>
+                            <th style="text-align:center;">Stock</th>
+                            <th style="text-align:center;">Price</th>
+                            <th style="text-align:center;">Manufacturer</th>
+                            <th style="text-align:center;">Status</th>
+                            <th style="text-align:center;">Actions</th>
+                        </tr>
+                        <tr>
+                          <th style="text-align:center;"></th>
+                          <th style="text-align:center;"></th>
+                          <th style="text-align:center;"><input style="width: 100%;" placeholder="Filter" type="text"/></th>
+                          <th style="text-align:center;"><input type="number" min="0"/></th>
+                          <th style="text-align:center;"><input type="number" min="0"/></th>
+                          <th style="text-align:center;"><input style="width: 100%;" placeholder="Filter" type="text"/></th>
+                          <th style="text-align:center;"><input type="checkbox" min="0"/></th>
+                          <th style="text-align:center;"></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr n:foreach="$products as $product">
+                            <td>
+                                <div class="checkbox">
+                                    <input value="{$product->id}" type="checkbox"/>
+                                    <label><i class="fa fa-check"></i></label>
+                                </div>
+                            </td>
+
+                            <td style="text-align:center;">
+                                <img alt="..." style="height: 48px; max-height: 48px; object-fit: contain;" src="{$product->image}"/>
+                            </td>
+
+                            <td style="text-align:center;">
+                                {$product->title}
+                            </td>
+
+                            <td style="text-align:center;">
+                                {$product->stock}
+                            </td>
+
+                            <td style="text-align:center;">
+                                {$product->price}
+                            </td>
+
+                            <td style="text-align:center;">
+                                {$product->manufacturer}
+                            </td>
+
+                            <td class="center" style="color: {$product->status ? 'green' : 'maroon'}; text-align:center;">
+                               <i class="fa fa-{$product->status ? 'check' : 'times'}"></i>
+                            </td>
+
+                            <td style="text-align:center;">
+                                <a href="/dashboard/store/products/edit/{$product->id}" style="font-size: 0.75em;" class="btn"><i class="fa fa-edit"></i> Edit</a>
+                                <a href="/dashboard/store/products/delete/{$product->id}" style="font-size: 0.75em;" class="btn"><i class="fa fa-trash-alt"></i> Delete</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}

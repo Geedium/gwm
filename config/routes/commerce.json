@@ -1,0 +1,14 @@
+{
+  "GET": {
+    "/store": ["Store", "index"],
+    "/cart": ["Store", "cart"],
+    "/checkout": ["Checkout", "index"],
+    "/dashboard/payments/tebex": ["Tebex", "Payments"],
+    "/dashboard/store/categories": ["Dashboard", "Categories"],
+    "/dashboard/store/orders": ["Dashboard", "Orders"],
+    "/dashboard/store/affiliates": ["Dashboard", "Affiliates"],
+    "/dashboard/store/shipping": ["Dashboard", "Shipping"],
+    "/dashboard/store/discounts": ["Dashboard", "Discounts"],
+    "/dashboard/store/currencies": ["Dashboard", "Currencies"]
+  }
+}

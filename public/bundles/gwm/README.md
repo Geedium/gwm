@@ -1,0 +1,1 @@
+**This bundle contains Dashboard tag styles.**

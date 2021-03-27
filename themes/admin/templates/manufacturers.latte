@@ -1,0 +1,81 @@
+{layout 'basis.latte'}
+
+{block styles}
+<style>
+.tooltip .tooltiptext {
+  visibility: hidden;
+  background-color: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  text-align: center;
+  font-size: 0.95em;
+  transform: scale(0.9) translateX(-50%) translateY(-170%);
+  padding: 8px;
+  border-radius: 6px;
+  position: absolute;
+  z-index: 1;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+</style>
+{/block}
+
+{block content}
+<div class="wcm-row-p">
+    <div class="wcm-col-12">
+        <div class="panel wcms-panel">
+            <div class="wcms-toolbar" style="margin-bottom: 3px;">
+                <div class="wcms-title">Manufacturers</div>
+
+                <button class="tooltip" style="color: green;">
+                    <i class="fa fa-plus"></i>
+                    <span class="tooltiptext">Create</span>
+                </button>
+                <button class="tooltip" style="color: red;">
+                    <i class="fa fa-trash"></i>
+                    <span class="tooltiptext">Delete</span>
+                </button>
+            </div>
+
+            <div style="padding: 5px;">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>
+                                <div class="checkbox">
+                                    <input type="checkbox"/>
+                                    <label><i class="fa fa-check"></i></label>
+                                </div>
+                            </th>
+
+                            <th>Brand</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr n:foreach="$manufacturers as $manufacturer">
+                            <td>
+                                <div class="checkbox">
+                                    <input value="{$manufacturer->id}" type="checkbox"/>
+                                    <label><i class="fa fa-check"></i></label>
+                                </div>
+                            </td>
+
+                            <td>
+                                {$manufacturer->title}
+                            </td>
+
+                            <td>
+                                <button class="btn"><i class="fa fa-edit"></i> Edit</button>
+                                <button class="btn"><i class="fa fa-trash-alt"></i> Delete</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}

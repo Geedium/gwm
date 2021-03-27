@@ -1,0 +1,120 @@
+{extends 'basis.latte'}
+
+{block scripts}
+
+{include parent}
+
+<script type="text/javascript" defer>
+window.onload = function() {
+  var ctx = document.getElementById("graph-gfx").getContext('2d');
+
+  var myChart = new Chart(ctx, {
+    "type":"line",
+    "data": {
+        "labels": [
+            {foreach $payments as $payment}
+              {$payment->date},
+            {/foreach}
+        ],
+        "datasets":[
+            {
+                "label":"Transaction",
+                "data":[
+                  {foreach $payments as $payment}
+                  {
+                    t: {$payment->date},
+                    y: {$payment->amount}
+                  },
+                  {/foreach}
+                ],
+                "fill": true,
+                lineTension: 0.35,
+                radius: 4,
+                strokeColor: "#FAC000",
+                borderWidth: 1
+            }]
+    }, options: {
+        responsive: true,
+        layout: {
+            padding: {
+                left: 10,
+                right: 15,
+                top: 0,
+                bottom: 0
+            }
+        },
+        elements: {
+            line: {
+                borderJoinStyle: 'round',
+            }
+        },
+        legend: {
+            display: false
+        },
+        scales: {
+            xAxes: [{
+                type: 'time',
+                time: {
+                    parser: 'YYYY-MM-DD HH:mm:ss',
+                    unit: 'week'
+                },
+                distribution: 'linear'
+            }]
+        }
+    }
+  });
+
+}
+</script>
+
+{/block}
+
+{block content}
+<div class="wcm-row-p">
+  <div class="wcm-col-12">
+    <div class="panel">
+      <div id="tab1">
+        <a href="https://disata-roleplay.tebex.io"><i class="fa fa-home"></i></a> Disata Store
+        <hr></hr>
+
+        <div class="panel">
+          <canvas id="graph-gfx" height="50"></canvas>
+        </div>
+
+        <table class="wcms-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Player</th>
+              <th>Date</th>
+              <th>Currency</th>
+              <th>Amount</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+          {var $total = 0}
+          {foreach $payments as $payment}
+            <tr>
+              <td>{$payment->id}</td>
+              <td>{$payment->player->name}</td>
+              <td>{$payment->date}</td>
+              <td>{$payment->currency->iso_4217}</td>
+              <td>{$payment->amount} {$payment->currency->symbol}</td>
+              <td>{$payment->status}</td>
+              <!-- {$total += $payment->amount} -->
+            </tr>
+          {/foreach}
+          </tbody>
+        </table>
+        <h3 style="color: #a4a4a4; position: relative; top: 6px; left: 6px;">Total</h3>
+        <hr>
+        <i class="fas fa-money-bill-alt"></i> &nbsp; {$total|number:2,',', ' '}
+      </div>
+    </div>
+  </div>
+
+
+</div>
+
+{/block}

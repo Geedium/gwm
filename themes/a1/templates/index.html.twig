@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <title>GWM Forum</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+<h1>GWM Forum</h1>
+
+{% if Logged() %}
+    Logged in<br/>
+    <a href="/out">Logout</a>
+{% else %}
+    Not logged in.<br/>
+    <a href="/auth">Login</a>
+{% endif %}
+
+{% for category in categories %}
+    <div style="display: block; padding: 15px; background: #f7f7f7;">
+        {{ category.title }}
+    </div>
+{% endfor %}
+
+{% for topic in topics %}
+    <div style="display: block; padding: 15px; background: #eaeaea;">
+        <button>{{ topic.title }}</button>
+        <p>{{ topic.description }}</p>
+    </div>
+{% endfor %}
+</body>
+</html>

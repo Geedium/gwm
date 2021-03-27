@@ -1,0 +1,98 @@
+{layout 'basis.latte'}
+
+{block styles}
+  {include parent}
+  <style>
+    #editor {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      top: 0;
+    }
+  </style>
+{/block}
+
+{block content}
+
+<div class="wcm-row-p">
+    <div class="wcm-col-7">
+        <div class="panel" style="height: 750px;">
+          <div id="editor"></div>
+        </div>
+
+        <!-- <div class="panel nov" style="padding-left: 0; padding-top: 0; padding-bottom: 0;">
+            <div class="counters" style="display: block; white-space: normal;">
+                <ol class="counter">
+                    {foreach $lines as $line}
+                        <li>{$line}</li>
+                    {/foreach}
+                </ol>
+            </div>
+            <textarea placeholder="(Testing Editor)">{$line}</textarea>
+        </div> -->
+    </div>
+    <div class="wcm-col-5">
+        <div class="panel">
+            <b class="block center">Files</b>
+
+            <table class="table" style="width: 100%;">
+                <thead>
+                    <tr>
+                        <th><input type="checkbox"></th>
+                        <th>Name</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {foreach $files as $file}
+                        <tr>
+                            <td><input type="checkbox"></td>
+                            <td>{$file}</td>
+                            <td></td>
+                        </tr>
+                    {/foreach}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="wcm-row-p">
+    <div class="wcm-col-12">
+        <div class="panel">
+            <h3>CURL</h3>
+
+            <form method="post" id="curl-post">
+                <input name="csrf" type="hidden" value="{$csrf}"/>
+
+                <div>
+                    <label for="curl-url">URL</label>
+                    <input type="text" id="curl-url" name="curl-url" class="form-control" placeholder="Enter a valid URL"/>
+                </div>
+                <div>
+                    <b><button class="btn">?</button> SSL</b>
+                    <input type="checkbox" checked disabled/>
+                </div>
+            </form>
+
+            <button class="btn block green" style="margin-top: 9px;" type="submit" form="curl-post">Retrieve</button>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" async>
+   window.onload = function() {
+        var editor = ace.edit("editor");
+        editor.setTheme("ace/theme/github");
+        editor.session.setMode("ace/mode/html");
+        editor.session.setValue({$lines});
+   };
+</script>
+
+{/block}
+
+{block scripts}
+  {include parent}
+  <script src="/bundles/ace/js/ace.js"></script>
+{/block}

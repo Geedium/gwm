@@ -1,0 +1,117 @@
+@import "table";
+@import "editor";
+@import "breadcrumb";
+
+@import "_global.lazy";
+@import "_global.defaults";
+@import "_com.login.google";
+
+:root {
+  --custom-color-a: #3d4850;
+  --breadcrumb: #f7f7f7;
+}
+
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+.wcms-panel {
+  padding: 0 !important;
+}
+
+.wcms-toolbar {
+  border-bottom: 1px solid #eee;
+  background: #f9f9f9;
+  padding: 7px;
+
+  .wcms-title {
+    display: inline-block;
+    margin: 0 6px 0 6px;
+    line-height: 50px;
+  }
+
+  button {
+    border-radius: 20px;
+    line-height: 1;
+    padding: 10px 11px 10px 11px;
+    background: white;
+
+    &:hover {
+      transform: scale(1.05);
+    }
+  }
+}
+
+input[type=text] {
+  border: 1px solid #cfd3d7;
+  border-radius: 3px;
+}
+
+th[scope=row] {
+  text-transform: uppercase;
+}
+
+th[scope=col] {
+  text-transform: capitalize;
+}
+
+th label {
+  display: block;
+  text-align: center;
+}
+
+.GWrjcE9aSx85U {
+  position: fixed;
+  background: var(--custom-color-a);
+  z-index: 98;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+.GWM82257ba265 {
+  display: flex;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  border-radius: 15px;
+  width: 50px;
+  height: 50px;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+}
+
+.GWM82257ba265:focus {
+  outline: none;
+}
+
+.GWM82257ba265:hover {
+  cursor: pointer;
+}
+
+.GWM01536725ba {
+  font-size: 1.75rem;
+}
+
+// Geedium theme 
+
+nav-bar {
+  display: flex;
+  padding: .45rem;
+  background: rgb(243, 243, 255);
+}
+
+nav-brand {
+  display: inline-block;
+}
+
+nav-links {
+  display: flex;
+  flex-grow: 1;
+}

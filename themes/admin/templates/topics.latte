@@ -1,0 +1,32 @@
+{layout 'basis.latte'}
+
+{block content}
+<div class="wcm-row-p">
+    <div class="wcm-col-12">
+        <div class="panel wcms-panel">
+            <div class="wcms-toolbar" style="margin-bottom: 3px;">
+                <div class="wcms-title">Topics</div>
+            </div>
+
+            <table class="table">
+               <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                  </tr>
+               </thead>
+               <tbody>
+                  {foreach $topics as $topic}
+                     <tr>
+                        <td>{$topic['id']}</td>
+                        <td>{$topic['title']}</td>
+                        <td>{$topic['description']}</td>
+                     </tr>
+                  {/foreach}
+               </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{/block}

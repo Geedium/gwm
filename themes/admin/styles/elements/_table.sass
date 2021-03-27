@@ -1,0 +1,36 @@
+table
+  border: 1px solid #eee
+  background: #fdfdfd
+  color: #a3a3a3
+
+  tbody
+    tr:nth-child(2n+1)
+      background: #ececec !important
+
+  &.flex
+    display: block
+
+    tr
+      display: flex
+      flex-flow: row nowrap
+
+    th, td
+      flex-grow: 1
+      align-content: center
+
+    thead
+      display: block
+      border-bottom: 1px solid #eee
+
+    tbody
+      display: block
+
+tbody > tr:nth-child(odd)
+  background: #1e314a
+
+.flex-content
+  flex-grow: initial
+  max-width: 350px
+  width: 350px
+  overflow: hidden
+  text-overflow: ellipsis

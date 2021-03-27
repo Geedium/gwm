@@ -1,0 +1,61 @@
+{extends 'basis.latte'}
+
+{block content}
+
+<div class="container-fluid no-gutters">
+
+<div class="card mb-3">
+    <div class="card-body">
+        <b>User: </b> {$user}<br/>
+        <b>Pass: </b> {$pass}
+    </div>
+</div>
+
+<div class="card mb-3">
+
+    <div class="card-header">
+        Generated Form { Model: Article }
+    </div>
+
+    <div class="card-body">
+        {$form|noescape}
+    </div>
+
+</div>
+
+<div class="card mb-3">
+
+    <div class="card-header">
+        Generated Table { Model: Article }
+    </div>
+
+    <div class="card-body">
+        {$table|noescape}
+    </div>
+
+</div>
+
+{ifset $articles}
+
+    <div n:if="!$articles">
+        <b>No articles found.</b>
+    </div>
+
+    <div class="card mb-3" n:foreach="$articles as $article">
+        <div class="card-header">
+            <b>{$article['title']}</b>
+        </div>
+
+        <div class="card-body">
+            <b>{$article['content']|noescape}</b>
+        </div>
+
+        <div class="card-footer">
+            <b>{$article['created_at']}</b>
+        </div>
+    </div>
+{/ifset}
+
+</div>
+
+{/block}

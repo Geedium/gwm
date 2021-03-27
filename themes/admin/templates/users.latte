@@ -1,0 +1,86 @@
+{layout 'basis.latte'}
+
+{block styles}
+<style>
+.tooltip .tooltiptext {
+  visibility: hidden;
+  background-color: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  text-align: center;
+  font-size: 0.95em;
+  transform: scale(0.9) translateX(-50%) translateY(-170%);
+  padding: 8px;
+  border-radius: 6px;
+  position: absolute;
+  z-index: 1;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+</style>
+{/block}
+
+{block content}
+<div class="wcm-row-p">
+    <div class="wcm-col-12">
+        <div class="panel">
+            <div class="bold center">Users</div>
+
+            <table class="wcms-table">
+                <thead>
+                    <tr>
+                        <th scope="row">ID <a href="#"><i class="fa fa-sort"></i></a> </th>
+                        <th style="text-align: center !important;">Name <a href="#"><i class="fa fa-sort"></i></a> </th>
+                        <th style="text-align: center !important;">Created At <a href="#"><i class="fa fa-sort"></i></a> </th>
+                        <th style="text-align: center !important;">Roles</th>
+                        <th style="text-align: center !important;">Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr n:foreach="$users as $user">
+                        <td>{$user->id}</td>
+                        <td style="text-align: center !important;">{$user->username}</td>
+                        <td style="text-align: center !important;">{$user->created_at}</td>
+                        <td>
+                            <div class="tag" style="
+                                background: #8fffbb;
+                                padding: 2px 8px 2px 8px;
+                                border: 1px solid #4eca09;
+                                font-size: smaller;
+                                margin: 0 5px;
+                                display: inline-block;
+                                vertical-align: middle;
+                                border-radius: 10px;
+                            ">
+                                {$user->role}
+                                <button style="
+                                    font-size: smaller;
+                                    padding: 0 0;
+                                ">
+                                    <i class="fa fa-times"></i>
+                                </button>
+                            </div>
+                        </td>
+                        <td style="text-align: center !important;">
+                            <button class="btn tooltip">
+                                <i class="fa fa-user-lock"></i>
+                                <span class="tooltiptext">Permissions</span>
+                            </button>
+                            <button class="btn tooltip">
+                                <i class="fa fa-user-edit"></i>
+                                <span class="tooltiptext">Edit</span>
+                            </button>
+                            <button class="btn tooltip">
+                                <i class="fa fa-user-times"></i>
+                                <span class="tooltiptext">Remove</span>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{/block}

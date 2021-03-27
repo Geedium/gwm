@@ -1,0 +1,131 @@
+{layout '../basis.latte'}
+
+{block styles}
+  {include parent}
+  <link rel="stylesheet" href="/bundles/jquery/plugins/jstree/css/style.min.css">
+
+  <style>
+    #editor {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      top: 0;
+    }
+  </style>
+{/block}
+
+{block content}
+<div class="wcm-row-p">
+    <div class="wcm-col-8">
+        <div class="panel">
+            <div> <i class="fa fa-eye"></i> Visual Editor</div>
+
+            <iframe id="frame" style="width: 100%; height: 650px;" src="/dashboard/load/theme/0">
+
+            </iframe>
+        </div>
+    </div>
+    <div class="wcm-col-4">
+        <div class="panel">
+            <div class="wcms-toolbar" style="margin-bottom: 3px;">
+                <div class="wcms-title">Components</div>
+                <button class="tooltip" style="color: green;">
+                    <i class="fa fa-plus"></i>
+                    <span class="tooltiptext">Create</span>
+                </button>
+            </div>
+
+            <ul>
+                <li><i class="fa fa-image"></i> Image</li>
+            </ul>
+        </div>
+
+        <div class="panel">
+            <div class="wcms-toolbar" style="margin-bottom: 3px;">
+                <div class="wcms-title">Routes</div>
+
+            </div>
+
+            <ul>
+                <li><button class="btn">Index</button></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="wcm-row-p">
+  <div class="wcm-col-9">
+    <div class="panel wcms-panel" style="height: 312px;">
+      <div id="editor"></div>
+    </div>
+  </div>
+  <div class="wcm-col-3">
+    <div class="panel wcms-panel" style="height: 312px;">
+      <div class="wcms-toolbar">
+        Resource Explorer
+      </div>
+
+      <div id="tree">
+        <ul>
+          {foreach $tree as $key => $value}
+            <li>{$key}
+              <ul>
+                {foreach $value['templates'] as $item}
+                  <li data-jstree='{"icon":"fa fa-file"}'>{$item}</li>
+                {/foreach}
+              </ul>
+            </li>
+          {/foreach}
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript" async>
+
+$(function() {
+  $('#tree').jstree({
+    "core" : {
+      "animation" : 0,
+      "check_callback" : true,
+      "themes" : { "stripes" : true },
+    },
+    "types" : {
+      "#" : {
+        "max_children" : 1,
+        "max_depth" : 4,
+        "valid_children" : ["root"]
+      },
+      "root" : {
+        "icon" : "/static/3.3.11/assets/images/tree_icon.png",
+        "valid_children" : ["default"]
+      },
+      "default" : {
+        "valid_children" : ["default","file"]
+      },
+      "file" : {
+        "icon" : "fa fa-file",
+        "valid_children" : []
+      }
+    },
+    "plugins" : [
+
+    ]
+  });
+  var editor = ace.edit("editor");
+  editor.setTheme("ace/theme/github");
+  editor.session.setMode("ace/mode/twig");
+  editor.setValue({$code}, -1);
+})
+</script>
+
+{/block}
+
+{block scripts}
+  {include parent}
+  <script src="/bundles/jquery/js/jquery-3.5.1.min.js"></script>
+  <script src="/bundles/jquery/plugins/jstree/js/jstree.min.js"></script>
+  <script src="/bundles/ace/js/ace.js"></script>
+{/block}

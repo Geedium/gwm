@@ -1,0 +1,38 @@
+{layout 'basis.latte'}
+
+{block content}
+
+<section>
+    <div>
+        <h1>Add Model</h1>
+        <br/>
+        <div>
+            <b>Add Fields</b>
+            <div class="">
+                <a href="#">int</a>
+                <a href="#">string</a>
+            </div>
+            </table>
+        </div>
+        <form action="/dashboard/models" method="post">
+            <input type="hidden" name="action" value="create">
+
+            <div class="form-control">
+                <input class="btn" type="submit" value="Create">
+            </div>
+        </form>
+    </div>
+    <div>
+        <h1>Models</h1>
+        <br/>
+        <div>
+            <table>
+                <tbody>
+                    {$list|noescape}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+{/block}

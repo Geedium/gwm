@@ -1,0 +1,722 @@
+{define tab, $name, $icon, $url}
+<div>
+    <button onclick="window.location='{$url|noescape}'">
+        <i class="fas fa-{$icon}"></i>
+        <span>{$name}</span>
+    </button>
+</div>
+{/define}
+
+{define nav-link, $name, $icon, $url}
+<li class="tooltip">
+    <a href="{$url}" class="href-icon">
+        <i title="{$name}" class="fa fa-{$icon}"></i>
+    </a>
+</li>
+{/define}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="robots" content="noindex">
+        <meta name="googlebot" content="noindex">
+
+        <style>:root {}</style>
+
+        <link rel="stylesheet" href="/bundles/gwm/css/gwm.min.css">
+        <link rel="stylesheet" href="/bundles/simptip/css/simptip.min.css">
+
+        <link rel="stylesheet" href="/vendor/css/fontawesome.min.css">
+        <link rel="stylesheet" href="/vendor/css/Chart.min.css">
+        <link rel="stylesheet" href="/css/dashboard.generated.css">
+        <link rel="stylesheet" href="/css/dashboard.extra.css">
+        <link rel="stylesheet" href="/css/toastify.css">
+
+        <style>
+        .modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button */
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+        .chat {
+            position: absolute;
+            display: none;
+            background: rgba(0, 0, 0, 0.45);
+            box-shadow: 0px 0px 9px 0px #e1e1e1;
+            width: 500px;
+            height: 350px;
+            z-index: 2;
+            border-radius: 9px;
+            left: calc(100% - 550px);
+            overflow: hidden;
+        }
+        .chat-opened {
+            display: flex !important;
+        }
+
+        .contacts {
+            width: 150px;
+            background: rgba(255, 255, 255, 0.75);
+            height: inherit;
+            display: flex;
+            flex-flow: column wrap;
+        }
+        
+        .contacts > .search-group {
+            align-self: center;
+            width: 75%;
+            margin-bottom: 9px;
+            margin-top: 9px;
+            display: block;
+        } .contacts > .search-group > input[type=text] {
+            padding: 4px;
+            width: 80%;
+            height: 26px;
+            float: left;
+            border-right: 0;
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        } .contacts > .search-group > button {
+            float: right;
+            width: 20%;
+            padding: 4px;
+            height: 26px;
+            border-top: 1px solid #cfd3d7;
+            border-right: 1px solid #cfd3d7;
+            background: white;
+            border-bottom: 1px solid #cfd3d7;
+            border-top-right-radius: 3px;
+            border-bottom-right-radius: 3px;
+        }
+
+        .chat > .view {
+            width: calc(100% - 150px);
+            background: white;
+            border-left: 1px solid #c6c6c6;
+            height: inherit;
+            display: flex;
+            flex-flow: column nowrap;
+        }
+
+        .contact {
+            background: #e2e2e2;
+            padding: 4px;
+            text-align: right;
+            font-size: 0.8em;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        } .contact > .avatar {
+            width: 48px;
+            height: 48px;
+            position: relative;
+            left: 5px;
+        } .contact > .avatar img {
+            width: 48px;
+            height: 48px;
+        }
+
+        .view > .user {
+            width: 100%;
+            flex-basis: 55px;
+            background: #e9e9e9;
+            border-bottom: 2px solid #b8b8b8;
+            align-items: center;
+            text-align: left;
+            display: flex;
+            padding: .55rem;
+        } .view > .msg {
+            width: 100%;
+            flex-grow: 1;
+        } .view > .send {
+            width: 100%;
+            flex-basis: 40px;
+            background: #a3a3a3;
+        }
+
+
+        header {
+            margin-left: 350px;
+        }
+        </style>
+
+        {block styles}{/block}
+
+        <script src="/js/moment.min.js"></script>
+        <script src="/vendor/js/Chart.min.js"></script>
+
+        <script>
+        function handleKeyUp(e) {
+            if(e.keyCode == 13) {
+                sendMessage();
+            }
+        }
+
+        function sendMessage() {
+            console.log("Sending message");
+
+            var messageInput = document.getElementById("message-input");
+		    var message = messageInput.value.trim();
+
+            if (!message)
+                return alert("Please write a message");
+
+            var ajax = new XMLHttpRequest();
+            ajax.open("POST", "/send", true);
+            ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            ajax.send("message=" + message);
+
+            messageInput.value = "";
+        }
+        </script>
+
+        {include '_doc.latte'}
+
+        {block scripts}
+        <script>
+        document.addEventListener("DOMContentLoaded", function(event) {
+            const dropdowns = document.getElementsByClassName('drop-click')
+
+            if(dropdowns !== null && dropdowns !== undefined) {
+                for (var i = 0; i < dropdowns.length; i++) {
+                 dropdowns[i].addEventListener("click", function(e) {
+                     let drop = e.target.getElementsByClassName("drop")[0]
+
+                     if(drop.className === 'fas fa-caret-right drop') {
+                         drop.className = 'fas fa-caret-down drop';
+                         e.target.parentElement.getElementsByClassName("dropdown")[0].classList.remove('collapsed');
+                     } else {
+                         drop.className = 'fas fa-caret-right drop';
+                         e.target.parentElement.getElementsByClassName("dropdown")[0].classList.add('collapsed');
+                     }
+                 })
+                }
+            }
+        })
+        </script>
+        {/block}
+
+        <title>Dashboard</title>
+    </head>
+
+    <body>
+        <header>
+            <ul>
+                <li class="wcm">
+
+                </li>
+                <li class="wcm">GWM</li>
+                <li class="wcm" style="margin-left: 12px; line-height: 44px;">
+                    <i class="fa fa-clock" style="font-size: 0.65em;"></i>
+                    <small style="font-size: 0.65em;">{$elapsed} s</small>
+                </li>
+            </ul>
+
+            <ul style="margin-left: auto;">
+                {include nav-link, 'Home', 'home', '/'}
+                {include nav-link, 'Notifications', 'bell', '#'}
+                {include nav-link, 'Server', 'server', '/dashboard/server'}
+                <li class="tooltip">
+                    <button onclick="toggleChat()" class="href-icon">
+                        <i title="Chat" class="fa fa-comments"></i>
+                    </button>
+
+                    <div class="chat">
+                        <div class="contacts">
+                            <div class="search-group">
+                                <input type="text" placeholder="Search"/>
+                                <button><i class="fa fa-search"></i></button>
+                            </div>
+
+                            <div class="contact">
+                                <div class="avatar">
+                                    <img src="/dist/png/{$avatar}" alt="...">
+                                </div>
+                                Gediminas
+                            </div>
+
+                            <div class="contact">
+                                <div class="avatar">
+                                    <img src="/dist/png/trep_trep" alt="...">
+                                </div>
+                                trep_trep
+                            </div>
+                        </div>
+                        <div class="view">
+                            <div class="service">
+                                Service Status: <div id="sv-status">Connecting</div>
+                            </div>
+
+                            <div class="user">
+                                Gediminas
+                            </div>
+
+                            <div class="msg" id="message-box">
+
+                            </div>
+
+                            <div class="send">
+                                <input type="text" id="message-input" onkeyup="handleKeyUp(event)" placeholder="Enter message"/>
+                                <button class="btn" onclick="sendMessage()"><i class="fa fa-paper-plane"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                {include nav-link, 'Report a Bug', 'bug', '/dashboard/report'}
+                <li class="tooltip">
+                    <button onClick="
+                        let pop = window.open('https://github.com/Geedium/GWM/issues', 'test', `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,
+                                                    width=0,height=0,left=-1000,top=-1000`);
+                    " style="border: 0;" class="href-icon">
+                        <i title="Live Support" class="fa fa-headset"></i>
+                    </button>
+                </li>
+                {include nav-link, 'Logs', 'book-open', '/dashboard/logs'}
+                {include nav-link, 'Sign-Out', 'sign-out-alt', '/sign-out?scope=dashboard'}
+            </ul>
+        </header>
+
+        {block wrapper}<div class="container-wrapper">{/block}
+ 
+            <ol class="breadcrumb">
+                {foreach $crumbs as $crumb}
+                    <li class="breadcrumb-link"><a href="/{$crumb['link']}">{$crumb['name']|firstUpper}</a></li>
+                {/foreach}
+            </ol>
+
+            {block content}
+            {/block}
+        </div>
+
+       {block side}
+        <div class="side">
+        </div>
+
+        <aside>
+            <div class="hAside">
+                <div class="avatar">
+                    <img src="/dist/png/{$avatar}" alt="...">
+                </div>
+                <span class="highlight simptip-position-top" data-tooltip="{$ip}">{$username}</span>
+                <span>{$firstname} {$lastname}</span>
+
+                <div style="
+                    display: flex;
+                    justify-content: center;
+                    flex-flow: row nowrap;
+                ">
+                    <button style="
+                        font-size: 1.1em;
+                        border: 0;
+                        border-radius: 4px;
+                        color: black;
+                        background: #fff;
+                        box-shadow: 0px 0px 4px 0px #e1e7f2;
+                        margin-top: 6px;
+                    " id="sun-switch">
+                        <i class="fas fa-sun"></i>
+                    </button>
+
+                    <button style="
+                        font-size: 1.1em;
+                        border: 0;
+                        border-radius: 4px;
+                        color: black;
+                        background: #fff;
+                        box-shadow: 0px 0px 4px 0px #e1e7f2;
+                        margin-top: 6px;
+                        margin-left: 6px;
+                    " id="myBtn">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                </div>
+            </div>
+
+            <nav>
+                <div class="nav-tab">CORE</div>
+
+                <ul id="nav-tab-core">
+                    {foreach $tabs as $tab}
+                      <li>
+                        {var $name = $tab->name}
+                        {var $icon = $tab->icon}
+                        {var $url = $tab->url}
+                        {include tab, $name, $icon, $url}
+                      </li>
+                    {/foreach}
+
+                    <li>
+                        <div>
+                            <button onclick="window.location='/dashboard/articles'">
+                                <i class="fas fa-newspaper"></i>
+                                <span>Articles</span>
+                            </button>
+                        </div>
+                    </li>
+                    <li>{include tab, 'Dependencies', 'network-wired', '/dashboard/dependencies'}</li>
+                    <li>{include tab, 'Scheduler', 'clock', '/dashboard'}</li>
+                    <li>
+                        <div>
+                            <button class="drop-click">
+                                Plugins
+                                <i class="fas fa-puzzle-piece"></i>
+                                <span class="dropdown-caret"><i class="fas fa-caret-right drop"></i></span>
+                            </button>
+                               <div class="dropdown collapsed">
+                                <ul>
+                                    <li>
+                                        <div>
+                                            <button class="dropdown-item" onclick="window.location='/dashboard/plugins'">
+                                                <span><i class="fa fa-puzzle-piece"></i> Plugins</span>
+                                            </button>
+                                        </div>
+                                    </li>
+                                    {foreach $plugins as $plugin}
+                                    <li>
+                                        <div>
+                                            <button class="dropdown-item" onclick="window.location='/dashboard/plugins'">
+                                                <span>{$plugin['identifier']}</span>
+                                            </button>
+                                        </div>
+                                    </li>
+                                    {/foreach}
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
+
+                    <li>{include tab, 'Themes', 'eye', '/dashboard/themes'}</li>
+                    <li>{include tab, 'Features', 'feather', '/dashboard/features'}</li>
+                    <li>{include tab, 'Settings', 'cogs', '/dashboard/settings'}</li>
+                </ul>
+
+                <div class="nav-tab">E-COMMERCE</div>
+
+                <ul id="nav-tab-commerce">
+                    <li>
+                        <div>
+                            <button class="drop-click">
+                                Shops
+                                <i class="fas fa-shopping-cart"></i>
+                                <span class="dropdown-caret"><i class="fas fa-caret-right drop"></i></span>
+                            </button>
+                            <div class="dropdown collapsed">
+                                <ul>
+                                    <li>
+                                        <div>
+                                            <button class="dropdown-item" onclick="window.location='/dashboard/store/shops'">
+                                                <span><i class="fa fa-shopping-cart"></i> Shops</span>
+                                            </button>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div>
+                                            <button class="dropdown-item" onclick="window.location='/dashboard/store/orders'">
+                                                <span>Orders</span>
+                                            </button>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div>
+                                            <button class="dropdown-item" onclick="window.location='/dashboard/store/products'">
+                                                <span>Products</span>
+                                            </button>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div>
+                                            <button class="dropdown-item" onclick="window.location='/dashboard/store/categories'">
+                                                <span>Categories</span>
+                                            </button>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div>
+                                            <button class="dropdown-item" onclick="window.location='/dashboard/store/customers'">
+                                                <span>Customers</span>
+                                            </button>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div>
+                                            <button class="dropdown-item" onclick="window.location='/dashboard/store/manufacturers'">
+                                                <span>Manufacturers</span>
+                                            </button>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
+                    <li>{include tab, 'Affiliates', 'handshake', '/dashboard/store/affiliates'}</li>
+                    <li>{include tab, 'Shipping', 'dolly', '/dashboard/store/shipping'}</li>
+                    <li>
+                        <div>
+                            <button class="drop-click">
+                                <i class="fas fa-credit-card"></i>
+                                <span>Payments</span>
+                                <span class="dropdown-caret"><i class="fas fa-caret-right drop"></i></span>
+                            </button>
+                            <div class="dropdown collapsed">
+                                    <ul>
+                                        <li>
+                                            <div>
+                                                <button class="dropdown-item" onclick="window.location='/dashboard/'">
+                                                    <span><i class="fa fa-credit-card"></i> Payments</span>
+                                                </button>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div>
+                                                <button class="dropdown-item" onclick="window.location='/dashboard/payments/tebex'">
+                                                    <span>Tebex</span>
+                                                </button>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li>{include tab, 'Discounts', 'percentage', '/dashboard/store/discounts'}</li>
+                    <li>{include tab, 'Currencies', 'coins', '/dashboard/store/currencies'}</li>
+                </ul>
+
+                <div class="nav-tab">FORUM</div>
+
+                <ul id="nav-tab-commerce">
+                    <li>
+                        <div>
+                            <button class="drop-click">
+                                Discussions
+                                <i class="fas fa-chalkboard"></i>
+                                <span class="dropdown-caret"><i class="fas fa-caret-right drop"></i></span>
+                            </button>
+                            <div class="dropdown collapsed">
+                                <ul>
+                                    <li>
+                                        <div>
+                                            <button class="dropdown-item" onclick="window.location='/dashboard/forum/discussions'">
+                                                <span><i class="fa fa-chalkboard"></i> Discussions</span>
+                                            </button>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div>
+                                            <button class="dropdown-item" onclick="window.location='/dashboard/forum/topics'">
+                                                <span>Topics</span>
+                                            </button>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div>
+                                            <button class="dropdown-item" onclick="window.location='/dashboard/forum/categories'">
+                                                <span>Categories</span>
+                                            </button>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+        {/block}
+
+        <audio id="player">
+            <source src="/sounds/notify.mp3" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio> 
+
+        <div id="myModal" class="modal">
+
+        <!-- Modal content -->
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3 style="margin-bottom: .5rem;">User Settings</h3>
+            
+            <button class="btn green">Save Changes</button>
+        </div>
+
+        </div>
+
+        <script src="/js/dashboard.generated.js" defer></script>
+
+        <script type="text/javascript">
+        window.WebSocket = window.WebSocket || window.MozWebSocket;
+
+        var connection = new WebSocket('ws://127.0.0.1:2557', 'echo-protocol');
+        var connectingSpan = document.getElementById("sv-status");
+
+        connection.onopen = function () {
+            connectingSpan.style.display = "none";
+        };
+
+        connection.onerror = function (error) {
+            connectingSpan.innerHTML = "Error occured";
+        };
+
+        connection.onmessage = function (message) {
+            var data = JSON.parse(message.data);
+
+            var div = document.createElement("div");
+            var author = document.createElement("span");
+                author.className = "author";
+                author.innerHTML = data.name;
+            var message = document.createElement("span");
+                message.className = "messsage-text";
+                message.innerHTML = data.message;
+
+            player.play();
+
+            div.appendChild(author);
+            div.appendChild(message);
+
+            document.getElementById("message-box").appendChild(div);
+        }
+
+        var isChatOpen = false;
+
+        function toggleChat() {
+            var chatObj = document.getElementsByClassName("chat")[0];
+            isChatOpen = !isChatOpen;
+
+            if(isChatOpen) {
+                chatObj.classList.add("chat-opened");
+            } else {
+                chatObj.classList.remove("chat-opened");
+            }
+        }
+
+            function setCookie(cname, cvalue, exdays) {
+                var d = new Date();
+                d.setTime(d.getTime() + (exdays*24*60*60*1000));
+                var expires = "expires="+ d.toUTCString();
+                document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+            }
+
+            function getCookie(cname) {
+                var name = cname + "=";
+                var decodedCookie = decodeURIComponent(document.cookie);
+                var ca = decodedCookie.split(';');
+                for(var i = 0; i <ca.length; i++) {
+                    var c = ca[i];
+                    while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                    }
+                    if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                    }
+                }
+                return "";
+            }
+
+          function SwitchClick(e) {
+              let retval = e.target.parentElement.querySelectorAll('input[type="checkbox"]')[0]
+              if(retval !== undefined) {
+                retval.checked = !retval.checked
+              }
+          }
+
+          window.addEventListener('load', (event) => {
+            const switches = document.querySelectorAll(".switch");
+
+            switches.forEach(function(e) {
+               e.addEventListener("click", SwitchClick, false);
+            });
+
+            const sunSwitch = document.getElementById('sun-switch');
+            const rootStyle = document.querySelector('style');
+            let darkMode = false
+            let initialStyle = rootStyle.innerText
+
+            function enableDarkMode()
+            {
+                rootStyle.innerText = ':root { --aside: #272C33 !important; --asideg: #32383E !important; --aside2: #272C33 !important; --text-color: #fff !important; --nav-link: #383D43 !important; --side-button: #fff !important; --scrollbar-color-a: #a3a3a3 !important; --scrollbar-color-b: #a4a4a4 !important; --header: #343A40 !important; --breadcrumb: #2C3136 !important; --background: #575A60 !important; --panel: #343A40 !important; --side-shadow: #32383E !important; --header-link: #fff !important; --nav-btn-hover: #383D43 !important; --dropdown-a: #464646 !important; --dropdown-b: #3e3e3e !important; --dropdown-c: #1a1a1a; } ';
+            }
+
+            darkMode = getCookie('darkMode') == 'true'
+            if(darkMode) {
+                enableDarkMode()
+            }
+
+            sunSwitch.addEventListener('click', function() {
+                darkMode = !darkMode
+                setCookie('darkMode', darkMode, 1)
+
+                if(darkMode) {
+                  enableDarkMode()
+                } else {
+                  rootStyle.innerText = initialStyle;
+                }
+            })
+          });
+        </script>
+
+        <script>
+            var modal = document.getElementById("myModal");
+
+// Get the button that opens the modal
+var btn = document.getElementById("myBtn");
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+// When the user clicks on the button, open the modal
+btn.onclick = function() {
+  modal.style.display = "block";
+}
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+  modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+} 
+        </script>
+
+        <!-- <script src="/js/bundle.js"></script> -->
+
+        {include '_scripts.latte'}
+    </body>
+</html>

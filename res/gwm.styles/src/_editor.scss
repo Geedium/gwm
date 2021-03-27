@@ -1,0 +1,24 @@
+.wcms-editor {
+  width: 100%;
+  min-height: 72pt;
+  border: 1px solid #eee;
+  user-select: text;
+  pointer-events: bounding-box;
+
+  &:hover {
+    cursor: text;
+  }
+
+  textarea {
+    display: block;
+  }
+
+  .wcms-toolbar {
+    cursor: default;
+    margin: 0;
+  }
+
+  .wcms-toolbar li {
+    display: inline-block;
+  }
+}

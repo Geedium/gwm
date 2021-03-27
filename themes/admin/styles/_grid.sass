@@ -1,0 +1,33 @@
+@mixin cols($size)
+  @for $i from 1 through $size
+    .wcm-col-#{$i}
+      width: percentage($i / $size)
+      float: left
+
+      @media only screen and (max-width: 667px)
+        float: none
+        width: initial
+
+    .wcm-col-#{$i}-i
+      width: percentage($i / $size)
+      display: inline-block
+      vertical-align: top
+      white-space: normal
+
+@for $i from 1 through 10
+  .ml-#{$i}
+    margin-left: $i * 1px
+
+  .mr-#{$i}
+    margin-right: $i * 1px
+
+@include cols(12)
+
+.wcm-row-p
+  margin: 20px
+  display: block
+  clear: both
+  white-space: nowrap
+
+  @media only screen and (max-width: 667px)
+    white-space: normal

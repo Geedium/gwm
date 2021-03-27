@@ -1,0 +1,22 @@
+Options +FollowSymLinks -Indexes
+
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteBase /public/
+
+RewriteCond %{REQUEST_URI} !^/public/
+RewriteCond "%{REQUEST_FILENAME}" "!-f" [OR]
+RewriteCond "%{REQUEST_FILENAME}" "!-d" [OR]
+RewriteRule  "(.*\.(png|gif|css|jpg|js|woff|ttf|ico|svg|rar|html|htm))" "$1" [PT]
+
+RewriteCond %{REQUEST_URI} !^/public/
+RewriteCond "%{REQUEST_FILENAME}" "!-f" [OR]
+RewriteCond "%{REQUEST_FILENAME}" "!-d" [OR]
+RewriteRule "^robots.txt$" "robots.txt" [L]
+
+RewriteCond %{REQUEST_URI} !^/public/
+RewriteCond "%{REQUEST_FILENAME}" "!-f" [OR]
+RewriteCond "%{REQUEST_FILENAME}" "!-d" [OR]
+RewriteRule ^(.*)$ index.php?$1 [L,QSA]
+
+</IfModule>

@@ -1,0 +1,15 @@
+js/*.js
+js/*.map
+!js/*.min.js
+!js/*.min.map.js
+!bundles
+
+css/*.css
+css/*.map
+
+/build/
+/.well-known/
+/dist/
+/images/
+/img/
+/uploads/

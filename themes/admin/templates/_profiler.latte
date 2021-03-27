@@ -1,0 +1,27 @@
+<div style="position: fixed; z-index: 99; bottom: 45px; left: 0; right:60vw ; height: auto; max-height: 350px; overflow-y: scroll; background: #cacaca;">
+    <div class="border-0 rounded-0 alert alert-danger mb-0">
+        Exceptions
+    </div>
+
+    <div style="padding: 12px;">
+        {foreach $exceptions as $exception}
+            <p style="margin:0;">{$exception|escape}</p>
+        {/foreach}
+    </div>
+</div>
+
+<div class="GWrjcE9aSx85U">
+    <div style="color: white; display: inline-block;">
+        <span style="float: left; position: relative; line-height: 40px; left: 20px;">GWM Profiler</span>
+        
+        <ul style="list-style-type: none; display: inline-block;">
+            <li style="position: relative; top: 6px; display: inherit;"><a href="#" class="btn btn-sm btn-secondary" style="color: whitesmoke;">Backtrace <span style="position: relative; top: -7px; font-size: 0.65rem;" class="badge badge-primary">0</span></a></li> 
+            <li style="position: relative; top: 6px; display: inherit;"><a href="#" class="btn btn-sm btn-secondary" style="color: whitesmoke;">Security <span style="position: relative; top: -7px; font-size: 0.65rem;" class="badge badge-primary">0</span></a></li> 
+            <li style="position: relative; top: 6px; display: inherit;"><a href="#" class="btn btn-sm btn-secondary" style="color: whitesmoke;">Security <span style="position: relative; top: -7px; font-size: 0.65rem;" class="badge badge-primary">0</span></a></li>
+        </ul>
+    </div>
+    
+    <div style="position: relative; color: white; float: right; right: 20px; line-height: 40px;">
+        Elapsed: <b>{$elapsed} ms.</b>
+    </div>
+</div>

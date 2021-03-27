@@ -1,0 +1,89 @@
+{layout '../basis.latte'}
+
+{block container-override}
+<div class="container">
+    <div class="row">
+        <div class="col-s-12 col-md-6 col-lg-4">
+            <div class="card border-0 m-3">
+                <div class="card-body bg-light rounded">
+                    <h6 class="card-header">Category</h6>
+
+                    <ul class="list-group">
+                      <li class="list-group-item border-top-0 border-left-0 border-right-0">
+                        <a href="#">None</a>
+                      </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card border-0 m-3">
+                <div class="card-body bg-light rounded">
+                    <h6 class="card-header">Filter By</h6>
+
+                    <ul class="list-group">
+                      <li class="list-group-item border-top-0 border-left-0 border-right-0">
+                           Categories
+                           <ul>
+                               {foreach $categories as $category}
+                                   <li>
+                                        <label>{$category->name}</label>
+                                        <input type="checkbox"/>
+                                   </li>
+                               {/foreach}
+                           </ul>
+                      </li>
+                      <li class="list-group-item border-top-0 border-left-0 border-right-0">
+                             Prices
+                             <ul>
+                                 <li>
+                                      <label>0.00-0.00</label>
+                                      <input type="range" min="1" max="100" value="0"/>
+                                 </li>
+                             </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-s-12 col-md-6 col-lg-8">
+           <div class="card border-0 m-3">
+                 <div class="card-body bg-light rounded">
+                    <h3>Category</h3>
+                    <p>Description.</p>
+                </div>
+           </div>
+
+           <h5 class="float-left">There are {$products|length} products.</h5>
+
+           <div class="float-right">Sort By:
+                <select>
+                    <option value="0">Default</option>
+                </select>
+           </div>
+
+           <div style="clear: both;"></div>
+
+           <div class="d-block">
+                <div n:foreach="$products as $product"
+                     class="card d-inline-flex m-3 rounded-0"
+                     style="width: 256px; max-height: 256px;
+                 ">
+                         <img alt="..." src="{$product->image}"
+                         style="object-fit: contain; width: 256px; height: 160px;"
+                         class="card-body p-0"/>
+
+                         <div class="card-footer rounded-0 bg-light p-0" style="min-height: 100px;">
+                            <h5 class="text-primary mt-2 mb-0 text-center">{$product->title}</h5>
+                            <p class="text-secondary m-0 text-center">{$product->price}</p>
+                        </div>
+               </div>
+           </div>
+
+           <div class="card d-inline-block border-0 m-3">
+                Showing {$products|length}-{$products|length} of {$products|length} item(s).
+           </div>
+        </div>
+    </div>
+</div>
+{/block}
