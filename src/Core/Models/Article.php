@@ -60,11 +60,21 @@ class Article
     public string $created_at;
 
     /**
+     * Undocumented variable
+     *
+     * @var bool
+     */
+    public bool $pinned;
+
+    /**
      * @magic
      */
     function __construct()
     {
-        $this->created_at = (new DateTime())->format("Y-m-d");
+        /*
+        if(!$this->created_at) {
+            $this->created_at = (new DateTime())->format("Y-m-d");
+        }*/
         Schema::$PRIMARY_SCHEMA->Create(Article::class, 'articles');
     }
 

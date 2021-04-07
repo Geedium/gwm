@@ -23,6 +23,11 @@ namespace GWM\Core {
             $this->Init();
         }
 
+        private function __clone()
+        {
+            exit;
+        }
+
         /**
          * Function Get
          *

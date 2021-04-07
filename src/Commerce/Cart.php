@@ -12,6 +12,9 @@ namespace GWM\Commerce {
      */
     class Cart extends Singleton
     {
+        public float $total = 0.0;
+        public string $currency = 'EUR';
+
         protected function Init(): void
         {
             Session::Get();

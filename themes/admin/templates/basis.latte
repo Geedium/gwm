@@ -25,154 +25,9 @@
 
         <style>:root {}</style>
 
-        <link rel="stylesheet" href="/bundles/gwm/css/gwm.min.css">
-        <link rel="stylesheet" href="/bundles/simptip/css/simptip.min.css">
-
-        <link rel="stylesheet" href="/vendor/css/fontawesome.min.css">
-        <link rel="stylesheet" href="/vendor/css/Chart.min.css">
-        <link rel="stylesheet" href="/css/dashboard.generated.css">
-        <link rel="stylesheet" href="/css/dashboard.extra.css">
-        <link rel="stylesheet" href="/css/toastify.css">
-
-        <style>
-        .modal {
-  display: none; /* Hidden by default */
-  position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
-  left: 0;
-  top: 0;
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
-  background-color: rgb(0,0,0); /* Fallback color */
-  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-}
-
-/* Modal Content/Box */
-.modal-content {
-  background-color: #fefefe;
-  margin: 15% auto; /* 15% from the top and centered */
-  padding: 20px;
-  border: 1px solid #888;
-  width: 80%; /* Could be more or less, depending on screen size */
-}
-
-/* The Close Button */
-.close {
-  color: #aaa;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-}
-
-.close:hover,
-.close:focus {
-  color: black;
-  text-decoration: none;
-  cursor: pointer;
-}
-
-        .chat {
-            position: absolute;
-            display: none;
-            background: rgba(0, 0, 0, 0.45);
-            box-shadow: 0px 0px 9px 0px #e1e1e1;
-            width: 500px;
-            height: 350px;
-            z-index: 2;
-            border-radius: 9px;
-            left: calc(100% - 550px);
-            overflow: hidden;
-        }
-        .chat-opened {
-            display: flex !important;
-        }
-
-        .contacts {
-            width: 150px;
-            background: rgba(255, 255, 255, 0.75);
-            height: inherit;
-            display: flex;
-            flex-flow: column wrap;
-        }
-        
-        .contacts > .search-group {
-            align-self: center;
-            width: 75%;
-            margin-bottom: 9px;
-            margin-top: 9px;
-            display: block;
-        } .contacts > .search-group > input[type=text] {
-            padding: 4px;
-            width: 80%;
-            height: 26px;
-            float: left;
-            border-right: 0;
-            border-top-right-radius: 0;
-            border-bottom-right-radius: 0;
-        } .contacts > .search-group > button {
-            float: right;
-            width: 20%;
-            padding: 4px;
-            height: 26px;
-            border-top: 1px solid #cfd3d7;
-            border-right: 1px solid #cfd3d7;
-            background: white;
-            border-bottom: 1px solid #cfd3d7;
-            border-top-right-radius: 3px;
-            border-bottom-right-radius: 3px;
-        }
-
-        .chat > .view {
-            width: calc(100% - 150px);
-            background: white;
-            border-left: 1px solid #c6c6c6;
-            height: inherit;
-            display: flex;
-            flex-flow: column nowrap;
-        }
-
-        .contact {
-            background: #e2e2e2;
-            padding: 4px;
-            text-align: right;
-            font-size: 0.8em;
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-        } .contact > .avatar {
-            width: 48px;
-            height: 48px;
-            position: relative;
-            left: 5px;
-        } .contact > .avatar img {
-            width: 48px;
-            height: 48px;
-        }
-
-        .view > .user {
-            width: 100%;
-            flex-basis: 55px;
-            background: #e9e9e9;
-            border-bottom: 2px solid #b8b8b8;
-            align-items: center;
-            text-align: left;
-            display: flex;
-            padding: .55rem;
-        } .view > .msg {
-            width: 100%;
-            flex-grow: 1;
-        } .view > .send {
-            width: 100%;
-            flex-basis: 40px;
-            background: #a3a3a3;
-        }
-
-
-        header {
-            margin-left: 350px;
-        }
-        </style>
+        <link rel="icon" href="favicons/favicon.ico" type="image/x-icon" />
+        <link rel="stylesheet" type="text/css" href="{css('admin')}" />
+        <link rel="stylesheet" type="text/css" media="print" href="/vendor/css/Chart.min.css" />
 
         {block styles}{/block}
 
@@ -306,7 +161,7 @@
                     </button>
                 </li>
                 {include nav-link, 'Logs', 'book-open', '/dashboard/logs'}
-                {include nav-link, 'Sign-Out', 'sign-out-alt', '/sign-out?scope=dashboard'}
+                {include nav-link, 'Sign-Out', 'sign-out-alt', '/out'}
             </ul>
         </header>
 

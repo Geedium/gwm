@@ -115,6 +115,7 @@ EOF;
             die('Output buffering failed.');
         }
 
+        http_response_code($status);
         session_write_close();
         exit;
     }
@@ -127,8 +128,13 @@ EOF;
         $this->setContent($html)->send(404);
     }
 
-    function Redirect($url = '/', $status = 301)
+    function Redirect($url = '/', array $options = null, $status = 301)
     {
+        if ($options != null) {
+            $_SESSION['messages'] = [];
+            $_SESSION['messages'][] = $options['message'];
+        }
+
         if (headers_sent() == true) {
             die('Violation detected when sending, attempted to resend headers.');
         }

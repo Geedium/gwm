@@ -23,7 +23,7 @@ class Router
     private static array $req = [];
     private $url;
 
-    public static Mux $_ROUTER;
+    //public static Mux $_ROUTER;
 
     /**
      * @magic
@@ -66,7 +66,7 @@ class Router
         unlink(GWM['DIR_ROOT'] . '/tmp/gwm/routes.json');
         unlink(GWM['DIR_ROOT'] . '/tmp/gwm/routes.cfg.json');
 
-        $final_routes = json_decode(file_get_contents(GWM['DIR_ROOT'] . '/routes/core.json'), true);
+        $final_routes = json_decode(file_get_contents(GWM['DIR_ROOT'] . '/config/routes/core.json'), true);
         if (!$final_routes) die(debug_backtrace());
 
         $di = new \DirectoryIterator(GWM['DIR_ROOT'] . '/src');
@@ -77,8 +77,8 @@ class Router
                 continue;
 
             $filename = strtolower($name);
-
-            $routes = json_decode(file_get_contents(GWM['DIR_ROOT'] . "/routes/$filename.json"), true);
+            
+            $routes = json_decode(file_get_contents(GWM['DIR_ROOT'] . "/config/routes/$filename.json"), true);
             foreach ($routes as $method => $route) {
                 $final_routes[$method] ??= [];
 
@@ -115,17 +115,33 @@ class Router
 
     function Resolve(Response $response)
     {
-        self::$_ROUTER = $mux = new Mux;
+        if (PHP_OS_FAMILY == 'Linux') {
+            $load = sys_getloadavg();
 
-        if(!is_dir(GWM['DIR_ROOT'].'/tmp')) {
+            /**
+             * Server might take heavy load but
+             * in case of denial attacks
+             * it is smart to stop routing specially
+             * when it comes to cloud services.
+             */
+            if ($load[0] > 0.80) {
+                header('HTTP/1.1 503 Too busy, try again later');
+                die('Server too busy. Please try again later.');
+            }
+        }
+
+        //self::$_ROUTER = $mux = new Mux;
+        $mux = new Mux;
+
+        if (!is_dir(GWM['DIR_ROOT'].'/tmp')) {
             mkdir(GWM['DIR_ROOT'] . '/tmp');
         }
 
-        if(!is_dir(GWM['DIR_ROOT'].'/tmp/gwm')) {
+        if (!is_dir(GWM['DIR_ROOT'].'/tmp/gwm')) {
             mkdir(GWM['DIR_ROOT'] . '/tmp/gwm');
         }
 
-        if(!file_exists(GWM['DIR_ROOT'].'/tmp/gwm/routes.json')) {
+        if (!file_exists(GWM['DIR_ROOT'].'/tmp/gwm/routes.json')) {
             $this->Compile();
         } else {
             $mod = file_get_contents(GWM['DIR_ROOT'] . '/tmp/gwm/routes.cfg.json');
@@ -138,7 +154,7 @@ class Router
         $routes = file_get_contents(GWM['DIR_ROOT'].'/tmp/gwm/routes.json');
         $routes = json_decode($routes);
 
-        foreach($routes as $method => $route) {
+        foreach ($routes as $method => $route) {
             foreach ($route as $slug => $props) {
                 $controller = $props[0];
                 $action = $props[1];
@@ -154,17 +170,13 @@ class Router
             }
         }
 
-        $this->Match('/robots.txt', function () {
-            ob_start();
-
-            header('Content-Type: text/plain;');
-            echo file_get_contents(GWM['DIR_PUBLIC'] . '/robots.txt');
-
-            ob_end_flush();
-            http_response_code(200);
+        $this->match_user_profile(function($response, $username) {
+            $user_controller = new \GWM\Core\Controllers\User();
+            $user_controller->Profile($response, $username);
             exit;
-        });
+        }, $response);
 
+        /*
         $this->Match('/send', function() {
             $name = "NP";
             $message = trim(htmlspecialchars($_POST['message']));
@@ -258,9 +270,7 @@ class Router
             $dash->media();
             $this->Profiler();
             exit;
-        });
-
-        $mux->get('/user/:slug', [\GWM\Core\Controllers\User::class, 'Profile']);
+        });*/
 
         $mux->get('/:id', function(array $options = []) {
             $object = new \GWM\Core\Controllers\Home();
@@ -269,8 +279,17 @@ class Router
             'require' => [ 'id' => '\d+', ],
             'default' => [ 'id' => '1', ]
         ]);
+        
+        $mux->get('/articles/:slug?comment=:id&action=delete', [\GWM\Core\Controllers\Article::class, 'Delete']);
 
         $mux->get('/articles/:slug', [\GWM\Core\Controllers\Article::class, 'Get']);
+        $mux->post('/articles/:slug', [\GWM\Core\Controllers\Article::class, 'PostComment']);
+
+        $mux->post('/checkout', function() use($response) {
+            $controller = new \GWM\Commerce\Controllers\Checkout();
+            $controller->create_order($response);
+            exit;
+        });
 
         $mux->get('/paypal/result?:query', [\GWM\Commerce\Controllers\Paypal::class, 'accept']);
 
@@ -312,11 +331,6 @@ class Router
             $response->Redirect('/dashboard/store/products', 301);
         });
 
-        $mux->get('/?fbclid=', [
-            \GWM\Core\Controllers\Home::class,
-            'FacebookRedirect'
-        ]);
-
         $mux->get('/dashboard/analytics', [
             \GWM\Core\Controllers\Dashboard::class,
             'Analytics'
@@ -355,6 +369,39 @@ class Router
             'Media'
         ]);
 
+        /**
+         * Service Injection
+         */
+
+        $mux->get('/dashboard', function() {
+            $manifest = [
+                [
+                    'service' => \GWM\Core\Services\Auth::class,
+                    'factory' => [
+                        [
+                            \GWM\Core\Facades\User::class,
+                        ]
+                    ]
+                ],
+            ];
+
+            $services = array();
+
+            foreach ($manifest as $svm) {
+                $args = array();
+
+                for ($n = 0; $n < sizeof($svm['factory']); $n++) {
+                    $facade = new $svm['factory'][$n][0]();
+                    $args[] = $facade->construct();
+                }
+
+                $services[] = new $svm['service'](...$args);
+            }
+
+            $dashboard = new \GWM\Core\Controllers\Dashboard();
+            $dashboard->Entry(new Response(), ...$services);
+        });
+
         $mux->post('/dashboard', [
             \GWM\Core\Controllers\Dashboard::class,
             'Entry'
@@ -365,11 +412,16 @@ class Router
             'Entry'
         ]);
 
+        /**
+         * End
+         */
+
         $mux->get('/dashboard/store/products', [
             \GWM\Commerce\Controllers\Store::class,
             'Products'
         ]);
 
+        /*
         $this->Match('/sign-out?scope=dashboard', function () {
             $auth = new \GWM\Core\Controllers\Auth();
             $auth->Logout();
@@ -379,6 +431,7 @@ class Router
             $auth = new \GWM\Core\Controllers\Auth();
             $auth->Logout();
         });
+        */
 
         $mux->get('/forum', [\GWM\Forum\Controllers\Home::class, 'index']);
 
@@ -439,6 +492,8 @@ class Router
             'default' => ['id' => '1',]
         ]);
 
+        $mux->get('/orders', [\GWM\Commerce\Controllers\OrdersController::class, 'listAction']);
+
         /**
          * COMMERCE BEGIN:
          */
@@ -477,11 +532,11 @@ class Router
 
         if ($route) {
             $response = RouteExecutor::execute($route);
-            Debug::$log[] = $response;
-            exit(0);
         } else {
-            die('Page not found! 404');
-        } 
+            $html = \GWM\Core\Template\Engine::Get()
+                ->Parse('src/templates/http/404.html.latte');
+            $response->setContent($html)->send(404);
+        }
     }
 
     public static function Profiler()
@@ -492,6 +547,32 @@ class Router
             'exceptions' => Debug::$log,
             'elapsed' => round(microtime(true) - GWM['START_TIME'], 2)
         ]);
+    }
+
+    function match_user_profile($function, $response)
+    {
+        $url = $_SERVER['REQUEST_URI'];
+        $regex = '#^/profile/(\w+)$#';
+        $matches=array();
+
+        preg_match($regex, $url, $matches);
+
+        if ($matches[1]) {
+            $user = filter_var($matches[1], FILTER_SANITIZE_URL);
+        }
+
+        if(!$user) return false;
+
+        $length = strlen($user);
+
+        if ($length > 0) {
+            $delimiters = strpos($user, '/');
+            if (!$delimiters) {
+                $function->__invoke($response, $user);
+            }
+        }
+        
+        return false;
     }
 
     function Match($url, $function)

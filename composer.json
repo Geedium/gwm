@@ -3,6 +3,7 @@
     "description": "None.",
     "type": "project",
     "license": "Unlicense",
+    "minimum-stability": "dev",
     "authors": [
         {
             "name": "Gediminas",
@@ -17,38 +18,39 @@
     },
     "autoload": {
         "psr-4": {
-            "GWM\\": "src/"
+            "GWM\\": "src",
+            "GWM\\Core\\": "src/classes/core",
+            "App\\": "usr/classes"
         },
-        "classmap": ["lib", "src"]
+        "classmap": ["src"],
+        "files": [
+            "lib/gwm/func_471e418f14.php",
+            "src/sys.inc.php",
+            "src/math.inc.php"
+        ]
     },
     "require": {
         "corneltek/pux": "2.0.x-dev",
         "latte/latte": "v2.8.3@dev",
         "vlucas/phpdotenv": "^5.2@dev",
-        "ext-pdo": "*",
-        "ext-json": "*",
-        "ext-gd": "*",
-        "ext-zlib": "*",
-        "ext-curl": "*",
         "stripe/stripe-php": "^7.62",
         "phpmailer/phpmailer": "*",
         "twig/twig": "*",
-        "mpdf/mpdf": "^8.0",
         "robthree/twofactorauth": "9999999-dev",
         "google/apiclient": "2.x-dev",
         "paypal/paypal-checkout-sdk": "9999999-dev"
     },
-    "suggest": {
+    "require-dev": {
         
     },
-    "minimum-stability": "dev",
-    "require-dev": {
-        "phpunit/phpunit": "9"
+    "suggest": {
+        "stripe/stripe-php": "",
+        "firebase/php-jwt": ""
     },
     "scripts": {
-        "test": "phpunit tests"
+        
     },
     "scripts-descriptions": {
-        "test": "PHPUnit tests."
+
     }
 }

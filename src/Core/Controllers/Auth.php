@@ -50,11 +50,9 @@ namespace GWM\Core\Controllers {
                     $google_auth_url = $google->createAuthUrl();
                 }
 
-                if(isset($_GET['code']))
-                {
+                if (isset($_GET['code'])) {
                     $token = $google->fetchAccessTokenWithAuthCode($_GET['code']);
-                    if(!isset($token['error']))
-                    {
+                    if (!isset($token['error'])) {
                         $google->setAccessToken($token['access_token']);
                         $_SESSION['access_token'] = $token['access_token'];
 
@@ -75,6 +73,26 @@ namespace GWM\Core\Controllers {
 
                             if ($stmt->rowCount() > 0) {
                                 $username = $stmt->fetchColumn();
+                                
+                                $jwt_token = \Firebase\JWT\JWT::encode([
+                                    'username' => $username
+                                ], $_ENV['JWT_KEY'], 'HS256');
+                                
+                                $stmt = $schema->prepare("UPDATE ${_ENV['DB_PREFIX']}_users
+                                SET token = ? WHERE username= ? ");
+    
+                                $stmt->execute([
+                                    $jwt_token,
+                                    $username
+                                ]);
+    
+                                setcookie("JWT_TOKEN", $jwt_token, 
+                                    time()+3600, '', 
+                                    \GWM\Core\App::DEBUG_MODE ? '127.0.0.1':'.geedium.com',
+                                    true,
+                                    true
+                                 );
+                                 
                                 $_SESSION['username'] = $username;
 
                                 $response->setHeaders([
@@ -87,11 +105,31 @@ namespace GWM\Core\Controllers {
                                 $user = new User();
                                 $user->_INIT($schema);
                                 
+                                $jwt_token = \Firebase\JWT\JWT::encode([
+                                    'username' => $email
+                                ], $_ENV['JWT_KEY'], 'HS256');
+
+                                $stmt = $schema->prepare("UPDATE ${_ENV['DB_PREFIX']}_users
+                                SET token = ? WHERE username= ? ");
+    
+                                $stmt->execute([
+                                    $jwt_token,
+                                    $username
+                                ]);
+    
+                                setcookie("JWT_TOKEN", $jwt_token, 
+                                    time()+3600, '', 
+                                    \GWM\Core\App::DEBUG_MODE ? '127.0.0.1':'.geedium.com',
+                                    true,
+                                    true
+                                 );
+
                                 $user->setUserName($email);
                                 $user->setPassword("");
                                 $user->setEmail($email);
                                 $user->setFirstname($firstname);
                                 $user->setLastname($lastname);
+                                $user->token = $jwt_token;
 
                                 $user->register($schema);
 
@@ -112,15 +150,14 @@ namespace GWM\Core\Controllers {
                     }
                 }
 
-
                 $response->setContent(Preprocessor::Get()->Parse(
-                    'themes/default/templates/login.latte',
-                    [
+                    'res/geedium.theme.bundle/src/core/login.html.latte',
+                [
                     'csrf' => Session::Get()->generateToken(),
                     'google_url' => $google_auth_url
                 ]
                 ))->send();
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 die($e->getMessage());
             }
         }
@@ -138,9 +175,28 @@ namespace GWM\Core\Controllers {
                     $this->POST(function ($schema, $model) use($response) {
                         $data = $schema->Compare('users', ['username', 'password'], $model->getUsername());
 
+                        // CSRF TOKEN is valid create JWT.
                         if(password_verify($_POST['password'], $data[0]['password']) == true) {
                             $_SESSION['username'] = $_POST['username'];
-                            $_SESSION['password'] = $_POST['password'];
+                            
+                            $jwt_token = \Firebase\JWT\JWT::encode([
+                                'username' => $_SESSION['username']
+                            ], $_ENV['JWT_KEY'], 'HS256');
+                            
+                            $stmt = $schema->prepare("UPDATE ${_ENV['DB_PREFIX']}_users
+                            SET token = ? WHERE username= ? ");
+
+                            $stmt->execute([
+                                $jwt_token,
+                                $_SESSION['username']
+                            ]);
+
+                            setcookie("JWT_TOKEN", $jwt_token, 
+                                time()+3600, '', 
+                                \GWM\Core\App::DEBUG_MODE ? '127.0.0.1':'.geedium.com',
+                                true,
+                                true
+                             );
 
                             $response->setHeaders([
                                 'Location: /'
@@ -148,13 +204,13 @@ namespace GWM\Core\Controllers {
 
                             $response->send(301);
                         } else {
-                            echo 'not logged!';
+                            $response->Redirect('/');
                         }
 
                         exit;
                     });
                 }
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 die($e->getMessage());
             }
         }
@@ -167,10 +223,10 @@ namespace GWM\Core\Controllers {
                 $model->_INIT($schema);
 
                 $func = call_user_func(function () use ($schema, $closure, $model) {
-
                     if (!filter_has_var(INPUT_POST, 'username') == true
-                        or !filter_has_var(INPUT_POST, 'password') == true)
+                        or !filter_has_var(INPUT_POST, 'password') == true) {
                         return false;
+                    }
 
                     $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_STRING, FILTER_REQUIRE_SCALAR);
                     $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_STRING, FILTER_REQUIRE_SCALAR);
@@ -188,118 +244,17 @@ namespace GWM\Core\Controllers {
                 });
 
                 if (!$func) {
-                    throw new Exception('Invalid GET or POST!');
+                    throw new \Exception('Invalid GET or POST!');
                 }
-
             } catch (Basic $e) {
                 $response = new Response();
                 $response->setContent($e->getMessage());
                 $response->sendJson(503);
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $response = new Response();
                 $response->setContent($e->getMessage());
                 $response->sendJson(500);
             }
         }
-
-        /*
-        private function login($a, $b)
-        {
-            $latte = new Engine;
-            $latte->setTempDirectory('tmp/latte');
-
-            if (session_status() == PHP_SESSION_NONE) {
-                session_start();
-            } else {
-                session_start();
-                session_regenerate_id();
-            }
-
-            if (empty($_SESSION['token'])) {
-                try {
-                    $_SESSION['token'] = bin2hex(random_bytes(32));
-                } catch (Exception $e) {
-                    echo $e->getMessage();
-                }
-            }
-
-            $csrf = hash_hmac('sha256', 'GWM_AUTH', $_SESSION['token']);
-
-            $params = [
-                'user' => '',
-                'pass' => '',
-                'csrf' => $csrf,
-            ];
-
-            echo 0;
-
-            if (isset($_POST['submit'])) {
-                echo 1;
-
-                // TOKEN EQUALS
-                if (hash_equals($csrf, $_POST['csrf']) == true) {
-
-                    $_SESSION['user'] = $a;
-                    $_SESSION['pass'] = '';
-
-                    $response = new Response();
-                    $response->setHeaders([
-                        'Location: /'
-                    ]);
-
-                    $response->send(301);
-                }
-            }
-
-            $params = [
-                'user' => '',
-                'pass' => '',
-                'csrf' => $csrf,
-            ];
-            $latte->render('themes/default/templates/login.latte', $params);
-        }
-
-        private function register($a, $b)
-        {
-            $latte = new Engine;
-            $latte->setTempDirectory('tmp/latte');
-
-            if (session_status() == PHP_SESSION_NONE) {
-                session_start();
-            } else {
-                session_start();
-                session_regenerate_id();
-            }
-
-            if (empty($_SESSION['token'])) {
-                try {
-                    $_SESSION['token'] = bin2hex(random_bytes(32));
-                } catch (Exception $e) {
-                    echo $e->getMessage();
-                }
-            }
-
-            $csrf = hash_hmac('sha256', 'GWM_AUTH', $_SESSION['token']);
-
-            $params = [
-                'user' => '',
-                'pass' => '',
-                'csrf' => $csrf,
-            ];
-
-            echo 0;
-
-            if (isset($_POST['submit'])) {
-                echo 1;
-
-                if (hash_equals($csrf, $_POST['csrf'])) {
-                    $params['user'] = $a;
-                    $params['pass'] = $b;
-                }
-            }
-
-            $latte->render('themes/default/templates/auth.latte', $params);
-        }
-    }*/
     }
 }

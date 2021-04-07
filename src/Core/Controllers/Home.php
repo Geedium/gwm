@@ -4,6 +4,8 @@ namespace GWM\Core\Controllers {
 
     use GWM\Core\{Reader, Schema, Session, Response, Errors\Basic, Template\Engine};
 
+    use GWM\Mapper;
+
     use GWM\Core\Models\User;
 
     use GWM\Core\Utils\ {
@@ -11,7 +13,9 @@ namespace GWM\Core\Controllers {
         Table
     };
 
-    class Home
+    use GWM\Controller as Controller;
+
+    class Home extends Controller
     {
         private function _substr($str, $start, $length = null)
         {
@@ -20,6 +24,8 @@ namespace GWM\Core\Controllers {
 
         public function Projects()
         {
+            $rp2 = new \GWM\Response();
+
             try {
                 $schema = new Schema($_ENV['DB_NAME']);
             } catch (Basic $e) {
@@ -42,10 +48,18 @@ namespace GWM\Core\Controllers {
 
         public static function ContextChain()
         {
+            Session::Get();
+
+            if(!isset(Schema::$PRIMARY_SCHEMA))
+            {
+                Schema::$PRIMARY_SCHEMA = new Schema($_ENV['DB_NAME']);
+            }
+
             $users = Schema::$PRIMARY_SCHEMA->query("SELECT username FROM `{$_ENV['DB_PREFIX']}_users`")
             ->fetchAll(\PDO::FETCH_CLASS, User::class, []);
 
             return [
+                'user' => Session::Get()->Username(),
                 'users' => $users
             ];
         }
@@ -80,7 +94,7 @@ namespace GWM\Core\Controllers {
 
             $stmt = $schema->prepare("SELECT * 
                 FROM ${_ENV['DB_PREFIX']}_articles
-                ORDER BY created_at DESC
+                ORDER BY pinned DESC, created_at DESC
                 LIMIT 5 
                 OFFSET $offset
             ");
@@ -104,6 +118,7 @@ namespace GWM\Core\Controllers {
             ]);
 
             try {
+                 //$html = file_get_contents(GWM['DIR_ROOT'].'/res/emberjs.theme.bundle/src/index.html');
                  $html = Engine::Get()->Parse('res/'.$_ENV['FALLBACK_THEME'].'/src/core/index.html.latte', $params);
                  $response->setContent($html)->send();
             } catch (\Exception $e) {

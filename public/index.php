@@ -88,8 +88,3 @@ $response = new GWM\Core\Response();
 
 $router = new GWM\Core\Router();
 $router->Resolve($response);
-
-$response->Astray();
-exit(0);
-
-?>

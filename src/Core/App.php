@@ -1,6 +1,8 @@
 <?php
 
 namespace GWM\Core {
+    use \GWM\Mapper;
+
     /**
      * Class App
      * @package GWM\Core
@@ -8,26 +10,19 @@ namespace GWM\Core {
      */
     class App
     {
-        const DEBUG_MODE = false;
+        const DEBUG_MODE = true;
 
         function __construct()
         {
             register_shutdown_function([__CLASS__, 'Shutdown']);
         }
-
+        
         /**
          * Function Shutdown
          * @since 1.0.0
          */
         public static function Shutdown()
         {
-            if (self::DEBUG_MODE) {
-                var_dump($http_response_header);
-                var_dump($_ENV);
-                var_dump($_REQUEST);
-                var_dump($_POST);
-            }
-
             if (PHP_SAPI == "cgi" || PHP_SAPI == "cgi-fcgi") {
                 fastcgi_finish_request();
             }

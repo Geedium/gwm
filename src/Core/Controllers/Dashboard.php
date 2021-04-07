@@ -6,6 +6,7 @@ namespace GWM\Core\Controllers {
         Errors\Basic,
         Models\Article,
         Models\User,
+        Services\Auth,
         Plugin,
         Utils\Agent,
         Utils\Debug,
@@ -29,13 +30,15 @@ namespace GWM\Core\Controllers {
      */
     class Dashboard
     {
-        /**
-         * @Route("/dashboard")
-         * @Method("GET")
-         * @throws \Exception
-         */
-        function Entry()
-        {
+         /**
+          * Entry
+          *
+          * @param Response $response
+          * @param Auth $auth
+          * @return void
+          */
+        function Entry($response = null, $auth = null)
+        {            
             try {
                 Session::Get();
 
@@ -162,6 +165,42 @@ namespace GWM\Core\Controllers {
                 $profiler = Router::Profiler();
             }
 
+                        /**
+             * Service injection is new thing.
+             */
+            if ($response != null && $auth != null) {
+                if ($auth->has_role('admin.dashboard') & true) {
+                    
+                } else {
+                    $html = \GWM\Core\Template\Engine::Get()->Parse(
+                        "src/templates/admin/unauthorized.html.latte",
+                        [
+                        'roles' => [
+                            'admin.dashboard'
+                        ]
+                    ]
+                    );
+    
+                    $response->setContent($html)->send(200);
+                    exit;
+                }
+            } else {
+                // BACKWARD COMP.
+
+                $html = \GWM\Core\Template\Engine::Get()->Parse(
+                    "src/templates/admin/unauthorized.html.latte",
+                    [
+                    'roles' => [
+                        'admin.dashboard'
+                    ]
+                ]
+                );
+
+                $response = new Response();
+                $response->setContent($html)->send(200);
+                exit;
+            }
+
             if(!isset(Schema::$PRIMARY_SCHEMA)) {
                 try {
                     Schema::$PRIMARY_SCHEMA = new Schema($_ENV['DB_NAME']);
@@ -169,6 +208,8 @@ namespace GWM\Core\Controllers {
                     die($e->getMessage());
                 }
             }
+
+            
 
             $users = Schema::$PRIMARY_SCHEMA->Count(User::class);
 
@@ -479,7 +520,7 @@ STYLE
             $latte = new Engine;
             $latte->setTempDirectory('tmp/latte');
 
-            $html = $latte->renderToString('themes/admin/templates/report.latte',
+            $html = \GWM\Core\Template\Engine::Get()->Parse('themes/admin/templates/report.latte',
                 array_merge(self::Defaults(), [
                     'username' => $_SESSION['username'] ?? '',
                     'avatar' => strtolower($_SESSION['username']) ?? '',
@@ -507,7 +548,7 @@ STYLE
 
             $composer = json_decode(file_get_contents('composer.lock'), true)['packages'];
 
-            $html = $latte->renderToString('themes/admin/templates/dependencies.latte',
+            $html = \GWM\Core\Template\Engine::Get()->Parse('themes/admin/templates/dependencies.latte',
                 array_merge(self::Defaults(), [
                     'avatar' => strtolower($_SESSION['username']) ?? '',
                     'vendor' => $composer,
@@ -557,7 +598,7 @@ STYLE
 
             unset($dummy);
 
-            $html = $latte->renderToString('themes/admin/templates/analytics.latte',
+            $html = \GWM\Core\Template\Engine::Get()->Parse('themes/admin/templates/analytics.latte',
                 array_merge(self::Defaults(), [
                     'avatar' => strtolower($_SESSION['username']) ?? '',
                     'users' => implode(',', [
@@ -610,7 +651,7 @@ STYLE
                 echo $e->getMessage();
             }
 
-            $html = $latte->renderToString('themes/admin/templates/users.latte',
+            $html = \GWM\Core\Template\Engine::Get()->Parse('themes/admin/templates/users.latte',
                 array_merge(self::Defaults(), [
                     'users' =>  $users,
                 ])
@@ -708,7 +749,7 @@ STYLE
             $latte = new Engine;
             $latte->setTempDirectory('tmp/latte');
 
-            $html = $latte->renderToString('themes/admin/templates/settings.latte',
+            $html = \GWM\Core\Template\Engine::Get()->Parse('themes/admin/templates/settings.latte',
                 array_merge(self::Defaults(), [
 
                 ])

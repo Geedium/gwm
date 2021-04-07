@@ -1,0 +1,15 @@
+{extends 'login.basis.html.latte'}
+
+{block content}
+<div class="bad-request">
+    <h3>Unauthorized <app-link to="/dashboard"><i class="fa fa-external-link-alt"></i></app-link></h3>
+    <alert-box>Unable to access due to a lack of privileges.</alert-box>
+    <h4 class="mt-2">Required</h4>
+    <ul>
+        <li n:foreach="$roles as $role">
+            {$role}
+        </li>
+    </ul>
+    <app-link to="/out"><i class="fa fa-sign-out-alt"></i> Logout</app-link>
+</div>
+{/block}

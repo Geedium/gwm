@@ -18,6 +18,8 @@ class Schema extends \PDO
 
     public static self $PRIMARY_SCHEMA;
 
+    //const USE_MONGO = false;
+
     /**
      * Undocumented function
      *
@@ -25,8 +27,11 @@ class Schema extends \PDO
      * @param array $options
      * @throws Basic
      */
-    public function __construct(string $name, array $options = null)
+    public function __construct(string $name = null, array $options = null)
     {
+        $name == null && $name = $_ENV['DB_NAME'];
+
+        /*
         if (!extension_loaded('mongodb')) {
             if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
                 dl('php_mongodb.dll');
@@ -34,6 +39,7 @@ class Schema extends \PDO
                 dl('mongodb.so');
             }
         }
+        */
 
         if (!$options) {
             try {
@@ -318,11 +324,11 @@ class Schema extends \PDO
         return $pdo->fetchAll(self::FETCH_ASSOC);
     }
 
-    public function InsertUser(string $username, string $password, string $email, string $firstname, string $lastname)
+    public function InsertUser(string $username, string $password, string $email, string $firstname, string $lastname, string $token)
     {
         $table = "{$_ENV['DB_PREFIX']}_users";
-        $pdo = parent::prepare("INSERT INTO $table (username, password, algorithm, created_at, avatar, role, firstname, lastname, email) 
-        VALUES(:user, :pass, :algo, :date, :avatar, :role, :firstname, :lastname, :email)");
+        $pdo = parent::prepare("INSERT INTO $table (username, password, algorithm, created_at, avatar, role, firstname, lastname, email, token) 
+        VALUES(:user, :pass, :algo, :date, :avatar, :role, :firstname, :lastname, :email, :token)");
 
         $timezone = new \DateTimeZone('Europe/Vilnius');
         $datetime = new \DateTime('now', $timezone);
@@ -337,7 +343,8 @@ class Schema extends \PDO
             'role' => 'user',
             'firstname' => $firstname, 
             'lastname' => $lastname, 
-            'email' => $email
+            'email' => $email,
+            'token' => $token
         ]);
 
         return parent::lastInsertId();

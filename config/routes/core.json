@@ -1,9 +1,8 @@
 {
   "GET": {
     "": ["GWM\\Core\\Controllers\\Home", "index"],
-    "/out": ["GWM\\Core\\Controllers\\Auth", "logout"],
     "/projects": ["GWM\\Core\\Controllers\\Home", "Projects"],
-    "/dashboard": ["GWM\\Core\\Controllers\\Dashboard", "Entry"],
+    "/out": ["GWM\\Core\\Controllers\\Auth", "logout"],
     "/dashboard/analytics": ["GWM\\Core\\Controllers\\Dashboard", "Analytics"],
     "/dashboard/users": ["GWM\\Core\\Controllers\\Dashboard", "Users"],
     "/dashboard/models": ["GWM\\Core\\Controllers\\Dashboard", "Models"],

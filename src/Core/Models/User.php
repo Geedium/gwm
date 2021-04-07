@@ -56,11 +56,18 @@ class User extends Model
      * @var string (255)
      */
     public string $password;
+    
+    /**
+     * Undocumented variable
+     *
+     * @var string (255)
+     */
+    public string $token;
 
     /**
      * @var string (255)
      */
-    public string $role;
+    public ?string $role = '';
 
     /**
      * Undocumented variable
@@ -134,6 +141,18 @@ class User extends Model
     /**
      * Undocumented function
      *
+     * @param string $avatar
+     * @return self
+     */
+    public function setAvatar(string $avatar): self
+    {
+        $this->avatar = $avatar;
+        return $this;
+    }
+
+    /**
+     * Undocumented function
+     *
      * @param string $lastname
      * @return self
      * @since 1.0.0
@@ -173,6 +192,11 @@ class User extends Model
         return $this->username ?? '';
     }
 
+    public function getRoles(): array
+    {
+        return json_decode($this->role, true) ?? [];
+    }
+
     /**
      * Undocumented function
      *
@@ -198,6 +222,6 @@ class User extends Model
 
     function register($schema)
     {
-        return $schema->InsertUser($this->username, $this->password, $this->email, $this->firstname, $this->lastname);
+        return $schema->InsertUser($this->username, $this->password, $this->email, $this->firstname, $this->lastname, $this->token);
     }
 }

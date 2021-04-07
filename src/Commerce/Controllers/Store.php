@@ -73,7 +73,7 @@ class Store
         unset($_SESSION['alert']);
 
         $html = \GWM\Core\Template\Engine::Get()
-            ->Parse('themes/default/templates/store/catalog.latte', [
+            ->Parse("res/{$_ENV['FALLBACK_THEME']}/src/store/index.html.latte", [
                 'cart' => $cart->Total(),
                 'products' => $products,
                 'categories' => $categories,
@@ -94,10 +94,28 @@ class Store
 
         $schema = new Schema($_ENV['DB_NAME']);
 
-        $stmt = $schema->prepare("SELECT * FROM {$_ENV['DB_PREFIX']}_products");
-        $stmt->execute();
+        $keys = array_keys($_SESSION['cart']);
+        $values = array_values($_SESSION['cart']);
 
-        $products = $schema->All(Product::class);
+        $in  = str_repeat('?,', count($keys) - 1) . '?';
+
+        $stmt = $schema->prepare("SELECT p.*
+            FROM ${_ENV['DB_PREFIX']}_products p
+            WHERE p.id IN ($in)");
+            
+        $stmt->execute($keys);
+
+        $products = $stmt->fetchAll(\PDO::FETCH_CLASS, Product::class);
+
+        foreach ($products as &$product) {
+            $quantity = array_pop($values)['quantity'];
+
+            $product->{'requested'} = $quantity;
+
+            if(!$product->image) {
+                $product->image = 'images/no-image-scaled.png';
+            }
+        }
 
         $total = 0.0;
 
@@ -106,7 +124,7 @@ class Store
         }
 
         $html = \GWM\Core\Template\Engine::Get()
-        ->Parse('themes/default/templates/store/cart.latte', [
+        ->Parse("res/${_ENV['FALLBACK_THEME']}/src/store/cart.html.latte", [
             'total' => $total,
             'username' => Session::Get()->Username(),
             'products' => $products

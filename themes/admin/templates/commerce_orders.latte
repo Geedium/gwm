@@ -22,6 +22,8 @@
                         <th>ID</th>
                         <th>Customer</th>
                         <th>Total</th>
+                        <th>Currency</th>
+                        <th>Fees</th>
                         <th>Payment</th>
                         <th>Status</th>
                         <th>Date</th>
@@ -33,12 +35,14 @@
                 <tbody>
                     <tr n:foreach="$orders as $order">
                         <td>{$order->txn_id}</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
+                        <td>{$order->customer}</td>
+                        <td>{$order->total}</td>
+                        <td>Euro (&euro;)</td>
+                        <td>{$order->fees} %</td>
+                        <td>{$order->method|capitalize}</td>
+                        <td><span style="badge bg-info">{$order->status}</span></td>
+                        <td>{$order->created_at}</td>
+                        <td>{$order->shop}</td>
                         <td>-</td>
                     </tr>
                 </tbody>

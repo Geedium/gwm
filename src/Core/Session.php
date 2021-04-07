@@ -1,6 +1,7 @@
 <?php
 
 namespace GWM\Core {
+
     /**
      * Class Session
      * @internal
@@ -9,19 +10,28 @@ namespace GWM\Core {
      */
     class Session extends Singleton
     {
+        private array $config;
+
         /**
          * Session destructor.
          * @magic
          */
         function __destruct()
         {
-
+            
         }
 
         function Logout()
         {
             if (session_status() != PHP_SESSION_ACTIVE)
                 session_start();
+
+                // Set cookie expired.
+            setcookie("JWT_TOKEN", false, 
+                time()-3600, '', 
+                \GWM\Core\App::DEBUG_MODE ? '127.0.0.1':'.geedium.com',
+                true,
+                true);
 
             session_unset();
             session_destroy();
@@ -35,6 +45,10 @@ namespace GWM\Core {
          */
         public function generateToken(): string
         {
+            if ($this->config['auth-type'] == 'jwt') {
+                
+            }
+
             if (empty($_SESSION['token']) == true) {
                 $_SESSION['token'] = bin2hex(random_bytes(32));
             }
@@ -65,7 +79,24 @@ namespace GWM\Core {
 
         public function Logged(): bool
         {
-            return !empty($_SESSION['username'] ?? '');
+            if (isset($_COOKIE['JWT_TOKEN']) & true) {
+                try {
+                    $jwt_token = \Firebase\JWT\JWT::decode(
+                        $_COOKIE['JWT_TOKEN'],
+                        $_ENV['JWT_KEY'],
+                        ['HS256']
+                    );
+
+                    if ($jwt_token->username == $_SESSION['username']) {
+                        return true;
+                    }
+                    
+                } catch (\Exception $e) {
+                    return false;
+                }
+            }
+            
+            return false;
         }
 
         /**
@@ -79,6 +110,26 @@ namespace GWM\Core {
 
         protected final function Init(): void
         {
+            $configPath = GWM['DIR_ROOT'].'/config/session.json';
+            
+            $config = file_get_contents();
+            if (!file_exists($configPath) & true) {
+                $this->config = [
+                    'auth-type' => 'basic'
+                ];
+
+                file_put_contents(
+                    GWM['DIR_ROOT'].'/config/session.json',
+                    json_encode($this->config, \JSON_PRETTY_PRINT)
+                );
+            } else {
+                $this->config = json_decode(
+                    file_get_contents(
+                        GWM['DIR_ROOT'].'/config/session.json'
+                    ),
+                \JSON_OBJECT_AS_ARRAY);
+            }
+
             if (session_status() == PHP_SESSION_ACTIVE) {
                 session_regenerate_id();
             } else {

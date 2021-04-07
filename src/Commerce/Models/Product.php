@@ -58,6 +58,13 @@ class Product extends Model
     protected ?int $manufacturer = null;
 
     /**
+     * 
+     * 
+     * @var bool
+     */
+    public bool $digital;
+
+    /**
      *
      *
      * @var int

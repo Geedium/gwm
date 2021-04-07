@@ -32,16 +32,13 @@ namespace GWM\Forum\Controllers {
                 Category::class
             ]);
 
-            try {
-                $response->setContent(Engine::Get('twig')->Parse('a0/templates/index.html.twig', [
+            $response->setContent(Engine::Get()
+                ->Parse("res/{$_ENV['FALLBACK_THEME']}/src/forum/index.html.latte", [
                     'topics' => $topics,
                     'categories' => $categories
-                ]));
-            } catch (\Exception $e) {
+                ])
+            )->send(200);
 
-            }
-
-            $response->send();
         }
     }
 }

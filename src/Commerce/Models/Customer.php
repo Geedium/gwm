@@ -23,7 +23,7 @@ namespace GWM\Commerce\Models {
          *
          * @var int|null
          */
-        public ?User $user = null;
+        protected ?int $user = null;
 
         /**
          * Undocumented variable
@@ -59,5 +59,23 @@ namespace GWM\Commerce\Models {
          * @var int
          */
         public int $city;
+
+
+        public function __get($propertyName): ?Customer
+        {
+            if ($propertyName == 'user') {
+                $user = new User();
+    
+                if ($this->user ?? false) {
+                    $user = Schema::$PRIMARY_SCHEMA->Get(User::class, $user, [
+                        'id' => $this->user
+                    ]);
+                }
+    
+                return $user;
+            }
+    
+            return null;
+        }
     }
 }

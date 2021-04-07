@@ -3,6 +3,7 @@
     "/store": ["Store", "index"],
     "/cart": ["Store", "cart"],
     "/checkout": ["Checkout", "index"],
+    "/test": ["Escrow", "testTransaction"],
     "/dashboard/payments/tebex": ["Tebex", "Payments"],
     "/dashboard/store/categories": ["Dashboard", "Categories"],
     "/dashboard/store/orders": ["Dashboard", "Orders"],

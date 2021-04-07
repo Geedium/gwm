@@ -9,8 +9,6 @@ if(basename(getcwd()) == 'tools') {
     chdir('../');
 }
 
-@include_once 'vendor/autoload.php';
-
 set_time_limit(0);
 $status = 0;
 $task = -1;
@@ -52,6 +50,36 @@ class Colors
     }
 }
 
+function catFiles($arrayOfFiles, $outputPath) {
+
+    if(file_exists($outputPath) == true) {
+        unlink($outputPath);
+    }
+
+    $dest = fopen($outputPath,"a");
+
+    foreach ($arrayOfFiles as $f) {
+        out("> $f");
+
+        $FH = fopen($f, "r");
+
+        $line = fgets($FH);
+
+        while ($line !== false) {
+            
+            //$ln = preg_replace("/[\n|\r]/",'', $line);
+
+            fputs($dest, $line);
+
+            $line = fgets($FH);
+        }
+
+        fclose($FH);
+    }
+    fclose($dest);
+    return true;
+}
+
 function out($message, $fg = "\033[1;37m", $bg = "\033[0;41m")
 {
     $string = '';
@@ -78,6 +106,11 @@ textout('
 
 ');
 
+if (!@include_once 'vendor/autoload.php') {
+    out('Failed to import vendor.');
+    exit;
+}
+
 for ($i = 1; $i <= $n; $i++) {
 
     if (!$argv[$i]) {
@@ -93,6 +126,77 @@ for ($i = 1; $i <= $n; $i++) {
                     $options['f'] = $argv[$i + 2];
                 }
             }
+        break;
+        case 'gn':
+            if($argv[$i + 1] == 'template')
+            {
+                out("Generating template");
+
+                try {
+                    out("Parsing template...");
+                    
+                    $engine = new \Latte\Engine();
+
+                    $engine->addFunction('CDN', function($url) {
+                        $recv = file_get_contents($url);
+                        return $recv;
+                    });
+
+                    $engine->addFunction('SRC', function($name) {
+                        $recv = file_get_contents("src/css/$name.min.css");
+                        return $recv;
+                    });
+
+                    $tpl = $engine->renderToString('src/templates/admin/basis.css.latte', [
+                        
+                    ]);
+
+                    $filename = 'admin.'.time().'.css';
+
+                    file_put_contents("public/css/$filename", $tpl);
+
+                    if (file_exists('tmp/gwm/entrypoints.json')) {
+                        $json = json_decode(file_get_contents('tmp/gwm/entrypoints.json'));
+
+                        foreach ($json as $key => $value) {
+                            unlink("public/css/$value");
+                        }
+
+                        unlink('tmp/gwm/entrypoints.json');
+                    }
+
+                    file_put_contents('tmp/gwm/entrypoints.json', json_encode([
+                        'admin' => $filename
+                    ]), JSON_PRETTY_PRINT);
+
+                } catch(\Exception $e) {
+                    out($e->getMessage());
+                }
+            
+                out("Done!");
+            }
+        break;
+        case 'compose-assets':
+            
+            $theme = $argv[$i + 1];
+            out("Composing theme > ".$theme);
+
+            $base_dir = dirname(__DIR__);
+            $public_dir = $base_dir.'/public';
+
+            $o = catFiles([
+                $public_dir.'/bundles/gwm/css/gwm.min.css',
+                $public_dir.'/vendor/css/fontawesome.min.css',
+                $public_dir.'/bundles/simptip/css/simptip.min.css',
+                $base_dir."/res/$theme.theme.bundle/css/app.css"
+            ], $public_dir.'/css/app.css');
+
+            if(!$o) {
+                out("Failed to compose assets!");
+                exit;
+            }
+            out("Success");
+            exit;
         break;
         case 'nr':
             try {
