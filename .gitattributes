@@ -1,1 +1,10 @@
-*.crt linguist-vendored
+*.js linguist-detectable=true
+*.css linguist-detectable=true
+*.scss linguist-detectable=true
+*.sass linguist-detectable=true
+*.html linguist-detectable=false
+*.htm inguist-detectable=false
+*.latte linguist-detectable=false
+*.twig linguist-detectable=false
+tools/*.phar linguist-vendored
+/vendor/ linguist-vendored

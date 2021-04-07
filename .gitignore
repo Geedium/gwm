@@ -1,3 +1,5 @@
+/vendor/
+
 master.code-workspace
 **/.vscode
 **.lock

@@ -37,6 +37,7 @@ namespace GWM\Core {
         /**
          * Handles middlewares from the stack.
          * @return mixed
+         * @since 1.1.0
          */
         public function handle_middleware()
         {

@@ -36,7 +36,7 @@ function error_handler($errno, $errstr, $errfile, $errline)
     Debug::$log[] = "Error[$errno] - $errstr, Line - $errline, File - $errfile";
 }
 
-require_once 'vendor/index.php';
+require_once 'vendor/autoload.php';
 
 if (is_dir(GWM['DIR_TMP']) == false) {
     mkdir(GWM['DIR_TMP']);
