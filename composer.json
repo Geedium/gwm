@@ -26,7 +26,8 @@
         "files": [
             "lib/gwm/func_471e418f14.php",
             "src/sys.inc.php",
-            "src/math.inc.php"
+            "src/math.inc.php",
+            "src/middleware.inc.php"
         ]
     },
     "require": {
@@ -38,7 +39,8 @@
         "twig/twig": "*",
         "robthree/twofactorauth": "9999999-dev",
         "google/apiclient": "2.x-dev",
-        "paypal/paypal-checkout-sdk": "9999999-dev"
+        "paypal/paypal-checkout-sdk": "9999999-dev",
+        "composer/ca-bundle": "1.2.9"
     },
     "require-dev": {
         

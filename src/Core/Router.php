@@ -115,20 +115,10 @@ class Router
 
     function Resolve(Response $response)
     {
-        if (PHP_OS_FAMILY == 'Linux') {
-            $load = sys_getloadavg();
+        $security_middleware = new \GWM\Core\Middlewares\SecurityMiddleware();
 
-            /**
-             * Server might take heavy load but
-             * in case of denial attacks
-             * it is smart to stop routing specially
-             * when it comes to cloud services.
-             */
-            if ($load[0] > 0.80) {
-                header('HTTP/1.1 503 Too busy, try again later');
-                die('Server too busy. Please try again later.');
-            }
-        }
+        $request = new Request();
+        $request->add_middleware($security_middleware);
 
         //self::$_ROUTER = $mux = new Mux;
         $mux = new Mux;
@@ -531,6 +521,8 @@ class Router
         $route = $mux->dispatch($this->url);
 
         if ($route) {
+            \GWM\Core\App::finalize_request($request);
+
             $response = RouteExecutor::execute($route);
         } else {
             $html = \GWM\Core\Template\Engine::Get()

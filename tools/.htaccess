@@ -1,0 +1,3 @@
+<FilesMatch "\.(phar)$">
+    Require all denied
+</FilesMatch>

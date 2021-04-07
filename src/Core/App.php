@@ -2,6 +2,7 @@
 
 namespace GWM\Core {
     use \GWM\Mapper;
+    use \GWM\Core\Response;
 
     /**
      * Class App
@@ -15,6 +16,11 @@ namespace GWM\Core {
         function __construct()
         {
             register_shutdown_function([__CLASS__, 'Shutdown']);
+        }
+
+        public static function finalize_request(Request $request)
+        {
+            $request->handle_middleware();
         }
         
         /**

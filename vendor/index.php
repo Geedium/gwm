@@ -14,7 +14,8 @@ if (!@is_dir(GWM['DIR_PUBLIC'].'/vendor') == true) {
     }
 }
 
-if (!@include_once 'vendor/autoload.php') {
+try {
+if (!include_once 'vendor/autoload.php') {
     if (file_exists('composer.json') == false) {
         trigger_error('Composer package file not found!', E_USER_ERROR);
     }
@@ -39,6 +40,9 @@ if (!@include_once 'vendor/autoload.php') {
     }
     
     exit;
+}
+} catch(\Exception $e) {
+  die($e->getMessage());
 }
 
 $composer = json_decode(file_get_contents('composer.json'), true)['require'];

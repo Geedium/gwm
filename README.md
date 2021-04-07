@@ -12,10 +12,10 @@ Quick Start
 **Command-line interface**
 
 ```shell script
-php tools/gwm diag - Validates GWM integrity.
-php tools/gwm dev - Shortcut to run built-in web server.
-php tools/gwm nr - Creates new unique resource.
-php tools/gwm sass - Attempts to convert sass to css.
+php tools/gwm.phar diag - Validates GWM integrity.
+php tools/gwm.phar dev - Shortcut to run built-in web server.
+php tools/gwm.phar nr - Creates new unique resource.
+php tools/gwm.phar sass - Attempts to convert sass to css.
 ```
 
 **Configurations**
@@ -32,7 +32,6 @@ location / {
 <details>
 <summary>Apache</summary>
 <pre lang="ini">
-RewriteCond %{HTTP_HOST} !^www.domain.tld$
-RewriteRule ^(.*)$ http://www.domain.tld/$1 [R=301,L]
+Pre-configured
 </pre>
 </details>
