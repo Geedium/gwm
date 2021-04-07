@@ -1,7 +1,7 @@
-*.js linguist-detectable=true
-*.css linguist-detectable=true
-*.scss linguist-detectable=true
-*.sass linguist-detectable=true
+*.js linguist-detectable=false
+*.css linguist-detectable=false
+*.scss linguist-detectable=false
+*.sass linguist-detectable=false
 *.html linguist-detectable=false
 *.htm inguist-detectable=false
 *.latte linguist-detectable=false
