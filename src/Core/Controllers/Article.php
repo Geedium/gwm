@@ -6,6 +6,7 @@ namespace GWM\Core\Controllers {
     use GWM\Core\Models\Article as Model;
     use GWM\Core\Response;
     use GWM\Core\Schema;
+    use GWM\Core\Session;
     use Latte\Engine;
 
     /**
@@ -39,38 +40,46 @@ namespace GWM\Core\Controllers {
                 $resp->Redirect('/');
             }
 
-            strlen($content) <= 0 && $resp->Redirect('/articles/'.$slug);
+            try {
+                if (Session::Get()->Check($_POST['csrf']) == true) {
+                    strlen($content) <= 0 && $resp->Redirect('/articles/'.$slug);
 
-            $stmt = $schema->prepare("SELECT id 
-                FROM ${_ENV['DB_PREFIX']}_articles a
-                WHERE a.slug = :slug");
-            
-            $stmt->execute([':slug' => $slug]);
-
-            $article_id = $stmt->fetchColumn(0);
-            if($article_id <= 0) exit; // -- invalid id
-
-            $facade = new \GWM\Core\Facades\User($schema);
-
-            $user = $facade->construct();
-            $user_id = (int)$user->id;
-
-            if ($user_id > 0) {
-                $stmt = $schema->prepare("INSERT INTO ${_ENV['DB_PREFIX']}_comments
-                    (user, article, message) VALUES (:user, :article, :message) ");
+                    $stmt = $schema->prepare("SELECT id 
+                        FROM ${_ENV['DB_PREFIX']}_articles a
+                        WHERE a.slug = :slug");
                     
-                $r = $stmt->execute([
-                    ':user' => $user_id,
-                    ':article' => $article_id,
-                    ':message' => $content
-                ]);
-
-                if ($r) {
-                    $resp->Redirect('/articles/'.$slug);
+                    $stmt->execute([':slug' => $slug]);
+        
+                    $article_id = $stmt->fetchColumn(0);
+                    if($article_id <= 0) exit; // -- invalid id
+        
+                    $facade = new \GWM\Core\Facades\User($schema);
+        
+                    $user = $facade->construct();
+                    $user_id = (int)$user->id;
+        
+                    if ($user_id > 0) {
+                        $stmt = $schema->prepare("INSERT INTO ${_ENV['DB_PREFIX']}_comments
+                            (user, article, message) VALUES (:user, :article, :message) ");
+                            
+                        $r = $stmt->execute([
+                            ':user' => $user_id,
+                            ':article' => $article_id,
+                            ':message' => $content
+                        ]);
+        
+                        if ($r) {
+                            $resp->Redirect('/articles/'.$slug);
+                        } else {
+                            $resp->Redirect('/');
+                        }
+                    }
+                } else {
+                    $resp->Redirect('/');
                 }
+            } catch (\Exception $e) {
+                die($e->getMessage());
             }
-
-            $resp->Redirect('/');
         }
 
         /**
@@ -184,7 +193,8 @@ namespace GWM\Core\Controllers {
                     array_merge(\GWM\Core\Controllers\Home::ContextChain(), [
                         'article' => $model,
                         'comments' => $comments,
-                        'usr' => $usr
+                        'usr' => $usr,
+                        'csrf' => \GWM\Core\Session::Get()->generateToken(),
                     ])
                 );
 

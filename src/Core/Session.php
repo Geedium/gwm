@@ -68,7 +68,7 @@ namespace GWM\Core {
          */
         public function Check($token): bool
         {
-            if (hash_equals($this->generateToken(), $token) == true) {
+            if ($token && hash_equals($this->generateToken(), $token) == true) {
                 unset($_SESSION['token']);
 
                 return true;
@@ -112,7 +112,7 @@ namespace GWM\Core {
         {
             $configPath = GWM['DIR_ROOT'].'/config/session.json';
             
-            $config = file_get_contents();
+            $config = file_get_contents($configPath);
             if (!file_exists($configPath) & true) {
                 $this->config = [
                     'auth-type' => 'basic'

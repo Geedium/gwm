@@ -51,10 +51,10 @@ class SQL
     /**
      * Assigns condition to WHERE command.
      * @param string $condition Condition.
-     * @return Sql
+     * @return SQL
      * @since 1.1.0
      */
-    public function where(string $condition): Sql
+    public function where(string $condition): SQL
     {
         $this->where[] = $condition;
         return $this;

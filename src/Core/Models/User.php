@@ -104,6 +104,14 @@ class User extends Model
         }
     }
 
+    function __get($value) 
+    {
+        if($value == 'roles') {
+            return $this->getRoles();
+        }
+        return $value;
+    }
+
     function _INIT($schema)
     {
         $this->schema = $schema;

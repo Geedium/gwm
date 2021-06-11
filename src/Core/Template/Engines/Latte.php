@@ -27,9 +27,9 @@ namespace GWM\Core\Template\Engines {
             $this->engine = new Engine();
             $this->engine->setTempDirectory('tmp/latte');
 
-            $this->engine->addFilter('trans', [__CLASS__, 'Translate']);
-
-            $this->engine->addFilter('bundle', [__CLASS__, 'Bundle']);
+            $this->engine->addFilter('trans', function ($s) {
+                return $s;
+            });
 
             $this->engine->addFunction('css', function ($s) {
                 if(!file_exists(GWM['DIR_ROOT'].'/tmp/gwm/entrypoints.json'))
@@ -89,12 +89,6 @@ namespace GWM\Core\Template\Engines {
         function Translate(string $s): string
         {
             return self::$lang[$s] ?? $s;
-        }
-
-        function Bundle(string $s): string
-        {
-            $r = new \SplFileInfo('');
-            return $r->getRealPath();
         }
 
         function Parse(string $path, array $params = []): string

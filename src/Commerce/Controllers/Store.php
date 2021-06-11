@@ -42,7 +42,7 @@ class Store
             $category = new Category();
             $category->_INIT($schema);
 
-            $categories = $schema->All(['categories', Category::class], 'ref IS NULL') ?? [];
+            $categories = $schema->All(['categories', Category::class]);
 
         } catch (\ReflectionException $e) {
             Debug::$log[] = $e->getMessage();
@@ -97,30 +97,32 @@ class Store
         $keys = array_keys($_SESSION['cart']);
         $values = array_values($_SESSION['cart']);
 
-        $in  = str_repeat('?,', count($keys) - 1) . '?';
+        if (sizeof($keys) > 0) {
+            $in  = str_repeat('?,', count($keys) - 1) . '?';
 
-        $stmt = $schema->prepare("SELECT p.*
-            FROM ${_ENV['DB_PREFIX']}_products p
-            WHERE p.id IN ($in)");
-            
-        $stmt->execute($keys);
-
-        $products = $stmt->fetchAll(\PDO::FETCH_CLASS, Product::class);
-
-        foreach ($products as &$product) {
-            $quantity = array_pop($values)['quantity'];
-
-            $product->{'requested'} = $quantity;
-
-            if(!$product->image) {
-                $product->image = 'images/no-image-scaled.png';
+            $stmt = $schema->prepare("SELECT p.*
+                FROM ${_ENV['DB_PREFIX']}_products p
+                WHERE p.id IN ($in)");
+                
+            $stmt->execute($keys);
+    
+            $products = $stmt->fetchAll(\PDO::FETCH_CLASS, Product::class);
+        
+            foreach ($products as &$product) {
+                $quantity = array_pop($values)['quantity'];
+    
+                $product->{'requested'} = $quantity;
+    
+                if (!$product->image) {
+                    $product->image = 'images/no-image-scaled.png';
+                }
             }
-        }
-
-        $total = 0.0;
-
-        for($i = 0; $i < sizeof($products); $i++) {
-            $total += $products[$i]->getPrice();
+    
+            $total = 0.0;
+    
+            for ($i = 0; $i < sizeof($products); $i++) {
+                $total += $products[$i]->getPrice();
+            }
         }
 
         $html = \GWM\Core\Template\Engine::Get()

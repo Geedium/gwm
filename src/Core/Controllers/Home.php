@@ -13,19 +13,30 @@ namespace GWM\Core\Controllers {
         Table
     };
 
-    use GWM\Controller as Controller;
-
-    class Home extends Controller
+    class Home
     {
         private function _substr($str, $start, $length = null)
         {
             return (ini_get('mbstring.func_overload') & 2) ? mb_substr($str, $start, ($length === null) ? mb_strlen($str, '8bit') : $length, '8bit') : substr($str, $start, ($length === null) ? strlen($str) : $length);
         }
 
+        function pingDomain($domain){
+            $starttime = microtime(true);
+            $file      = fsockopen ($domain, 80, $errno, $errstr, 10);
+            $stoptime  = microtime(true);
+            $status    = 0;
+        
+            if (!$file) $status = -1;  // Site is down
+            else {
+                fclose($file);
+                $status = ($stoptime - $starttime) * 1000;
+                $status = floor($status);
+            }
+            return $status;
+        }
+
         public function Projects()
         {
-            $rp2 = new \GWM\Response();
-
             try {
                 $schema = new Schema($_ENV['DB_NAME']);
             } catch (Basic $e) {
@@ -33,14 +44,71 @@ namespace GWM\Core\Controllers {
             }
             Schema::$PRIMARY_SCHEMA = $schema;
 
+            $projects = [
+                (object)[
+                    'name' => 'Cloth Path',
+                    'description' => 'No description.',
+                    'leader' => 'trep_trep',
+                    'state' => false,
+                    'link' => '',
+                    'private' => true,
+                    'ping' => 0,
+                    'tags' => [
+                        'Cryptocurrency',
+                        'Shop'
+                    ]
+                ]
+            ];
+
+            $adverts = [
+                (object)[
+                    'name' => 'Cherry TEAM',
+                    'description' => 'Building Design and Construction Services',
+                    'ping' => 0,
+                    'active' => false,
+                    'link' => 'www.cherryteam.co.uk',
+                    'tags' => [
+                        'Designing',
+                        'Building services'
+                    ]
+                ]
+            ];
+            
+            $removeAt = [];
+
+            for($i = 0; $i < count($adverts); $i++) {
+                if(!$adverts[$i]->active) {
+                    $removeAt[] = $i;
+                    continue;
+                }
+
+                if ($adverts[$i]->link) {
+                    $adverts[$i]->ping = $this->pingDomain($adverts[$i]->link);
+                }
+            }
+
+            foreach($removeAt as $i) {
+                \array_splice($adverts, $i);
+            }
+
+            if($projects[0]->link) {
+                $projects[0]->ping = $this->pingDomain($projects[0]->link);
+            }
+
+            if($projects[0]->ping < 0) {
+                $projects[0]->ping = 0;
+            }
+
             $response = new Response();
             $html = Engine::Get()->Parse(
                 'res/'.$_ENV['FALLBACK_THEME'].'/src/projects.html.latte',
                 array_merge(
                     self::ContextChain(),
                     [
-                    'username' => Session::Get()->Username()
-                ]
+                        'username' => Session::Get()->Username(),
+                        'projects' => $projects,
+                        'adverts' => $adverts
+                    ]
                 )
             );
             $response->setContent($html)->send();

@@ -23,9 +23,9 @@ namespace GWM\Forum\Models {
 
         /**
          * Undocumented variable
-         *
-         * @var Topic[] $topics
+         * 
+         * @var int
          */
-        public array $topics;
+        public ?int $parent_id = null;
     }
 }

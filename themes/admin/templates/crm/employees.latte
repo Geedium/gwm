@@ -1,0 +1,48 @@
+{layout '../basis.latte'}
+
+{block styles}
+<style>
+.wcm-row-p[data-c9827031] .text-center {
+    text-align: center;
+}
+.wcm-row-p[data-c9827031] .title {
+    margin: 0.625rem;
+    font-weight: bold;
+}
+.wcm-row-p[data-c9827031] .col-sm {
+    width: 10%;
+}
+</style>
+{/block}
+
+{block content}
+<div class="wcm-row-p" data-c9827031>
+    <div class="wcm-col-12">
+        <div class="panel">
+            <div class="text-center title">Employees</div>
+
+            <table class="wcms-table">
+                <thead>
+                    <tr>
+                        <th scope="row">ID <a href="#"><i class="fa fa-sort"></i></a> </th>
+                        <th class="text-center col-sm">Avatar</th>
+                        <th class="text-center">Name <a href="#"><i class="fa fa-sort"></i></a> </th>
+                        <th class="text-center">Salary <a href="#"><i class="fa fa-sort"></i></a> </th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {if $users }
+                        
+                    {else}
+                    <tr>
+                        <td colspan="5" class="text-center">No employees.</td>
+                    </tr>
+                    {/if}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{/block}

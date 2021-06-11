@@ -2,6 +2,11 @@
 
 namespace GWM\Commerce\Controllers;
 
+use GWM\Core\ {
+    Schema,
+    Response
+};
+
 /**
  * Root Controller
  * 
@@ -12,5 +17,17 @@ namespace GWM\Commerce\Controllers;
  */
 class RootController
 {
-    
+    public function listProducts(Response $response)
+    {
+        $data = new Schema($_ENV['DB_NAME']);
+        
+        $stmt = $data->prepare("SELECT * FROM ${_ENV['DB_PREFIX']}_products");
+        $stmt->execute();
+
+        $r = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        $response->sendJson([
+            $r
+        ]);
+    }
 }

@@ -1,0 +1,1 @@
+Adding more web applications to same base might lead to security issues. Ensure that index.php preserved in every directory.

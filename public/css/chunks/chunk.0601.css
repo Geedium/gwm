@@ -1,0 +1,13 @@
+.svg-overlay {
+   position: absolute;
+   z-index: -1;
+   width: 100%;
+}
+
+nav-bar {
+    margin-bottom: 0 !important;
+}
+
+content-wrapper {
+    margin-top: 1.85rem;
+}

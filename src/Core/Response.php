@@ -9,6 +9,9 @@ use Latte\Engine;
  */
 class Response
 {
+    public const HTTP_OK = 200;
+    public const HTTP_ERROR = 500;
+
     private $content;
     private $headers;
     private $status;
@@ -51,9 +54,10 @@ EOF;
      * @param string $data
      * @return Response
      */
-    public function setContent(string $data) : Response
+    public function setContent(string $data, int $status = 200) : Response
     {
         $this->content = $data;
+        $this->status = $status;
         return $this;
     }
 

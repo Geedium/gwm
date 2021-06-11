@@ -262,6 +262,11 @@ class Router
             exit;
         });*/
 
+        $mux->get('/api/products', function() use ($response) {
+            $_ = new \GWM\Commerce\Controllers\RootController;
+            $_->listProducts($response);
+        });
+
         $mux->get('/:id', function(array $options = []) {
             $object = new \GWM\Core\Controllers\Home();
             $object->index(new \GWM\Core\Response(), $options['pux.route'][3]['vars']['id']);
@@ -361,6 +366,7 @@ class Router
 
         /**
          * Service Injection
+         * @todo Correct routing.
          */
 
         $mux->get('/dashboard', function() {

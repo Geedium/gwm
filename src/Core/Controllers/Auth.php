@@ -85,13 +85,14 @@ namespace GWM\Core\Controllers {
                                     $jwt_token,
                                     $username
                                 ]);
-    
+
+                                /** @todo Find a better way to do this. */
                                 setcookie("JWT_TOKEN", $jwt_token, 
                                     time()+3600, '', 
-                                    \GWM\Core\App::DEBUG_MODE ? '127.0.0.1':'.geedium.com',
+                                    '.geedium.com',
                                     true,
                                     true
-                                 );
+                                );
                                  
                                 $_SESSION['username'] = $username;
 

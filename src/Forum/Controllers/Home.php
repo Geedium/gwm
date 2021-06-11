@@ -12,6 +12,39 @@ namespace GWM\Forum\Controllers {
      */
     class Home
     {
+        // function getCategories(PDO $db, $parentId = null)
+        // {
+        //     $sql = $parentId ? 'WITH RECURSIVE cte (id, name, parent_id) AS (SELECT id, name, parent_id FROM categories WHERE parent_id = ? UNION ALL SELECT c.id, c.name, c.parent_id FROM categories c INNER JOIN cte ON c.parent_id = cte.id) SELECT * FROM cte' : 'SELECT * FROM categories';
+        //     $stmt = $db->prepare($sql);
+        //     $stmt->execute($parentId ? [$parentId] : null);
+        //     return $stmt->fetchAll();
+        // }
+
+        function formCategories($categories, $parentId = null) {
+            $categoryList = [];
+            $category = [];
+
+            if($parentId == null) {
+                $category = array_filter($categories, function($e) {
+                    return $e->parent_id == null;
+                });
+            } else {
+                $category = array_filter($categories, function($e) use($parentId) {
+                    return $e->parent_id == $parentId;
+                });
+            }
+
+            foreach ($category as $cat) {
+                array_push($categoryList, [
+                    'id' => $cat->id,
+                    'title' => $cat->title,
+                    'children' => $this->formCategories($categories, $cat->id)
+                ]);
+            }
+
+            return $categoryList;
+        }
+
         function index()
         {
             $response = new Response();
@@ -31,6 +64,8 @@ namespace GWM\Forum\Controllers {
                 $hex. '_categories',
                 Category::class
             ]);
+
+            $categories = $this->formCategories($categories);
 
             $response->setContent(Engine::Get()
                 ->Parse("res/{$_ENV['FALLBACK_THEME']}/src/forum/index.html.latte", [

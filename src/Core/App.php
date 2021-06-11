@@ -15,6 +15,11 @@ namespace GWM\Core {
 
         function __construct()
         {
+            if(self::DEBUG_MODE)
+            {
+                \error_reporting(E_ALL);
+            }
+
             register_shutdown_function([__CLASS__, 'Shutdown']);
         }
 
@@ -29,6 +34,11 @@ namespace GWM\Core {
          */
         public static function Shutdown()
         {
+            if (self::DEBUG_MODE) {
+                //$current_user = trim(shell_exec('whoami'));
+                //var_dump(\debug_backtrace());
+            }
+
             if (PHP_SAPI == "cgi" || PHP_SAPI == "cgi-fcgi") {
                 fastcgi_finish_request();
             }

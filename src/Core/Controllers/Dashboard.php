@@ -2,20 +2,20 @@
 
 namespace GWM\Core\Controllers {
 
-    use GWM\Core\{Annotations,
-        Errors\Basic,
-        Models\Article,
-        Models\User,
-        Services\Auth,
-        Plugin,
-        Utils\Agent,
-        Utils\Debug,
-        Schema,
-        Session,
-        Utils,
-        Response,
-        Router,
-        Utils\Measurement};
+    use GWM\Core\Annotations;
+use GWM\Core\Errors\Basic;
+use GWM\Core\Models\Article;
+use GWM\Core\Models\User;
+use GWM\Core\Services\Auth;
+use GWM\Core\Plugin;
+use GWM\Core\Utils\Agent;
+use GWM\Core\Utils\Debug;
+use GWM\Core\Schema;
+use GWM\Core\Session;
+use GWM\Core\Utils;
+use GWM\Core\Response;
+use GWM\Core\Router;
+use GWM\Core\Utils\Measurement;
 
     use Latte\Engine;
     use PHPMailer\PHPMailer\Exception;
@@ -30,15 +30,17 @@ namespace GWM\Core\Controllers {
      */
     class Dashboard
     {
-         /**
-          * Entry
-          *
-          * @param Response $response
-          * @param Auth $auth
-          * @return void
-          */
-        function Entry($response = null, $auth = null)
-        {            
+        /**
+         * Entry
+         *
+         * ❌ GWM - Not passed.
+         * 
+         * @param Response $response Respond to client with HTTP response
+         * @param Auth $auth Authentification middleware
+         * @return void
+         */
+        public function Entry($response = null, $auth = null)
+        {
             try {
                 Session::Get();
 
@@ -64,17 +66,15 @@ namespace GWM\Core\Controllers {
                     $data = $schema->Compare('users', ['username', 'password'], $user->getUsername());
 
                     if ($has_csrf and password_verify($password, $data[0]['password']) == true) {
-                        
-
                         $_SESSION['username'] = $user->getUserName();
                         $_SESSION['password'] = $user->getPassword();
 
                         $response = new Response();
                        
-                       /* $response->setStatus(301);
-                        $response->setHeaders([
-                            'Location: /dashboard'
-                        ]);*/
+                        /* $response->setStatus(301);
+                         $response->setHeaders([
+                             'Location: /dashboard'
+                         ]);*/
 
                         $html = '';
 
@@ -91,7 +91,6 @@ namespace GWM\Core\Controllers {
 
                         $response->setContent($html)->send();
                     } else {
-    
                         $google = new \Google_Client();
                         $google->setClientId($_ENV['GOOGLE_CLIENT_ID']);
                         $google->setClientSecret($_ENV['GOOGLE_CLIENT_SECRET']);
@@ -103,11 +102,9 @@ namespace GWM\Core\Controllers {
                             $google_auth_url = $google->createAuthUrl();
                         }
 
-                        if(isset($_GET['code']))
-                        {
+                        if (isset($_GET['code'])) {
                             $token = $google->fetchAccessTokenWithAuthCode($_GET['code']);
-                            if(!isset($token['error']))
-                            {
+                            if (!isset($token['error'])) {
                                 $google->setAccessToken($token['access_token']);
                                 $_SESSION['access_token'] = $token['access_token'];
 
@@ -124,7 +121,7 @@ namespace GWM\Core\Controllers {
                                     $stmt->execute();
 
                                     if ($stmt->rowCount() > 0) {
-                                        $username = $stmt->fetchColumn();                                
+                                        $username = $stmt->fetchColumn();
                                         $_SESSION['username'] = $username;
 
                                         $response = new Response();
@@ -165,12 +162,11 @@ namespace GWM\Core\Controllers {
                 $profiler = Router::Profiler();
             }
 
-                        /**
+            /**
              * Service injection is new thing.
              */
             if ($response != null && $auth != null) {
                 if ($auth->has_role('admin.dashboard') & true) {
-                    
                 } else {
                     $html = \GWM\Core\Template\Engine::Get()->Parse(
                         "src/templates/admin/unauthorized.html.latte",
@@ -201,7 +197,7 @@ namespace GWM\Core\Controllers {
                 exit;
             }
 
-            if(!isset(Schema::$PRIMARY_SCHEMA)) {
+            if (!isset(Schema::$PRIMARY_SCHEMA)) {
                 try {
                     Schema::$PRIMARY_SCHEMA = new Schema($_ENV['DB_NAME']);
                 } catch (Basic $e) {
@@ -213,7 +209,8 @@ namespace GWM\Core\Controllers {
 
             $users = Schema::$PRIMARY_SCHEMA->Count(User::class);
 
-            $html = \GWM\Core\Template\Engine::Get()->Parse('themes/admin/templates/index.latte',
+            $html = \GWM\Core\Template\Engine::Get()->Parse(
+                'themes/admin/templates/index.latte',
                 array_merge(self::Defaults(), [
                     'users' => $users,
                     'ip' => Agent::ip(),
@@ -238,7 +235,7 @@ namespace GWM\Core\Controllers {
             $breadcrumb = array_filter(explode('/', parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH)));
             $breadcrumb_parents = [];
 
-            array_walk($breadcrumb, function (&$value) use(&$breadcrumb_parents) {
+            array_walk($breadcrumb, function (&$value) use (&$breadcrumb_parents) {
                 $breadcrumb_parents[] = $value;
 
                 $value = [
@@ -265,12 +262,13 @@ namespace GWM\Core\Controllers {
                 'avatar' => strtolower($_SESSION['username']) ?? '',
                 'firstname' => $_SESSION['firstname'] ?? '',
                 'plugins' => Plugin::$plugins,
+                'ip' => Agent::ip(),
                 'tabs' => $tabs,
                 'lastname' => $_SESSION['lastname'] ?? ''
             ];
         }
 
-        function Logs()
+        public function Logs()
         {
             $response = new Response();
 
@@ -281,12 +279,12 @@ namespace GWM\Core\Controllers {
                 $stmt = $schema->prepare("SELECT * FROM {$_ENV['DB_PREFIX']}_logs");
                 $stmt->execute();
                 $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-                $html = \GWM\Core\Template\Engine::Get()->Parse('themes/admin/templates/logs.latte',
+                $html = \GWM\Core\Template\Engine::Get()->Parse(
+                    'themes/admin/templates/logs.latte',
                     array_merge(self::Defaults(), [
                         'logs' => $result
                     ])
                 );
-
             } catch (Basic | \Exception $e) {
                 $html = $e->getMessage();
             }
@@ -294,41 +292,42 @@ namespace GWM\Core\Controllers {
             $response->setContent($html)->send();
         }
 
-        function dir_tree($dir_path)
-{
-    $rdi = new \RecursiveDirectoryIterator($dir_path);
+        public function dir_tree($dir_path)
+        {
+            $rdi = new \RecursiveDirectoryIterator($dir_path);
 
-    $rii = new \RecursiveIteratorIterator($rdi);
+            $rii = new \RecursiveIteratorIterator($rdi);
 
-    $tree = [];
+            $tree = [];
 
-    foreach ($rii as $splFileInfo) {
-        $file_name = $splFileInfo->getFilename();
+            foreach ($rii as $splFileInfo) {
+                $file_name = $splFileInfo->getFilename();
 
-        // Skip hidden files and directories.
-        if ($file_name[0] === '.') {
-            continue;
+                // Skip hidden files and directories.
+                if ($file_name[0] === '.') {
+                    continue;
+                }
+
+                $path = $splFileInfo->isDir() ? array($file_name => array()) : array($file_name);
+
+                for ($depth = $rii->getDepth() - 1; $depth >= 0; $depth--) {
+                    $path = array($rii->getSubIterator($depth)->current()->getFilename() => $path);
+                }
+
+                $tree = array_merge_recursive($tree, $path);
+            }
+
+            return $tree;
         }
 
-        $path = $splFileInfo->isDir() ? array($file_name => array()) : array($file_name);
-
-        for ($depth = $rii->getDepth() - 1; $depth >= 0; $depth--) {
-            $path = array($rii->getSubIterator($depth)->current()->getFilename() => $path);
-        }
-
-        $tree = array_merge_recursive($tree, $path);
-    }
-
-    return $tree;
-}
-
-        function Themes()
+        public function Themes()
         {
             $response = new Response();
 
             Session::Get()->Logged() or $response->Astray();
 
-            $theme = \GWM\Core\Template\Engine::Get()->Parse('themes/admin/templates/basis.latte',
+            $theme = \GWM\Core\Template\Engine::Get()->Parse(
+                'themes/admin/templates/basis.latte',
                 array_merge(self::Defaults(), [
                     'avatar' => $_SESSION['username'] ?? ''
                 ])
@@ -341,7 +340,8 @@ namespace GWM\Core\Controllers {
             $path = GWM['DIR_ROOT'].'/resources/'.$key.'/templates/'.$fst[0];
             $contents = file_get_contents($path);
 
-            $html = \GWM\Core\Template\Engine::Get()->Parse('themes/admin/templates/themes/index.latte',
+            $html = \GWM\Core\Template\Engine::Get()->Parse(
+                'themes/admin/templates/themes/index.latte',
                 array_merge(self::Defaults(), [
                     'themeLoaded' => $theme,
                     'tree' => $tree,
@@ -360,13 +360,14 @@ namespace GWM\Core\Controllers {
         /**
          * @magic
          */
-        function ThemesA()
+        public function ThemesA()
         {
             $response = new Response();
 
             Session::Get()->Logged() or $response->Astray();
 
-            $theme = \GWM\Core\Template\Engine::Get()->Parse('themes/admin/templates/basis.latte',
+            $theme = \GWM\Core\Template\Engine::Get()->Parse(
+                'themes/admin/templates/basis.latte',
                 array_merge(self::Defaults(), [
                     'avatar' => $_SESSION['username'] ?? ''
                 ])
@@ -393,7 +394,7 @@ STYLE
             exit;
         }
 
-        function Server()
+        public function Server()
         {
             $response = new Response();
 
@@ -411,7 +412,7 @@ STYLE
             $tmp_size = 0.0;
 
             $it = new \RecursiveDirectoryIterator(GWM['DIR_PUBLIC']);
-            foreach(new \RecursiveIteratorIterator($it) as $file) {
+            foreach (new \RecursiveIteratorIterator($it) as $file) {
                 $extension = $file->getExtension();
 
                 if ($extension == 'png' or
@@ -424,7 +425,7 @@ STYLE
             }
 
             $it = new \RecursiveDirectoryIterator(GWM['DIR_ROOT'].'/src');
-            foreach(new \RecursiveIteratorIterator($it) as $file) {
+            foreach (new \RecursiveIteratorIterator($it) as $file) {
                 $extension = $file->getExtension();
                 $wcms_size += filesize($file->getPathname());
 
@@ -432,14 +433,15 @@ STYLE
             }
 
             $it = new \RecursiveDirectoryIterator(GWM['DIR_ROOT'].'/tmp');
-            foreach(new \RecursiveIteratorIterator($it) as $file) {
+            foreach (new \RecursiveIteratorIterator($it) as $file) {
                 $extension = $file->getExtension();
                 $tmp_size += filesize($file->getPathname());
 
                 unset($extension);
             }
 
-            $html = \GWM\Core\Template\Engine::Get()->Parse('themes/admin/templates/navbar/server.latte',
+            $html = \GWM\Core\Template\Engine::Get()->Parse(
+                'themes/admin/templates/navbar/server.latte',
                 array_merge(self::Defaults(), [
                     'avatar' => strtolower($_SESSION['username']) ?? '',
                     'image_size' => Measurement::Byte($image_size, 2),
@@ -455,7 +457,7 @@ STYLE
             exit;
         }
 
-        function Report()
+        public function Report()
         {
             $response = new Response();
 
@@ -483,7 +485,7 @@ STYLE
                     $mail->Body = $message;
                     $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
 
-                    if($mail->send()) {
+                    if ($mail->send()) {
                         $_SESSION['_message'] = "Message sent!";
                         $_SESSION['_success'] = true;
                         $response->Redirect('/dashboard/report');
@@ -507,20 +509,19 @@ STYLE
             $message = null;
 
             $_AFTER = isset($_SESSION['_message']);
-            if($_AFTER) {
-
+            if ($_AFTER) {
                 $message = $_SESSION['_message'];
                 unset($_SESSION['_message']);
 
                 $success = $_SESSION['_success'];
                 unset($_SESSION['_success']);
-
             }
 
             $latte = new Engine;
             $latte->setTempDirectory('tmp/latte');
 
-            $html = \GWM\Core\Template\Engine::Get()->Parse('themes/admin/templates/report.latte',
+            $html = \GWM\Core\Template\Engine::Get()->Parse(
+                'themes/admin/templates/report.latte',
                 array_merge(self::Defaults(), [
                     'username' => $_SESSION['username'] ?? '',
                     'avatar' => strtolower($_SESSION['username']) ?? '',
@@ -536,9 +537,9 @@ STYLE
         }
 
         /** @magic */
-        function Dependencies()
+        public function Dependencies()
         {
-            if(!Session::Get()->Logged()) {
+            if (!Session::Get()->Logged()) {
                 $response = new Response();
                 $response->Astray();
             }
@@ -548,7 +549,8 @@ STYLE
 
             $composer = json_decode(file_get_contents('composer.lock'), true)['packages'];
 
-            $html = \GWM\Core\Template\Engine::Get()->Parse('themes/admin/templates/dependencies.latte',
+            $html = \GWM\Core\Template\Engine::Get()->Parse(
+                'themes/admin/templates/dependencies.latte',
                 array_merge(self::Defaults(), [
                     'avatar' => strtolower($_SESSION['username']) ?? '',
                     'vendor' => $composer,
@@ -566,9 +568,9 @@ STYLE
         /** @magic
          * @throws Basic
          */
-        function Analytics(): void
+        public function Analytics(): void
         {
-            if(!Session::Get()->Logged()) {
+            if (!Session::Get()->Logged()) {
                 $response = new Response();
                 $response->Astray();
             }
@@ -598,7 +600,8 @@ STYLE
 
             unset($dummy);
 
-            $html = \GWM\Core\Template\Engine::Get()->Parse('themes/admin/templates/analytics.latte',
+            $html = \GWM\Core\Template\Engine::Get()->Parse(
+                'themes/admin/templates/analytics.latte',
                 array_merge(self::Defaults(), [
                     'avatar' => strtolower($_SESSION['username']) ?? '',
                     'users' => implode(',', [
@@ -626,9 +629,9 @@ STYLE
             exit;
         }
 
-        function Users()
+        public function Users()
         {
-            if(!Session::Get()->Logged()) {
+            if (!Session::Get()->Logged()) {
                 $response = new Response();
                 $response->Astray();
             }
@@ -644,14 +647,14 @@ STYLE
                 $dummy->_INIT($schema);
 
                 $users = $schema->All(User::class);
-
             } catch (Basic $e) {
                 echo $e->getMessage();
             } catch (\Exception $e) {
                 echo $e->getMessage();
             }
 
-            $html = \GWM\Core\Template\Engine::Get()->Parse('themes/admin/templates/users.latte',
+            $html = \GWM\Core\Template\Engine::Get()->Parse(
+                'themes/admin/templates/users.latte',
                 array_merge(self::Defaults(), [
                     'users' =>  $users,
                 ])
@@ -664,20 +667,20 @@ STYLE
             exit;
         }
 
-        function Media()
+        public function Media()
         {
             $response = new Response();
 
             !!Session::Get()->Logged() ?: $response->Astray();
 
-            if($_POST['upload_form'] ?? false) {
+            if ($_POST['upload_form'] ?? false) {
                 if ($_FILES['fileToUpload']['tmp_name'] != null) {
                     // if (substr($_FILES['fileToUpload']['type'], 0, 5) == 'image'
                     // || substr($_FILES['fileToUpload']['type'], 0, 5) == 'video') {
-                        move_uploaded_file(
-                            $_FILES["fileToUpload"]["tmp_name"],
-                            GWM['DIR_PUBLIC'] . '/uploads/' . $_SESSION['username'] .'/'. $_FILES["fileToUpload"]["name"]
-                        );
+                    move_uploaded_file(
+                        $_FILES["fileToUpload"]["tmp_name"],
+                        GWM['DIR_PUBLIC'] . '/uploads/' . $_SESSION['username'] .'/'. $_FILES["fileToUpload"]["name"]
+                    );
                     // }
                 }
 
@@ -690,7 +693,6 @@ STYLE
             $iterator = new \FilesystemIterator(GWM['DIR_PUBLIC'].'/uploads/'.$_SESSION['username'].'/');
             $files = array();
             foreach ($iterator as $info) {
-
                 $len = strlen($info->getExtension()) + 1;
                 $_len = strlen($info->getBasename()) - $len;
 
@@ -701,15 +703,17 @@ STYLE
                 ];
             }
 
-            $html = \GWM\Core\Template\Engine::Get()->Parse('themes/admin/templates/media.latte',
-            array_merge(self::Defaults(), [
+            $html = \GWM\Core\Template\Engine::Get()->Parse(
+                'themes/admin/templates/media.latte',
+                array_merge(self::Defaults(), [
                 'uploads' => $files,
                 'max_sz' => ini_get('upload_max_filesize'),
                 'max_post_sz' => ini_get('post_max_size'),
                 'user' => $_SESSION['username'],
                 'space' => $size,
                 'perc' => ($space / 10737418240) * 100
-            ]));
+            ])
+            );
 
             $response = new Response;
             $response->setStatus(200);
@@ -719,17 +723,18 @@ STYLE
         }
 
         /** @magic */
-        function Features()
+        public function Features()
         {
             $response = new Response();
 
-            if(!Session::Get()->Logged()) {
+            if (!Session::Get()->Logged()) {
                 $response->Astray();
             }
 
             $routes = file_get_contents(GWM['DIR_ROOT'].'/tmp/gwm/routes.json');
 
-            $html = \GWM\Core\Template\Engine::Get()->Parse('themes/admin/templates/features.latte',
+            $html = \GWM\Core\Template\Engine::Get()->Parse(
+                'themes/admin/templates/features.latte',
                 array_merge(self::Defaults(), [
                     'routes' => json_decode($routes, true) ?? false
                 ])
@@ -739,9 +744,9 @@ STYLE
         }
 
         /** @magic */
-        function Settings()
+        public function Settings()
         {
-            if(!Session::Get()->Logged()) {
+            if (!Session::Get()->Logged()) {
                 $response = new Response();
                 $response->Astray();
             }
@@ -749,7 +754,8 @@ STYLE
             $latte = new Engine;
             $latte->setTempDirectory('tmp/latte');
 
-            $html = \GWM\Core\Template\Engine::Get()->Parse('themes/admin/templates/settings.latte',
+            $html = \GWM\Core\Template\Engine::Get()->Parse(
+                'themes/admin/templates/settings.latte',
                 array_merge(self::Defaults(), [
 
                 ])
@@ -762,11 +768,11 @@ STYLE
             exit;
         }
 
-        function files()
+        public function files()
         {
             $response = new Response();
 
-            if(!Session::Get()->Logged()) {
+            if (!Session::Get()->Logged()) {
                 $response->Astray();
             }
 
@@ -804,12 +810,12 @@ STYLE
 
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
             curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
-            curl_setopt ($ch, CURLOPT_CAINFO, GWM['DIR_ROOT'].'/certs/ca-certificates.crt');
+            curl_setopt($ch, CURLOPT_CAINFO, GWM['DIR_ROOT'].'/certs/ca-certificates.crt');
             curl_setopt($ch, CURLOPT_URL, $url);
             curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 0);
             curl_setopt($ch, CURLOPT_HEADER, 0);
             curl_setopt($ch, CURLOPT_POST, 0);
-            curl_setopt ($ch, CURLOPT_VERBOSE , 1);
+            curl_setopt($ch, CURLOPT_VERBOSE, 1);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($ch, CURLOPT_KEEP_SENDING_ON_ERROR, 0);
             curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 6);
@@ -826,7 +832,8 @@ STYLE
             // $file = preg_split('/\s+(?![^<>]+>)/m', $file,-1, PREG_SPLIT_DELIM_CAPTURE);
 
             try {
-                $html = \GWM\Core\Template\Engine::Get()->Parse('themes/admin/templates/files.latte',
+                $html = \GWM\Core\Template\Engine::Get()->Parse(
+                    'themes/admin/templates/files.latte',
                     array_merge(self::Defaults(), [
                         'files' => $files,
                         'lines' => $file,
@@ -848,7 +855,7 @@ STYLE
          * @param array $options
          * @throws \Exception
          */
-        function ModelsA(array $options = []): void
+        public function ModelsA(array $options = []): void
         {
             $response = new Response();
 
@@ -891,7 +898,8 @@ STYLE
                 echo $e->getMessage();
             }
 
-            $html = \GWM\Core\Template\Engine::Get()->Parse('themes/admin/templates/models/edit.latte',
+            $html = \GWM\Core\Template\Engine::Get()->Parse(
+                'themes/admin/templates/models/edit.latte',
                 array_merge(self::Defaults(), [
                     'name' => $model_name,
                     'fields' => $data
@@ -901,7 +909,7 @@ STYLE
             $response->setContent($html)->send();
         }
 
-        function models(Response $response)
+        public function models(Response $response)
         {
             if (!Session::Get()->Logged()) {
                 $response->Astray();
@@ -910,7 +918,6 @@ STYLE
             $action = $_POST['action'] ?? false;
 
             if ($action) {
-
                 $filename = GWM['DIR_ROOT'] . '/src/Core/Models/NewModel.php';
 
                 $fp = fopen($filename, "w+");
@@ -961,7 +968,8 @@ STYLE
                 $_models[] = $model->getBasename('.php');
             }
 
-            $html = \GWM\Core\Template\Engine::Get()->Parse('themes/admin/templates/models/index.latte',
+            $html = \GWM\Core\Template\Engine::Get()->Parse(
+                'themes/admin/templates/models/index.latte',
                 array_merge(self::Defaults(), [
                     'models' => $_models,
                 ])
@@ -973,7 +981,7 @@ STYLE
          * @magic
          * @param array|null $options
          */
-        function deleteArticle(array $options = null)
+        public function deleteArticle(array $options = null)
         {
             $response = new Response();
 
@@ -1005,24 +1013,25 @@ STYLE
             $response->Astray();
         }
 
-        function articles(array $options = null)
+        public function articles(array $options = null)
         {
-            if(!Session::Get()->Logged()) {
+            if (!Session::Get()->Logged()) {
                 $response = new Response();
                 $response->Astray();
             }
 
             try {
                 $schema = new Schema($_ENV['DB_NAME']);
-            } catch (Basic $e) { die($e->getMessage()); }
+            } catch (Basic $e) {
+                die($e->getMessage());
+            }
 
             Schema::$PRIMARY_SCHEMA = $schema;
 
-            if(filter_has_var(INPUT_POST, 'action')) {
+            if (filter_has_var(INPUT_POST, 'action')) {
                 $value = filter_input(INPUT_POST, 'action');
 
                 if ($value == 1) {
-
                     $_POST['content'] = str_replace(':embed:', '<iframe ', $_POST['content']);
                     $_POST['content'] = str_replace(':embed_end:', '</iframe>', $_POST['content']);
 
@@ -1035,11 +1044,11 @@ STYLE
                         WHERE id=:id
                     ");
 
-                    if(!$statement) {
+                    if (!$statement) {
                         die(print_r($statement->errorInfo()));
                     }
 
-                    if(!$statement->execute([
+                    if (!$statement->execute([
                         'title' => $title,
                         'id' => $id,
                         'content' => $content
@@ -1077,11 +1086,10 @@ STYLE
                         ]
                     ];
                     $response->sendJson($json, 201);
-
                 } catch (\Exception $e) {
                     \trigger_error($e->getMessage(), E_USER_ERROR);
                 }
-            } else if (\filter_has_var(INPUT_POST, 'id')) {
+            } elseif (\filter_has_var(INPUT_POST, 'id')) {
                 try {
                     $title = filter_input(INPUT_POST, 'title', FILTER_SANITIZE_STRING);
                     $content = filter_input(INPUT_POST, 'content', FILTER_SANITIZE_STRING);
@@ -1097,7 +1105,6 @@ STYLE
 
                     $response = new Response();
                     $response->setContent('')->send(201);
-
                 } catch (\Exception $e) {
                     \trigger_error($e->getMessage(), E_USER_ERROR);
                 }
@@ -1110,8 +1117,7 @@ STYLE
                     $articles = $model->Select($schema);
 
                     $id = $options['pux.route'][3]['vars']['id'];
-                    if($id)
-                    {
+                    if ($id) {
                         $model = $schema->Get(Article::class, $model, [
                             'id' => $id
                         ]);
@@ -1121,13 +1127,13 @@ STYLE
 
                     $latte = new Engine;
                     $latte->setTempDirectory('tmp/latte');
-                    $latte->render('themes/admin/templates/articles.latte',
+                    $latte->render(
+                        'themes/admin/templates/articles.latte',
                         array_merge(self::Defaults(), [
                             'articles' => $articles,
                             'model' => $model,
                         ])
                     );
-
                 } catch (Basic $e) {
                     echo $e->getMessage();
                 }

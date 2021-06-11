@@ -46,7 +46,7 @@ class Cache
 
         $response = new Response();
 
-        $imagedata = imagecreatefrompng($filename);
+        $imagedata = \imagecreatefrompng($filename);
 
         $stream = fopen('php://memory', 'r+');
         imagepng($imagedata, $stream);

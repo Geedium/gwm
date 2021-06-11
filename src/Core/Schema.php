@@ -11,14 +11,20 @@ use function foo\func;
  * 
  * @version 1.0.0
  */
-class Schema extends \PDO
+class Schema
 {
+    private \PDO $pdo;
+
     public $update;
     private $sid;
 
     public static self $PRIMARY_SCHEMA;
 
     //const USE_MONGO = false;
+
+    public function __call($name, $arguments) {
+        return $this->pdo->{$name}(...$arguments);
+    }
 
     /**
      * Undocumented function
@@ -43,7 +49,7 @@ class Schema extends \PDO
 
         if (!$options) {
             try {
-                parent::__construct(
+                $this->pdo = new \PDO(
                     "{$_ENV['DB_DRIVER']}:host={$_ENV['DB_HOST']};dbname=$name",
                     $_ENV['DB_USERNAME'],
                     $_ENV['DB_PASSWORD']
@@ -57,7 +63,7 @@ class Schema extends \PDO
             }
 
             try {
-                parent::__construct(
+                $this->pdo = new \PDO(
                     "{$options['driver']}:host={$options['host']}$name",
                     $options['username'],
                     $options['password']
@@ -89,7 +95,7 @@ class Schema extends \PDO
 
         try {
             $model_name_st = strtolower((new \ReflectionClass($model_name))->getShortName()) . 's';
-            $st = parent::query("SELECT * FROM `{$_ENV['DB_PREFIX']}_$model_name_st` WHERE $where LIMIT 1");
+            $st = $this->pdo->query("SELECT * FROM `{$_ENV['DB_PREFIX']}_$model_name_st` WHERE $where LIMIT 1");
             $object = $st->fetchObject($model_name);
             if($callback != null) {
                 $callback($object);
@@ -116,7 +122,7 @@ class Schema extends \PDO
         try {
             $model_name_st = strtolower((new \ReflectionClass($model_name))->getShortName()) . 's';
 
-            $st = parent::prepare("SELECT COUNT(*) FROM `{$_ENV['DB_PREFIX']}_$model_name_st` $where");
+            $st = $this->pdo->prepare("SELECT COUNT(*) FROM `{$_ENV['DB_PREFIX']}_$model_name_st` $where");
             $st->execute();
             return  $st->fetchColumn();
 
@@ -137,14 +143,14 @@ class Schema extends \PDO
         try {
             $model_name_st = strtolower((new \ReflectionClass($model_name))->getShortName()) . 's';
 
-            $st = parent::prepare("SELECT MONTH(`created_at`) MONTH, COUNT(*) COUNT
+            $st = $this->pdo->prepare("SELECT MONTH(`created_at`) MONTH, COUNT(*) COUNT
                 FROM `{$_ENV['DB_PREFIX']}_$model_name_st` 
                 WHERE $where
                 GROUP BY MONTH(`created_at`)
             ");
             $st->execute();
 
-            return $st->fetchAll(self::FETCH_KEY_PAIR);
+            return $st->fetchAll(\PDO::FETCH_KEY_PAIR);
 
         } catch (\ReflectionException $e) {
             echo $e->getMessage();
@@ -162,21 +168,23 @@ class Schema extends \PDO
      */
     function All($model_name, string ...$criteria): array
     {
-        if(is_array($model_name))
-        {
+        if (is_array($model_name)) {
             $model_name_st = $model_name[0];
             $model_name = $model_name[1];
         } else {
             $model_name_st = strtolower((new \ReflectionClass($model_name))->getShortName()) . 's';
         }
 
-        return parent::query("SELECT * FROM `{$_ENV['DB_PREFIX']}_$model_name_st`")
-            ->fetchAll(\PDO::FETCH_CLASS, $model_name, $criteria);
+        $query = $this->pdo->query("SELECT * FROM `{$_ENV['DB_PREFIX']}_$model_name_st`");
+
+        $r = $query->fetchAll(\PDO::FETCH_CLASS, $model_name);
+
+        return $r;
     }
 
     function addColumn($column, $type, $table)
     {
-        parent::query("ALTER TABLE $table ADD $column $type");
+        $this->pdo->query("ALTER TABLE $table ADD $column $type");
     }
 
     public function Create($model, $table)
@@ -203,7 +211,7 @@ class Schema extends \PDO
 
                     $sql .= ") ENGINE = InnoDB";
 
-                    $results = parent::query($sql);
+                    $results = $this->pdo->query($sql);
                     return true;
                 } catch (\Exception $e) {
                     die($e->getMessage());
@@ -290,7 +298,7 @@ class Schema extends \PDO
                         }
                     }
 
-                    $this->update = parent::prepare("UPDATE $tablename SET title = ?, content = ? WHERE $id = ?");
+                    $this->update = $this->pdo->prepare("UPDATE $tablename SET title = ?, content = ? WHERE $id = ?");
                 } catch (\Exception $e) {
                     die($e->getMessage());
                 }
@@ -318,16 +326,16 @@ class Schema extends \PDO
         $columns = implode(',', $columns);
         $rows = implode(' AND ', $rows);
 
-        $pdo = parent::prepare("SELECT $columns FROM {$_ENV['DB_PREFIX']}_$table WHERE $rows LIMIT 1");
+        $pdo = $this->pdo->prepare("SELECT $columns FROM {$_ENV['DB_PREFIX']}_$table WHERE $rows LIMIT 1");
         $pdo->execute();
 
-        return $pdo->fetchAll(self::FETCH_ASSOC);
+        return $pdo->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     public function InsertUser(string $username, string $password, string $email, string $firstname, string $lastname, string $token)
     {
         $table = "{$_ENV['DB_PREFIX']}_users";
-        $pdo = parent::prepare("INSERT INTO $table (username, password, algorithm, created_at, avatar, role, firstname, lastname, email, token) 
+        $pdo = $this->pdo->prepare("INSERT INTO $table (username, password, algorithm, created_at, avatar, role, firstname, lastname, email, token) 
         VALUES(:user, :pass, :algo, :date, :avatar, :role, :firstname, :lastname, :email, :token)");
 
         $timezone = new \DateTimeZone('Europe/Vilnius');
@@ -347,15 +355,15 @@ class Schema extends \PDO
             'token' => $token
         ]);
 
-        return parent::lastInsertId();
+        return $this->pdo->lastInsertId();
     }
 
     public function Insert(string $table, string $title, $date, string $content)
     {
         $tablename = "{$_ENV['DB_PREFIX']}_$table";
-        $pdo = parent::prepare("INSERT INTO $tablename (title, created_at, content) VALUES (?, ?, ?)");
+        $pdo = $this->pdo->prepare("INSERT INTO $tablename (title, created_at, content) VALUES (?, ?, ?)");
         $pdo->execute([$title, $date, $content]);
-        return parent::lastInsertId();
+        return $this->pdo->lastInsertId();
     }
 
     public function Select(string $table, string $orderBy = null, string ...$params)
@@ -373,7 +381,7 @@ class Schema extends \PDO
             $statement = "SELECT {$params} FROM $tablename $orderBy";
         }
 
-        $pdo = parent::prepare($statement);
+        $pdo = $this->pdo->prepare($statement);
         $pdo->execute();
 
         $result = $pdo->fetchAll(\PDO::FETCH_ASSOC);
@@ -400,7 +408,7 @@ class Schema extends \PDO
     }
 
     /*
-            $query = parent::prepare("SELECT * FROM $table");
+            $query = $this->pdo->prepare("SELECT * FROM $table");
         $query->execute();
         $rows = $query->fetchAll(\PDO::FETCH_ASSOC);
         return $rows;
@@ -419,7 +427,7 @@ class Schema extends \PDO
     {
         try {
             $query = "SHOW $alt $access LIKE '%$name%' ";
-            $results = parent::query($query);
+            $results = $this->pdo->query($query);
             return $results->rowCount() > 0;
         }
         catch(\Exception $e) {

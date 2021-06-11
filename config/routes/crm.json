@@ -1,0 +1,5 @@
+{
+    "GET": {
+        "/dashboard/crm/employees": ["Dashboard", "getEmployees"]
+    }
+}
