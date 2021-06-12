@@ -123,12 +123,12 @@ namespace GWM\Core\Controllers {
                 Schema::$PRIMARY_SCHEMA = new Schema($_ENV['DB_NAME']);
             }
 
-            $users = Schema::$PRIMARY_SCHEMA->query("SELECT username FROM `{$_ENV['DB_PREFIX']}_users`")
-            ->fetchAll(\PDO::FETCH_CLASS, User::class, []);
+            // $users = Schema::$PRIMARY_SCHEMA->query("SELECT username FROM `{$_ENV['DB_PREFIX']}_users`")
+            // ->fetchAll(\PDO::FETCH_CLASS, User::class, []);
 
             return [
                 'user' => Session::Get()->Username(),
-                'users' => $users
+                // 'users' => $users
             ];
         }
 
@@ -156,7 +156,7 @@ namespace GWM\Core\Controllers {
             $offset *= 5;
             $paginations = ceil($total / 5) - 1;
 
-            if ($page > $paginations) {
+            if ($page > $paginations && $paginations != -1) {
                 $response->Redirect('/');
             }
 
@@ -168,16 +168,17 @@ namespace GWM\Core\Controllers {
             ");
 
             $stmt->execute();
-
+            
+            
             $articles = $stmt->fetchAll(\PDO::FETCH_CLASS, \GWM\Core\Models\Article::class);
-
+            
             foreach ($articles as &$article) {
                 $article->content = html_entity_decode($article->content, ENT_NOQUOTES | ENT_HTML5, 'ISO-8859-1');
                 $article->content = preg_replace('~[\r\n]+~', '', $article->content);
                 $article->content = stripslashes($article->content);
                 $article->{'slug'} = wordwrap(strtolower($article->title), 1, '-', 0);
             }
-
+            
             $params = array_merge(self::ContextChain(), [
                 'articles' => $articles,
                 'paginations' => $paginations,
