@@ -1,0 +1,108 @@
+{extends 'basis.html.latte'}
+
+{block styles}
+<style>
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+.switch .slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+.switch .slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+.switch input[type=checkbox] {
+  visibility: hidden;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.switch input[type=checkbox]:checked + .slider {
+  background-color: #2196F3;
+}
+.switch input[type=checkbox]:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+.switch input[type=checkbox]:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+</style>
+{/block}
+
+{block tables}
+
+<table-panel>
+    <table-header>
+        <i class="fa fa-check"></i> Order Created
+    </table-header>
+
+    <table-body>
+        <h1>Awaiting Confirmation</h1>
+        <b><i class="fa fa-clock"></i> {$order->creation_date}</b>
+
+        <hr />
+
+        <h2>Order {$order->id}</h2>
+        <p>{$order->description}</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Description</th>
+                    <th>Quantity</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr n:foreach="$order->items as $item">
+                    <td>{$item->title}</td>
+                    <td>{$item->description}</td>
+                    <td>{$item->quantity}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="form-group">
+            <div class="switch">
+                <input type="checkbox">
+                <span class="slider round"></span>
+            </div>
+            <label>Use My User Escrow Credentials For Quick Payment.</label>
+            <dt>You will no longer need to confirm orders manually.</dt>
+        </div>
+
+        <a href="{$order->parties[0]->next_step}" class="btn">Confirm</a>
+    </table-body>
+</table-panel>
+
+{/block}

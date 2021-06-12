@@ -1,0 +1,111 @@
+{extends 'basis.html.latte'}
+
+{block styles}
+<style>
+.identity {
+    display: inline-block;
+    vertical-align: top;
+}
+.no-p {
+    padding: 0 !important;
+}
+.avatar {
+    object-fit: cover;
+    image-rendering: crisp-edges;
+    box-shadow: 0 0 6px 6px #fdfdfd;
+    border-radius: 50%;
+}
+.avatar-wrapper {
+    width: 128px;
+    height: 128px;
+    margin: 1.35rem;
+    float: left;
+}
+h2 {
+    background: #fdfdfd;
+    padding: .5rem 1rem;
+    margin: 0.85rem 0;
+}
+.username {
+    margin: 0;
+    padding: 1.25rem 1rem;
+}
+</style>
+{/block}
+
+{block content-wrapper}
+<content-row>
+    <content-col-9>
+        <table-panel>
+            <table-header class="no-p">
+                <div class="d-block">
+                    <div class="avatar-wrapper">
+                        <img data-width="128" data-height="128" class="avatar" src="{$inspAvatar}">
+                    </div>
+
+                    <h1 class="username">{$inspUsername}</h1>
+
+                    <h2>
+                        <i class="fa fa-user"></i>
+                        <div class="identity">{$inspFirstname} {$inspLastname}</div>
+                    </h2>
+
+                    <div class="ml-auto">
+                        <button class="btn">Add Friend</button>
+                        <button class="btn">Message</button>
+                    </div>
+                </div>
+            </table-header>
+            <table-body>
+                
+                <span style="background: rgba(255,255,255,1); padding: 9px;">No description.</span>
+            </table-body>
+        </table-panel>
+        <table-panel>
+            <table-header>
+               <i class="fa fa-project-diagram"></i> Projects
+            </table-header>
+            
+            <table-body>
+            {if $inspUsername == 'trep_trep'}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Project</th>
+                            <th>Links</th>
+                            <th>Position</th>
+                        </tr>
+                    </thead>
+                    
+                    <tbody>
+                        <tr>
+                            <td>Undefined</td>
+                            <td><a href="http://ec2-3-65-67-145.eu-central-1.compute.amazonaws.com/"><i class="fa fa-external-link-alt"></i></a></td>
+                            <td><div class="badge bg-info">Leader</div></td>
+                        </tr>
+                    </tbody>
+                </table>
+            {else}
+                <div class="badge bg-danger">User has no assigned projects.</div>
+            {/if}
+            </table-body>
+        </table-panel>
+        <table-panel>
+            <table-header>
+                Panel
+            </table-header>
+        </table-panel>
+    </content-col-9>
+    <content-col-3>
+        <table-panel>
+            <table-body>
+                <span class="badge bg-danger">Currently Offline</span>
+                <ul>
+                    <li><app-link to="/">Badges <span style="color:grey;">0</span></app-link></li>
+                    <li><app-link to="/">Assets <span style="color:grey;">0</span></app-link></li>
+                </ul>
+            </table-body>
+        </table-panel>
+    </content-col-3>
+</content-row>
+{/block}

@@ -1,0 +1,137 @@
+{extends 'basis.html.latte'}
+
+{block styles}
+<style>
+.d-flex {
+    display: flex;
+}
+.product-box {
+    width: 256px;
+    position: relative;
+    flex-direction: column;
+    min-width: 256px;
+    word-wrap: break-word;
+    background-color: white;
+    background-clip: border-box;
+    display: inline-flex;
+    max-height: 256px;
+    box-shadow: 0 10px 20px 0 rgba(0,0,0,.05);
+    margin: 1rem;
+    border: 0;
+}
+.product-box-details {
+    max-height: 96px;
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    border-top: 1px solid #f7f7f7;
+}
+.product-box-details > * {
+    margin: 0;
+    text-align: center;
+    padding-left: .25rem;
+    padding-right: .25rem;
+}
+.product-box-title {
+    font-size: 1.1rem;
+}
+.traditional-text {
+    color: blue;
+}
+.crypto-text {
+    color: #d924d9;
+}
+.bg-white {
+    background: white;
+}
+.badge[class*="badge-top"] {
+    display: inline-grid;
+    font-size: 0.65rem;
+    border-radius: 50%;
+    padding: .14rem;
+    width: 8px;
+    height: 8px;
+    position: absolute;
+    align-content: center;
+    margin-left: 3px;
+}
+.info {
+    color: rgba(0, 52, 208, 0.65);
+}
+.form-group {
+    display: block;
+    margin: 0.5rem 0;
+}
+.contain { 
+    object-fit: contain; 
+}
+.image-wrapper {
+    min-width: 256px;
+    min-height: 160px;
+}
+</style>
+{/block}
+
+{block tables}
+<table-panel>
+    <table-header class="bg-white">
+        <strong class="mr-9">Products</strong>
+        <dl>There are {$products|length} products.</dl>
+        
+        {if $alert}
+        <alert-box>
+            {$alert['message']}
+        </alert-box>
+        {/if}
+    </table-header>
+    <table-footer>
+        <app-link to="/cart"><i class="fa fa-shopping-cart info"></i><div class="badge badge-top bg-info">{$cart}</div></app-link>
+    </table-footer>
+</table-panel>
+
+<div class="d-flex">
+    <div class="product-box" n:foreach="$products as $product">
+        <div class="image-wrapper">
+            <img alt="..." data-width="256" class="contain" src="{$product->image}" class="card-body p-0">
+        </div>
+
+        <div class="product-box-details" style="min-height: 100px;">
+            <h5 class="product-box-title"><app-link to="/store/add/{$product->id}">{$product->title}</app-link></h5>
+            <p class="traditional-text">{$product->price}</p>
+            <p class="crypto-text">{$product->btc} BTC</p>
+        </div>
+    </div>
+</div>
+{/block}
+
+{block alongside-tables}
+<table-panel>
+    <table-header>Filters</table-header>
+    <table-body>
+        <form id="filters" method="POST">
+            <div class="form-group">
+                <label>Categories</label>
+                <ul>
+                    {if $categories}
+                        {foreach $categories as $category}
+                            <li>
+                                <label>{$category->name}</label>
+                                <input type="checkbox"/>
+                            </li>
+                        {/foreach}
+                    {else}
+                        <li>No categories</li>
+                    {/if}
+                </ul>
+            </div>
+            <div class="form-group">
+                <label>Price</label>
+                <dl>{$minPrice} &euro; - {$maxPrice} &euro;</dl>
+                <input type="range" min="{$minPrice}" max="{$maxPrice}">
+            </div>
+        </form>
+
+        <button class="btn" form="filters" type="submit"><i class="fa fa-filter"></i> Filter</button>
+    </table-body>
+</table-panel>
+{/block}

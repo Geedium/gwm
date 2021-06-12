@@ -36,7 +36,67 @@ function error_handler($errno, $errstr, $errfile, $errline)
     Debug::$log[] = "Error[$errno] - $errstr, Line - $errline, File - $errfile";
 }
 
-require_once 'vendor/autoload.php';
+if(!file_exists('vendor/autoload.php')) {
+
+    while (@ ob_end_flush()); // end all output buffers if any
+
+    $cmd = 'composer install';
+
+    $proc = popen("$cmd 2>&1", 'r');
+
+    $live_output     = "";
+    $complete_output = "";
+
+    echo '<pre>';
+    while (!feof($proc))
+    {
+        $live_output     = fread($proc, 4096);
+        $complete_output = $complete_output . $live_output;
+        echo "$live_output";
+        @ flush();
+    }
+    echo '</pre>';
+
+    pclose($proc);
+
+     // get exit status
+     preg_match('/[0-9]+$/', $complete_output, $matches);
+
+     $result = [
+        'exit_status'  => intval($matches[0]),
+        'output'       => str_replace("Exit status : " . $matches[0], '', $complete_output)
+     ];
+
+     if($result['exit_status'] === 0){
+        // do something if command execution succeeds
+        
+        $key = bin2hex(random_bytes(16));
+
+        if (!file_exists('INSTALL.txt')) {
+            file_put_contents('INSTALL.txt', $key);
+        } else {
+            throw new Error('Security mismatch! Remove INSTALL.txt and try again.');
+        }
+
+        $url = "http" . (($_SERVER['SERVER_PORT'] == 443) ? "s" : "") . "://" . $_SERVER['HTTP_HOST'];
+        var_dump("$url/?key=$key");
+
+        ob_start();
+        
+        header("Location: $url/?key=$key");
+
+        if (!ob_end_flush()) {
+            die('Output buffering failed.');
+        }
+
+        exit;
+     } else {
+         // do something on failure
+         throw new Error('Failed to install dependencies!');
+     }
+}
+
+require_once('vendor/autoload.php');
 
 if (is_dir(GWM['DIR_TMP']) == false) {
     mkdir(GWM['DIR_TMP']);

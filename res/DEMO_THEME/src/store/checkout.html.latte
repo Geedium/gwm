@@ -1,0 +1,466 @@
+{extends 'basis.html.latte'}
+
+{block styles}
+<style>
+.no-m {
+    margin: 0;
+}
+.total {
+    display: block;
+    margin-top: .95rem;
+    border-bottom: 1px solid #f7f7f7;
+    border-right: 1px solid #f7f7f7;
+    border-left: 1px solid #f7f7f7;
+    border-bottom-left-radius: .125rem;
+    border-bottom-right-radius: .125rem;
+    padding: .75rem;
+    color: purple;
+}
+
+.ui.steps {
+ display:inline-flex;
+ flex-direction:row;
+ align-items:stretch;
+ margin:1em 0;
+ width: 100%;
+ background:"";
+ box-shadow:none;
+ line-height:1.14285714em;
+ border-radius:.28571429rem;
+ border:1px solid rgba(34,36,38,.15)
+}
+.ui.steps .step[class*="back"]:hover,
+.ui.steps .step[class*="back"]:hover::after {
+    background: #ececec;
+    cursor: pointer;
+}
+
+.ui.steps:first-child {
+ margin-top:0
+}
+.ui.steps:last-child {
+ margin-bottom:0
+}
+.ui.steps .step {
+ position:relative;
+ display:flex;
+ flex:1 0 auto;
+ flex-wrap:wrap;
+ flex-direction:row;
+ vertical-align:middle;
+ align-items:center;
+ justify-content:center;
+ margin:0;
+ padding:1.14285714em 2em;
+ background:#fff;
+ color:rgba(0,0,0,.87);
+ box-shadow:none;
+ border-radius:0;
+ border:none;
+ border-right:1px solid rgba(34,36,38,.15)
+}
+.ui.steps .step,
+.ui.steps .step:after {
+ transition:background-color .1s ease,opacity .1s ease,color .1s ease,box-shadow .1s ease
+}
+.ui.steps .step:after {
+ display:none;
+ position:absolute;
+ z-index:2;
+ content:"";
+ top:50%;
+ right:0;
+ background-color:#fff;
+ width:1.14285714em;
+ height:1.14285714em;
+ border:solid rgba(34,36,38,.15);
+ border-width:0 1px 1px 0;
+ transform:translateY(-50%) translateX(50%) rotate(-45deg)
+}
+.ui.steps .step:first-child {
+ padding-left:2em;
+ border-radius:.28571429rem 0 0 .28571429rem
+}
+.ui.steps .step:last-child {
+ border-radius:0 .28571429rem .28571429rem 0;
+ border-right:none;
+ margin-right:0
+}
+.ui.steps .step:only-child {
+ border-radius:.28571429rem
+}
+.ui.steps .step .title {
+ font-family:Lato,Helvetica Neue,Arial,Helvetica,sans-serif;
+ font-size:1.14285714em;
+ font-weight:700
+}
+.ui.steps .step>.title {
+ width:100%
+}
+.ui.steps .step .description {
+ font-weight:400;
+ font-size:.92857143em;
+ color:rgba(0,0,0,.87)
+}
+.ui.steps .step>.description {
+ width:100%
+}
+.ui.steps .step .title~.description {
+ margin-top:.25em
+}
+.ui.steps .step>.icon {
+ line-height:1;
+ font-size:2.5em;
+ margin:0 1rem 0 0
+}
+.ui.steps .step>.icon,
+.ui.steps .step>.icon~.content {
+ display:block;
+ flex:0 1 auto;
+ align-self:middle
+}
+.ui.steps .step>.icon~.content {
+ flex-grow:1 0 auto
+}
+.ui.steps:not(.vertical) .step>.icon {
+ width:auto
+}
+.ui.steps .link.step,
+.ui.steps a.step {
+ cursor:pointer
+}
+.ui.ordered.steps {
+ counter-reset:ordered
+}
+.ui.ordered.steps .step:before {
+ position:static;
+ text-align:center;
+ content:counters(ordered,".");
+ margin-right:1rem;
+ font-size:2.5em;
+ counter-increment:ordered;
+ font-family:inherit;
+ font-weight:700
+}
+.ui.ordered.steps .step:before,
+.ui.ordered.steps .step>* {
+ display:block;
+ align-self:middle
+}
+.ui.vertical.steps {
+ display:inline-flex;
+ flex-direction:column;
+ overflow:visible
+}
+.ui.vertical.steps .step {
+ justify-content:flex-start;
+ border-radius:0;
+ padding:1.14285714em 2em;
+ border-right:none;
+ border-bottom:1px solid rgba(34,36,38,.15)
+}
+.ui.vertical.steps .step:first-child {
+ padding:1.14285714em 2em;
+ border-radius:.28571429rem .28571429rem 0 0
+}
+.ui.vertical.steps .step:last-child {
+ border-bottom:none;
+ border-radius:0 0 .28571429rem .28571429rem
+}
+.ui.vertical.steps .step:only-child {
+ border-radius:.28571429rem
+}
+.ui.vertical.steps .step:after {
+ top:50%;
+ right:0;
+ border-width:0 1px 1px 0;
+ display:none
+}
+.ui.vertical.steps .active.step:after {
+ display:block
+}
+.ui.vertical.steps .step:last-child:after {
+ display:none
+}
+.ui.vertical.steps .active.step:last-child:after {
+ display:block
+}
+@media only screen and (max-width:767px) {
+ .ui.steps:not(.unstackable) {
+  display:inline-flex;
+  overflow:visible;
+  flex-direction:column
+ }
+ .ui.steps:not(.unstackable) .step {
+  width:100%!important;
+  flex-direction:column;
+  border-radius:0;
+  padding:1.14285714em 2em
+ }
+ .ui.steps:not(.unstackable) .step:first-child {
+  padding:1.14285714em 2em;
+  border-radius:.28571429rem .28571429rem 0 0
+ }
+ .ui.steps:not(.unstackable) .step:last-child {
+  border-radius:0 0 .28571429rem .28571429rem
+ }
+ .ui.steps:not(.unstackable) .step:after {
+  display:none!important
+ }
+ .ui.steps:not(.unstackable) .step .content {
+  text-align:center
+ }
+ .ui.ordered.steps:not(.unstackable) .step:before,
+ .ui.steps:not(.unstackable) .step>.icon {
+  margin:0 0 1rem
+ }
+}
+.ui.steps .link.step:hover,
+.ui.steps .link.step:hover:after,
+.ui.steps a.step:hover,
+.ui.steps a.step:hover:after {
+ background:#f9fafb;
+ color:rgba(0,0,0,.8)
+}
+.ui.steps .link.step:active,
+.ui.steps .link.step:active:after,
+.ui.steps a.step:active,
+.ui.steps a.step:active:after {
+ background:#f3f4f5;
+ color:rgba(0,0,0,.9)
+}
+.ui.steps .step.active {
+ cursor:auto;
+ background:#f3f4f5
+}
+.ui.steps .step.active:after {
+ background:#f3f4f5
+}
+.ui.steps .step.active .title {
+ color:#4183c4
+}
+.ui.ordered.steps .step.active:before,
+.ui.steps .active.step .icon {
+ color:rgba(0,0,0,.85)
+}
+.ui.steps .active.step:after,
+.ui.steps .step:after {
+ display:block
+}
+.ui.steps .active.step:last-child:after,
+.ui.steps .step:last-child:after {
+ display:none
+}
+.ui.steps .link.active.step:hover,
+.ui.steps .link.active.step:hover:after,
+.ui.steps a.active.step:hover,
+.ui.steps a.active.step:hover:after {
+ cursor:pointer;
+ background:#dcddde;
+ color:rgba(0,0,0,.87)
+}
+.ui.ordered.steps .step.completed:before,
+.ui.steps .step.completed>.icon:before {
+ color:#21ba45
+}
+.ui.steps .disabled.step {
+ cursor:auto;
+ background:#fff;
+ pointer-events:none
+}
+.ui.steps .disabled.step,
+.ui.steps .disabled.step .description,
+.ui.steps .disabled.step .title {
+ color:rgba(40,40,40,.3)
+}
+.ui.steps .disabled.step:after {
+ background:#fff
+}
+h1 {
+    font-size: 1.5rem;
+}
+h2 {
+    font-size: 1.05rem;
+}
+.d-inl-205 {
+    width: 205px;
+    display: inline-block;
+    padding: 6px;
+    margin: 12px 0;
+}
+.d-inline {
+    display: inline;
+}
+.c-white {
+    color: white;
+}
+.plx-2 > * {
+    padding-left: 2px;
+    padding-right: 2px;
+}
+.float-left {
+    float: left;
+}
+.float-right {
+    float: right;
+}
+</style>
+{/block}
+
+{block tables}
+<table-panel>
+    <table-body>
+        <!-- Form -->
+        <form id="checkout" method="POST">
+            <div class="ui ordered steps">
+                <!-- Step -->
+                <div class="completed step">
+                    <div class="content">
+                        <div class="title">Shipping</div>
+                        <div class="description">Choose your shipping options</div>
+                    </div>
+                </div>
+                <!-- Step -->
+                <div class="back step">
+                    <div class="content">
+                        <div class="title">Billing</div>
+                        <div class="description">Enter billing information</div>
+                    </div>
+                </div>
+                <!-- Step -->
+                <div class="active step">
+                    <div class="content">
+                        <div class="title">Confirm Order</div>
+                    </div>
+                </div>
+            </div>
+
+            <h1 class="text-center">Customer</h1>
+
+
+
+            <h1 class="text-center">Order Summary</h1>
+            
+            <table n:inner-foreach="$products as $product">
+                {first}
+                <thead>
+                    <tr>
+                        <th>Code</th>
+                        <th>Product</th>
+                        <th>Stock</th>
+                        <th>Ordered</th>
+                        <th>Unit cost</th>
+                        <th>Total cost</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                {/first}
+                    <tr>
+                        <td>REF-0</td>
+                        <td>{$product->title}</td>
+                        <td>
+                            {if $product->stock}
+                                <span class="badge bg-info">{$product->stock}</span>
+                            {else}
+                                <span class="badge bg-danger">Out of stock</span>
+                            {/if}
+                        </td>
+                        <td>
+                            {if !$product->stock}
+                                <button class="btn"><i class="fa fa-phone"></i></button>
+                            {else}
+                                {$product->cart_quantity}
+                            {/if}
+                        </td>
+                        <td>{$product->unit_price} {$product->symbol}</td>
+                        <td>{$product->price} {$product->symbol}</td>
+                    </tr>
+                {last}
+                    <tr>
+                        <td colspan="3">
+                            <button type="submit" class="btn plx-2 float-right" style="color:green;">
+                                <i class="fas fa-check"></i> <span class="float-right">Confirm Order</span>
+                            </button>
+                        </td>
+
+                        <td colspan="3">
+                            <button to="/order" class="btn plx-2 float-left" style="color:red;">
+                                <i class="fas fa-times"></i> <span class="float-right">Cancel Order</span>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+                {/last}
+            </table>
+
+            <div class="d-inl-205">
+                <b class="d-inline">Total {$cart->total} {$cart->symbol}</b>
+            </div>
+        </form>
+
+    </table-body>
+</table-panel>
+{/block}
+
+{block alongside-tables}
+<table-panel>
+    <table-header>
+        <i class="fa fa-shopping-cart"></i> Your Cart ({$total_quantity})
+    </table-header>
+
+    <table-body>
+        <table n:inner-foreach="$products as $product">
+            {first}
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Cost</th>
+                </tr>
+            </thead>
+
+            <tbody>
+            {/first}
+                <tr>
+                    <td>{$iterator->counter}</td>
+                    <td>{$product->title}</td>
+                    <td>{$product->cart_quantity}</td>
+                    <td>{$product->price} {$product->symbol}</td>
+                </tr>
+            {last}
+            </tbody>
+            {/last}
+        </table>
+
+        <h4 class="total no-m">Order total {$cart->total} {$cart->symbol}</h4>
+        
+        {if $payment_due}
+            <h4>Payment due </h4>
+        {/if}
+    </table-body>
+</table-panel>
+
+{if $contacts}
+<table-panel>
+    <table-header>
+        Contact
+    </table-header>
+
+    <table-body>
+        
+    </table-body>
+</table-panel>
+{/if}
+
+<table-panel>
+    <table-header>
+        Shipping Details
+    </table-header>
+
+    <table-body>
+    
+    </table-body>
+</table-panel>
+{/block}

@@ -1,0 +1,241 @@
+{extends 'basis.html.latte'}
+
+{block styles}
+<link rel="stylesheet" href="/bundles/jquery/plugins/jstree/css/style.min.css">
+
+<style>
+.overlay {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background: #202020c9;
+    user-select: none;
+    z-index: 1;
+}
+.modal {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+layout-modal {
+    display: none;
+}
+layout-modal[class*="modal-open"] {
+    display: block;
+}
+</style>
+{/block}
+
+{block scripts}
+
+<script src="/bundles/jquery/js/jquery-3.5.1.min.js"></script>
+<script src="/bundles/jquery/plugins/jstree/js/jstree.min.js"></script>
+
+<script>
+
+class Modal extends HTMLDivElement {
+    static _modals = [];
+    static _virtual = undefined;
+
+    _overlay = undefined;
+
+    static get modals() {
+        return Modal._modals;
+    }
+
+    static find(query) {
+        return Modal.modals.find(element => element.dataset.id == query.id);
+    }
+
+    open() {
+        Modal._virtual.classList.add('modal-open');
+    }
+
+    close(object) {
+        if(object.target === this) {
+            Modal._virtual.classList.remove('modal-open');
+        }
+    }
+
+    constructor() {
+        super()
+
+        Modal._virtual = this;
+
+        this._overlay = this.querySelector('.overlay')
+
+        if(this._overlay) {
+
+            this._overlay.addEventListener('click', this.close);
+
+            Modal._modals.push(Modal._virtual)
+        }
+    }
+}
+
+class ModalBinding extends HTMLButtonElement {
+    constructor() {
+        super()
+
+        this.addEventListener("click", this.Open);
+    }
+
+    Open() {
+        Modal.find({ id: this.dataset.modal }).open();
+    }
+}
+
+window.onload = () => {
+    customElements.define('layout-modal', Modal, { extends: 'div' })
+    customElements.define('modal-binding', ModalBinding, { extends: 'button' })
+};
+
+</script>
+{/block}
+
+{block tables}
+<div class="d-flex mb-2">
+    <modal-binding data-modal="new-topic" class="btn">
+        <i class="fa fa-comment-dots"></i>
+        Start new topic
+    </modal-binding>
+    <div class="ml-auto">
+
+    </div> 
+</div>
+
+<table-panel n:foreach="$categories as $category">
+    <table-header>
+        {$category[title]}
+    </table-header>
+    <table-body class="no-p">
+        {if $category[children] }
+        <div class="forum-topic-body" n:foreach="$category[children] as $child">
+            <span class="node-icon" aria-hidden="true"><i class="fa fa-comment-alt"></i></span>
+            <div class="node-main">
+                    <h3 class="node-title">
+                        <a href="/">{$child[title]}</a>
+                    </h3>
+            </div>
+            <div class="node-stats">
+                    <dl class="pairs pairs--rows">
+                        <dt>Threads</dt>
+                        <dd>0</dd>
+                    </dl>
+                    <dl class="pairs pairs--rows">
+                        <dt>Messages</dt>
+                        <dd>0</dd>
+                    </dl>
+            </div>
+            <div class="node-extra">
+                    <span class="node-extra-placeholder">None</span>
+            </div>
+        </div>
+        {else}
+            <p style="line-height: 48px; margin-left: 12px;">No categories created.</p>
+        {/if}
+    </table-body>
+</table-panel>
+{/block}
+
+{block alongside-tables}
+<table-panel>
+    <table-header>
+        Who's Online
+    </table-header>
+    <table-body>
+        
+    </table-body>
+</table-panel>
+
+<table-panel>
+    <table-header>
+        Forum Statistics
+    </table-header>
+    <table-body>
+        
+    </table-body>
+</table-panel>
+
+<table-panel>
+    <table-header>
+        Trending Topics
+    </table-header>
+    <table-body>
+        
+    </table-body>
+</table-panel>
+{/block}
+
+{block onBodyEnd}
+<layout-modal data-id="new-topic">
+    <div class="overlay">
+        <div class="modal">
+            <table-panel>
+                <table-header>
+                    Create New Topic
+                </table-header>
+                <table-body>
+                    <div id="tree">
+                        <ul>
+                            <li> Main
+                                <ul>
+                                    <li data-jstree='{"icon":"fa fa-file"}'>Forum Thread</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="form-group">
+                        <label>Title</label>
+                        <input class="form-control" type="text" />
+                    </div>
+                    <div class="form-group">
+                        <label>Content</label>
+                        <textarea class="form-control" cols="64" rows="15"></textarea>
+                    </div>
+                </table-body>
+                <table-footer>
+                    <button>Create</button>
+                </table-footer>
+            </table-panel>
+        </div>
+    </div>
+</layout-modal>
+
+<script async>
+$(function() {
+  $('#tree').jstree({
+    "core" : {
+      "animation" : 0,
+      "check_callback" : true,
+      "themes" : { "stripes" : true },
+    },
+    "types" : {
+      "#" : {
+        "max_children" : 1,
+        "max_depth" : 4,
+        "valid_children" : ["root"]
+      },
+      "root" : {
+        "icon" : "/static/3.3.11/assets/images/tree_icon.png",
+        "valid_children" : ["default"]
+      },
+      "default" : {
+        "valid_children" : ["default","file"]
+      },
+      "file" : {
+        "icon" : "fa fa-file",
+        "valid_children" : []
+      }
+    },
+    "plugins" : [
+
+    ]
+  });
+})
+</script>
+
+{/block}

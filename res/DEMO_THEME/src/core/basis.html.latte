@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>{spaceless}{block title}GWM Demo{/block}{/spaceless}</title>
+
+        {block styles}
+        <style>
+            body {
+                background: #f7f7f7;
+            }
+        </style>
+        {/block}
+        
+        {block scripts}{/block}
+    </head>
+
+    <body>
+        <ul>
+            {if logged() }
+                <li>Logged in -> <a href="/out">Logout</a> </li>
+            {else}
+                <li><a href="/auth">Login</a></li>
+            {/if}
+        </ul>
+
+        Hello world!
+
+        <div>
+            {block content-wrapper}
+            <div>
+                {block tables}
+                <div>
+                    
+                </div>
+                {/block} 
+            </div>
+            
+            {block alongside-tables}
+
+            {/block}
+
+            {/block}
+        </div>
+
+        {block onBodyEnd}{/block}
+    </body>
+</html>

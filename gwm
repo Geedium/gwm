@@ -9,7 +9,7 @@ if(basename(getcwd()) == 'tools') {
     chdir('../');
 }
 
-@include_once 'vendor/autoload.php';
+// @include_once 'vendor/autoload.php';
 
 set_time_limit(0);
 $status = 0;
@@ -145,8 +145,8 @@ for ($i = 1; $i <= $n; $i++) {
         break;
         case 'sass':
             out("Compiling Sass!");
-            $sass = new \GWM\Core\UI\Sass($argv[$i + 1]);
-            $sass->Compile($argv[$i + 2]);
+            // $sass = new \GWM\Core\UI\Sass($argv[$i + 1]);
+            // $sass->Compile($argv[$i + 2]);
         break;
         case 'update':
             out("Updating composer deps...");
@@ -173,7 +173,7 @@ for ($i = 1; $i <= $n; $i++) {
             }
 
             // Build assets.
-            $dist = new \GWM\Core\Distributor();
+            // $dist = new \GWM\Core\Distributor();
 
             out("Done");
 

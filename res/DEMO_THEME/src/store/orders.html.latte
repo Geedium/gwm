@@ -1,0 +1,43 @@
+{extends 'basis.html.latte'}
+
+{block tables}
+<table-panel>
+    <table-body>
+        <table>
+            <thead>
+                <tr>
+                    <th>Reference</th>
+                    <th>Payment Option</th>
+                    <th>Completed</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            
+            <tbody>
+                <tr n:foreach="$orders as $order">
+                    <td>{$order->txn_id}</td>
+                    <td>{$order->method|capitalize}</td>
+                    <td>
+                        <span class="simptip-position-left simptip-smooth mr-9" data-tooltip="{$order->completed ? 'Yes' : 'No'}">
+                            <span class="badge bg-{$order->completed ? 'info' : 'danger'}">
+                                <i class="fa fa-{$order->completed ? 'check' : 'times'}"></i>
+                            </span>
+                        </span>
+                    </td>
+                    <td>
+                        <a href="#"><i class="fa fa-eye"></i></a>
+
+                        {if !$order->completed}
+                            <a href="#"><i class="fa fa-trash"></i></a>
+                        {/if}
+
+                        {if $order->links['checkout']}
+                            <a href="#"><i class="fa fa-shopping-cart"></i></a>
+                        {/if}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </table-body>
+</table-panel>
+{/block}

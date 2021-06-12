@@ -1,0 +1,97 @@
+{extends 'basis.html.latte'}
+
+{block styles}
+{include parent}
+<style n:syntax=off>
+.comment {
+    align-items: flex-start;
+    background: #f9f9f9;
+    border: 1px solid #e8e8e8;
+    border-radius: .225rem;
+    padding: 15px;
+}
+.avatar-wrapper {
+    width: 64px;
+    height: 64px;
+    margin-right: 1rem;
+    border: 1px solid #c1c1c1;
+    background: #f9f9f9;
+}
+.comment-body > h5 {
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: #2196f3;
+    margin: 0;
+}
+.comment-body {
+    flex: 1;
+}
+.comment > .avatar-wrapper > img {
+    object-fit: cover;
+}
+.rounded-circle {
+    border-radius: 50%;
+}
+.form-wrapper {
+    display: flex;
+    flex-flow: column;
+    padding: 10px;
+    width: 350px;
+}
+</style>
+{/block}
+
+{block tables}
+<table-panel>
+    <table-header>
+        {$article->title}
+    </table-header>
+    <table-body>{$article->content|noescape}</table-body>
+</table-panel>
+
+<table-panel>
+    <table-header>
+        <i class="fa fa-comments"></i> Comments ({$comments|length})
+    </table-header>
+    <table-body>
+        <div class="form-wrapper">
+            {if logged()}
+            <form id="form1" method="POST">
+                <input type="hidden" class="form-control" name="csrf" value="{$csrf}">
+
+                <div class="form-group">
+                    <label class="d-block text-center">Leave Comment</label>
+                    <textarea name="form1[comment]" class="w-100"></textarea>
+                </div>
+            </form>
+
+            <button form="form1" class="btn">Submit</button>
+            {else}
+            <alert-box>
+                You need to login to post a comment.
+            </alert-box>
+            {/if}
+        </div>
+
+        <ul>
+            <li class="comment d-flex mt-3" n:foreach="$comments as $comment">
+
+                <div class="avatar-wrapper rounded-circle">
+                    <img class="d-flex rounded-circle" data-width="64" data-height="64" src="/images/{$comment['username']}.png" alt="...">
+                </div>
+
+                <div class="comment-body">
+                    <h5>{$comment['username']}</h5>
+                    {$comment['message']}
+                </div>
+
+                {if is_user_moderator($usr)}
+                <app-link to="/articles/{$article->slug}?comment={$comment['id']}&action=delete">
+                    <i class="fa fa-times"></i>
+                </app-link>
+                {/if}
+            </li>
+        </ul>
+    </table-body>
+</table-panel>
+{/block}

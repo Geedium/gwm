@@ -1,0 +1,89 @@
+{extends 'basis.html.latte'}
+
+{block tables}
+
+{for $i = 0; $i < alerts(); $i++}
+<alert-box>
+    {alert()}
+</alert-box>
+{/for}
+
+<table-panel>
+    <table-header>
+        Cart Contents
+    </table-header>
+    <table-body>
+        <table>
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Stock</th>
+                    <th>Type</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>VAT</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr n:foreach="$products as $product">
+                    <td><img data-width="64" data-height="64" src="{$product->image}" /></td>
+                    <td>{$product->title}</td>
+                    <td>
+                        <app-link class="btn" to="/product/{$product->id}/plus"><i class="fa fa-minus"></i></app-link>
+                        <span class="badge bg-info">{$product->requested}</span>
+                        <app-link class="btn" to="/product/{$product->id}/decr"><i class="fa fa-plus"></i></app-link>
+                    </td>
+                    <td>
+                        {if $product->stock}
+                            <span class="badge bg-danger">Out of stock</span>
+                        {else}
+                            {$product->stock}
+                        {/if}
+                    </td>
+                    <td>Digital</td>
+                    <td>-</td>
+                    <td>{$product->price}</td>
+                    <td>Escrow</td>
+                    <td>
+                        <span class="simptip-position-top simptip-smooth mr-9" data-tooltip="Details">
+                            <app-link class="btn" to="/product/{$product->id}">
+                                <i class="fa fa-info"></i>
+                            </app-link>
+                        </span>
+                        <span class="simptip-position-top simptip-smooth mr-9" data-tooltip="Remove">
+                            <app-link class="btn" to="/"><i class="fa fa-trash-alt"></i></app-link>
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div>
+            <h3>Payment Option</h3>
+
+            <select>
+                <option>Escrow</option>
+            </select>
+        </div>
+
+        <div>
+            <h3>Currency</h3>
+
+            <select>
+                <option default>EUR</option>
+            </select>
+        </div>
+
+        <div class="d-block" style="padding-top: 12px;">
+            Total: {$total} &euro;
+        </div>
+
+        <app-link class="btn" style="position: relative; top: 10px; display: inline-block;" to="/store"><i class="fa fa-arrow-circle-left"></i> Continue Shopping</app-link>
+        <app-link class="btn" style="position: relative; top: 10px; display: inline-block;" to="/checkout"><i class="fa fa-shopping-cart"></i> Checkout</app-link>
+    </table-body>
+</table-panel>
+{/block}

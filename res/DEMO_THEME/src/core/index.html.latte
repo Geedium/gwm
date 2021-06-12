@@ -1,0 +1,36 @@
+{extends 'basis.html.latte'}
+
+{block tables}
+<table-panel n:foreach="$articles as $article">
+    <table-header>
+        <app-link to="/articles/{$article->slug}">{$article->title}</app-link>
+    </table-header>
+    <table-body>{$article->content|noescape}</table-body>
+    <table-footer>
+        {spaceless}
+        <span class="simptip-position-right simptip-smooth mr-9" data-tooltip="{$article->created_at} UTC/GMT +2">
+            <i class="faf fa-clock"></i>
+        </span>
+        <span class="simptip-position-right simptip-smooth mr-9" data-tooltip="{$article->author->getUsername()}">
+            <i class="faf fa-user"></i>
+        </span>
+        {if $article->pinned}
+        <span class="simptip-position-right simptip-smooth" data-tooltip="Pinned">
+            <i class="faf fa-star"></i>
+        </span>
+        {/if}
+        {/spaceless}
+    </table-footer>
+</table-panel>
+
+{if $paginations > 0}
+<col-12 class="justify-content-center d-flex">
+  <ul class="pagination">
+    {for $i = 0; $i <= $paginations; $i++}
+        <li class="page-item"><app-link to="/{$i > 0 ? $i}" class="page-link {$page == $i ? 'active'}">{$i + 1}</app-link></li>
+    {/for}
+  </ul>
+</col-12>
+{/if}
+
+{/block}
