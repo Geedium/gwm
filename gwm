@@ -200,10 +200,11 @@ for ($i = 1; $i <= $n; $i++) {
              */
             switch($step) {
                 case 0:
-                    \GWM\Core\Utils\Wrap::isStringNotEmpty(function (string $retval) use(&$steps) {
-                        out("Wrap::isStringNotEmpty ({string: $retval}, OK)", Colors::COLOR_WHITE, Colors::Background(Colors::COLOR_GREEN));
-                        $steps += 1;
-                    }, 'test');
+                    // \GWM\Core\Utils\Wrap::isStringNotEmpty(function (string $retval) use(&$steps) {
+                    //     out("Wrap::isStringNotEmpty ({string: $retval}, OK)", Colors::COLOR_WHITE, Colors::Background(Colors::COLOR_GREEN));
+                    //     $steps += 1;
+                    // }, 'test');
+                    $steps += 1;
                 case 1:
 
             }
