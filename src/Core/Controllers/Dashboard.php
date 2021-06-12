@@ -259,7 +259,7 @@ use GWM\Core\Utils\Measurement;
                 'elapsed' => round(microtime(true) - GWM['START_TIME'], 2),
                 'crumbs' => $breadcrumb,
                 'username' => $_SESSION['username'] ?? '',
-                'avatar' => strtolower($_SESSION['username']) ?? '',
+                'avatar' => $_SESSION['username'].'.png' ?? '',
                 'firstname' => $_SESSION['firstname'] ?? '',
                 'plugins' => Plugin::$plugins,
                 'ip' => Agent::ip(),
@@ -631,13 +631,9 @@ STYLE
 
         public function Users()
         {
-            if (!Session::Get()->Logged()) {
-                $response = new Response();
-                $response->Astray();
-            }
+            $res = new Response();
 
-            $latte = new Engine;
-            $latte->setTempDirectory('tmp/latte');
+            !!Session::Get()->Logged() ?: $response->Astray();
 
             $users = [];
 
@@ -660,11 +656,7 @@ STYLE
                 ])
             );
 
-            $response = new Response;
-            $response->setStatus(200);
-            $response->setContent($html);
-            $response->send();
-            exit;
+            $res->setContent($html)->send(Response::HTTP_OK);
         }
 
         public function Media()

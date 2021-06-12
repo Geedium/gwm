@@ -31,6 +31,19 @@ namespace GWM\Core\Template\Engines {
                 return $s;
             });
 
+            $this->engine->addFilter('avatarLetter', function($s) {
+                return strtoupper(substr($s, 0, 1));
+            });
+
+            $this->engine->addFilter('avatarColor', function($s) {
+                $rgb = substr(dechex(crc32($s)), 0, 6);
+                list($R16, $G16, $B16) = str_split($rgb, 2);
+                $R = sprintf('%02X', floor(hexdec($R16)));
+                $G = sprintf('%02X', floor(hexdec($G16)));
+                $B = sprintf('%02X', floor(hexdec($B16)));
+                return $R . $G . $B;
+            });
+
             $this->engine->addFunction('css', function ($s) {
                 if(!file_exists(GWM['DIR_ROOT'].'/tmp/gwm/entrypoints.json'))
                     return '/css/'.$s.'.css';

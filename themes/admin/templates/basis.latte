@@ -29,6 +29,8 @@
         <link rel="stylesheet" type="text/css" href="{css('admin')}" />
         <link rel="stylesheet" type="text/css" media="print" href="/vendor/css/Chart.min.css" />
 
+        <link rel="preload" as="image" href="/images/avatars/{$avatar}">
+
         {block styles}{/block}
 
         <script src="/js/moment.min.js"></script>
@@ -119,7 +121,7 @@
 
                             <div class="contact">
                                 <div class="avatar">
-                                    <img src="/dist/png/{$avatar}" alt="...">
+                                    <img width="128" height="128" src="/images/{$avatar}" alt="...">
                                 </div>
                                 Gediminas
                             </div>
@@ -184,7 +186,7 @@
         <aside>
             <div class="hAside">
                 <div class="avatar">
-                    <img src="/dist/png/{$avatar}" alt="...">
+                    <img width="128" height="128" src="/images/avatars/{$avatar}" alt="...">
                 </div>
                 <span class="highlight simptip-position-top" data-tooltip="{$ip}">{$username}</span>
                 <span>{$firstname} {$lastname}</span>

@@ -26,7 +26,31 @@
 .tooltip-btn:hover {
     background: #868d97;
 }
+[data-6b0cc904] .avatar-wrapper {
+    width: 48px;
+    height: 48px;
+}
+[data-6b0cc904] .avatar-wrapper > img {
+    object-fit: cover;
+}
+[data-6b0cc904] .avatar-letter {
+    text-align: center;
+    display: block;
+    line-height: 48px;
+    color: white;
+}
+[data-6b0cc904] .rounded-circle {
+    border-radius: 50%;
+    clip-path: circle(50%);
+}
 </style>
+
+{foreach $users as $user}
+    {if $user->avatar && $user->avatar != $avatar}
+        <link rel="preload" as="image" href="/images/avatars/{$user->avatar}">
+    {/if}
+{/foreach}
+
 {/block}
 
 {block content}
@@ -42,6 +66,7 @@
                     <thead>
                         <tr>
                             <th scope="row">ID</th>
+                            <th>Avatar</th>
                             <th>Name</th>
                             <th class="text-center">Created At</th>
                             <th class="text-right">Actions</th>
@@ -51,6 +76,15 @@
                     <tbody>
                         <tr n:foreach="$users as $user">
                             <td>{$user->id}</td>
+                            <td>
+                                <div style='background: #{$user->username|avatarColor}' class="avatar-wrapper rounded-circle">
+                                    {if $user->avatar}
+                                        <img class="d-flex rounded-circle" width="48" height="48" src="/images/avatars/{$user->avatar}" alt="..." />
+                                    {else}
+                                        <span class="avatar-letter">{$user->username|avatarLetter}</span>
+                                    {/if}
+                                </div>
+                            </td>
                             <td>{$user->username}</td>
                             <td class="text-center">{$user->created_at}</td>
                             <td class="text-right">
