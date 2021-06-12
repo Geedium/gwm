@@ -45,23 +45,15 @@ if (is_dir(GWM['DIR_TMP']) == false) {
 chdir(GWM['DIR_ROOT']);
 
 if (file_exists('.env') == false) {
-    try {
-        $generated = bin2hex(random_bytes(5));
-    } catch (\Exception $e) {
-
-    }
-
-    file_put_contents('.env', <<<EOF
-                DB_DRIVER=
-                DB_HOST=
-                DB_USERNAME=
-                DB_PASSWORD=
-                DB_NAME=
-                DB_PREFIX=$generated
-EOF
-    );
-
-    trigger_error('You need to update .env variables!');
+    configureEnvironment(filter_input(INPUT_GET, 'key'), [
+        'DB_DRIVER',
+        'DB_HOST',
+        'DB_USERNAME',
+        'DB_PASSWORD',
+        'DB_NAME',
+        'DB_PREFIX',
+        'FALLBACK_THEME'
+    ]);
     exit;
 } else {
     $dotenv = Dotenv::createImmutable(GWM['DIR_ROOT']);
@@ -73,7 +65,8 @@ EOF
         'DB_USERNAME',
         'DB_PASSWORD',
         'DB_NAME',
-        'DB_PREFIX'
+        'DB_PREFIX',
+        'FALLBACK_THEME'
     ]);
 }
 

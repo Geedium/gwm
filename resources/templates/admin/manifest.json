@@ -1,0 +1,9 @@
+{
+    "version": "1.0.0",
+    "engine": "latte/latte",
+    "private": true,
+    "scope": "admin.dashboard",
+    "wraps": {
+        "css/main.css": ">=7"
+    }
+}

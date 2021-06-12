@@ -530,6 +530,13 @@ class Router
             \GWM\Core\App::finalize_request($request);
 
             $response = RouteExecutor::execute($route);
+
+            if($response) {
+                // END OF LIFECYCLE
+                if (file_exists('INSTALL.txt')) {
+                    unlink('INSTALL.txt');
+                }
+            }
         } else {
             $html = \GWM\Core\Template\Engine::Get()
                 ->Parse('src/templates/http/404.html.latte');

@@ -6,5 +6,5 @@
 *.htm inguist-detectable=false
 *.latte linguist-detectable=false
 *.twig linguist-detectable=false
-tools/*.phar linguist-vendored
+
 /vendor/ linguist-vendored

@@ -50,7 +50,7 @@ namespace GWM\Core\Controllers {
                     'description' => 'No description.',
                     'leader' => 'trep_trep',
                     'state' => false,
-                    'link' => '',
+                    'link' => 'clothpath-nextjs-rouge.vercel.app',
                     'private' => true,
                     'ping' => 0,
                     'tags' => [

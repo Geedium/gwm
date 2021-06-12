@@ -1,5 +1,7 @@
 /vendor/
 
+INSTALL.txt
+
 master.code-workspace
 **/.vscode
 **.lock

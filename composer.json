@@ -24,10 +24,10 @@
         },
         "classmap": ["src"],
         "files": [
-            "lib/gwm/func_471e418f14.php",
-            "src/sys.inc.php",
-            "src/math.inc.php",
-            "src/middleware.inc.php"
+            "src/sys.php",
+            "src/math.php",
+            "src/setup.php",
+            "src/middleware.php"
         ]
     },
     "require": {
