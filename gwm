@@ -324,7 +324,7 @@ for ($i = 1; $i <= $n; $i++) {
                     curl_exec($ch);
                     curl_close($ch);
         
-                    fclose($ch);
+                    fclose($out);
                 }
             }
 
