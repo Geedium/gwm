@@ -299,26 +299,33 @@ for ($i = 1; $i <= $n; $i++) {
         case 'diag':
             $step = 0;
             $steps = 0;
+
             out("This might take a while...", Colors::COLOR_WHITE, Colors::Background(Colors::COLOR_BLUE));
 
-            if(!file_exists('resources/certs/ca-bundle.crt')) {
-                out("Downloading cert bundle package...");
+            out("Extensions: ");
+            out("curl - ".(extension_loaded('curl') ? 'OK' : 'ERROR') );
+            out("pdo_mysql - ".(extension_loaded('pdo_mysql') ? 'OK' : 'ERROR') );
 
-                $out = fopen('resources/certs/ca-bundle.crt', 'wb');
-                if($out == FALSE) {
-                    out("Error occuried!");
-                    exit(1);
-                }
-
-                $ch = curl_init();
-                curl_setopt($ch, CURLOPT_FILE, $out);
-                curl_setopt($ch, CURLOPT_HEADER, 0);
-                curl_setopt($ch, CURLOPT_URL, 'https://curl.se/ca/cacert.pem');
-                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-                curl_exec($ch);
-                curl_close($ch);
+            if (extension_loaded('curl')) {
+                if (!file_exists('resources/certs/ca-bundle.crt')) {
+                    out("Downloading cert bundle package...");
     
-                fclose($ch);                
+                    $out = fopen('resources/certs/ca-bundle.crt', 'wb');
+                    if ($out == false) {
+                        out("Error occuried!");
+                        exit(1);
+                    }
+    
+                    $ch = curl_init();
+                    curl_setopt($ch, CURLOPT_FILE, $out);
+                    curl_setopt($ch, CURLOPT_HEADER, 0);
+                    curl_setopt($ch, CURLOPT_URL, 'https://curl.se/ca/cacert.pem');
+                    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                    curl_exec($ch);
+                    curl_close($ch);
+        
+                    fclose($ch);
+                }
             }
 
             /**
