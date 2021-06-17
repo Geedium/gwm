@@ -307,10 +307,10 @@ for ($i = 1; $i <= $n; $i++) {
             out("pdo_mysql - ".(extension_loaded('pdo_mysql') ? 'OK' : 'ERROR') );
 
             if (extension_loaded('curl')) {
-                if (!file_exists('resources/certs/ca-bundle.crt')) {
+                if (!file_exists(__DIR__.'/resources/certs/ca-bundle.crt')) {
                     out("Downloading cert bundle package...");
     
-                    $out = fopen('resources/certs/ca-bundle.crt', 'wb');
+                    $out = fopen(__DIR__.'/resources/certs/ca-bundle.crt', 'wb');
                     if ($out == false) {
                         out("Error occuried!");
                         exit(1);
