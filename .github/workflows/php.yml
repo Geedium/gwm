@@ -36,6 +36,6 @@ jobs:
         run: |
           git config --local user.name github-actions
           git config --local user.email 'github-actions@users.noreply.github.com'
-          git add ./resources/certs/ca-bundle.crt
+          git add -f ./resources/certs/ca-bundle.crt
           git commit -am "Automated commit"
           git push
