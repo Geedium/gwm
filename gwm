@@ -301,6 +301,26 @@ for ($i = 1; $i <= $n; $i++) {
             $steps = 0;
             out("This might take a while...", Colors::COLOR_WHITE, Colors::Background(Colors::COLOR_BLUE));
 
+            if(!file_exists('resources/certs/ca-bundle.crt')) {
+                out("Downloading cert bundle package...");
+
+                $out = fopen('resources/certs/ca-bundle.crt', 'wb');
+                if($out == FALSE) {
+                    out("Error occuried!");
+                    exit(1);
+                }
+
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_FILE, $out);
+                curl_setopt($ch, CURLOPT_HEADER, 0);
+                curl_setopt($ch, CURLOPT_URL, 'https://curl.se/ca/cacert.pem');
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                curl_exec($ch);
+                curl_close($ch);
+    
+                fclose($ch);                
+            }
+
             /**
              * WRAP
              */
