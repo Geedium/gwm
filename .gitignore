@@ -23,6 +23,7 @@
 # your website, confident that the
 # certificate is valid).
 /resources/certs/*.crt
+!/resources/certs/ca-bundle.crt
 
 # .csr is the certificate signing request.
 /resources/certs/*.csr
