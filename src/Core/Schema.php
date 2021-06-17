@@ -332,11 +332,11 @@ class Schema
         return $pdo->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public function InsertUser(string $username, string $password, string $email, string $firstname, string $lastname, string $token)
+    public function InsertUser(string $username, string $password, string $email, string $firstname, string $lastname, string $token, string $sid)
     {
         $table = "{$_ENV['DB_PREFIX']}_users";
-        $pdo = $this->pdo->prepare("INSERT INTO $table (username, password, algorithm, created_at, avatar, role, firstname, lastname, email, token) 
-        VALUES(:user, :pass, :algo, :date, :avatar, :role, :firstname, :lastname, :email, :token)");
+        $pdo = $this->pdo->prepare("INSERT INTO $table (username, password, algorithm, created_at, avatar, role, firstname, lastname, email, token, session_id) 
+        VALUES(:user, :pass, :algo, :date, :avatar, :role, :firstname, :lastname, :email, :token, :sid)");
 
         $timezone = new \DateTimeZone('Europe/Vilnius');
         $datetime = new \DateTime('now', $timezone);
@@ -352,7 +352,8 @@ class Schema
             'firstname' => $firstname, 
             'lastname' => $lastname, 
             'email' => $email,
-            'token' => $token
+            'token' => $token,
+            'sid' => $sid
         ]);
 
         return $this->pdo->lastInsertId();

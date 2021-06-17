@@ -5,11 +5,13 @@ if (php_sapi_name() != 'cli') {
     throw new Exception('This application must be run on the command line.');
 }
 
-if(basename(getcwd()) == 'tools') {
+if (basename(getcwd()) == 'tools') {
     chdir('../');
 }
 
 // @include_once 'vendor/autoload.php';
+
+ini_set('cli_server.color', 'on');
 
 set_time_limit(0);
 $status = 0;
@@ -36,6 +38,19 @@ function textout($message)
     echo $string;
 }
 
+function logAccess($status = 200)
+{
+    file_put_contents("php://stdout", sprintf(
+        "\033[1;37m[%s] %s:%s [%s]:\033[m %s \r\n",
+        date("D M j H:i:s Y"),
+        $_SERVER["REMOTE_ADDR"],
+        $_SERVER["REMOTE_PORT"],
+        $status,
+        $_SERVER["REQUEST_URI"]
+    ));
+}
+
+
 class Colors
 {
     const COLOR_BLACK = "\033[1;30m";
@@ -43,7 +58,7 @@ class Colors
     const COLOR_WHITE = "\033[1;37m";
     const COLOR_BLUE = "\033[1;34m";
 
-    static function Background($color): string
+    public static function Background($color): string
     {
         $m = explode(';', $color)[1];
         $i = (int)substr($m, 0, -1);
@@ -78,17 +93,33 @@ textout('
 
 ');
 
-while($n < 2) {
+while ($n < 2) {
     $a = readline('>');
 
-    if(strlen($a) > 0) {
+    if (strlen($a) > 0) {
         $argv[] = $a;
         $n = count($argv);
     }
 }
 
-for ($i = 1; $i <= $n; $i++) {
+function TEST($cond, $success, $error, $inverted = false)
+{
+    if ($cond) {
+        if ($inverted) {
+            $success($cond);
+        } else {
+            $error($cond);
+        }
+    } else {
+        if ($inverted) {
+            $error($cond);
+        } else {
+            $success($cond);
+        }
+    }
+}
 
+for ($i = 1; $i <= $n; $i++) {
     if (!$argv[$i]) {
         continue;
     }
@@ -110,7 +141,7 @@ for ($i = 1; $i <= $n; $i++) {
                 $data[8] = chr(ord($data[8]) & 0x3f | 0x80);    // Set bits 6-7 to 10
                 $uuid = vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
 
-                if(mkdir("resources/{{$uuid}}", 0777, true)) {
+                if (mkdir("resources/{{$uuid}}", 0777, true)) {
                     out("Success");
                 } else {
                     out("Failed.");
@@ -125,13 +156,13 @@ for ($i = 1; $i <= $n; $i++) {
                     textout("Compressing & outputing.");
 
                     $lang = include 'src/Core/Locales/lt_LT/global.php';
-                    if($lang === false) {
+                    if ($lang === false) {
                         textout("Failed to read lang array.");
                     }
 
                     $lang = gzcompress(serialize($lang));
 
-                    if(!is_dir('locales/lt_LT')) {
+                    if (!is_dir('locales/lt_LT')) {
                         mkdir('locales/lt_LT');
                     }
 
@@ -153,7 +184,7 @@ for ($i = 1; $i <= $n; $i++) {
 
             $php = popen("composer update --no-dev --optimize-autoloader", 'r');
 
-            while(!feof($php) == true) {
+            while (!feof($php) == true) {
                 echo fread($php, 4096);
                 flush();
             }
@@ -167,7 +198,7 @@ for ($i = 1; $i <= $n; $i++) {
 
             $php = popen("composer install -n -o --no-dev", 'r');
 
-            while(!feof($php) == true) {
+            while (!feof($php) == true) {
                 echo fread($php, 4096);
                 flush();
             }
@@ -181,12 +212,87 @@ for ($i = 1; $i <= $n; $i++) {
         case 'dev':
             out("Starting PHP development server at 127.0.0.1:8080");
             \shell_exec("start http://127.0.0.1:8080/ 2>&1");
-            
-            $php = popen("php -S 127.0.0.1:8080 -t public 2>&1", 'r');
 
-            while (!feof($php) == true) {
-                echo fread($php, 4096);
-                flush();
+            if (extension_loaded('openssl')) {
+                if (!file_exists('resources/certs/localhost.csr')) {
+                    out('Generating HTTPS certificate');
+
+                    $config = array(
+                        "digest_alg" => "des3",
+                        "private_key_bits" => 1024,
+                        "private_key_type" => OPENSSL_KEYTYPE_RSA,
+                    );
+        
+                    $key = openssl_pkey_new($config);
+        
+                    TEST(openssl_error_string(), function ($error) {
+                        chdir('resources/certs');
+    
+                        $cmd = 'openssl genrsa -out localhost.key 1024';
+                        $descriptorspec = [STDIN, STDOUT, STDOUT];
+                        $openssl = proc_open($cmd, $descriptorspec, $pipes);
+                        proc_close($openssl);
+    
+                        $cmd = 'openssl req -new -config openssl.cnf -key localhost.key -out localhost.csr';
+                        $descriptorspec = [STDIN, STDOUT, STDOUT];
+                        $openssl = proc_open($cmd, $descriptorspec, $pipes);
+                        proc_close($openssl);
+                    }, function ($key) {
+                        file_put_contents('server.key', $key);
+                    }, true);
+                }
+            }
+
+            $https = 0;
+            
+            if ($https) {
+                // HTTPS is enabled.
+
+                $socket = stream_socket_server("tcp://127.0.0.1:8080", $errno, $errstr);
+                if (!$socket) {
+                  echo "$errstr ($errno)<br />\n";
+                } else {
+                  while (true) {
+                      $client = stream_socket_accept($socket);
+                      
+                      if ($client) {
+                          print "accepted " . stream_socket_get_name( $client, true) . "\n";
+
+                          
+                          stream_set_blocking($client, true);
+
+                          $headers = fread($client, 1500);
+                          
+                          $out = "200 OK HTTP/1.1\r\n";
+                          $out .= "Content-Type: text/html\r\n";
+                          $out .= "Connection: Close\r\n";
+                          $out .= "\r\n";
+                          fwrite($client, $out);
+
+                          stream_set_blocking($client, false);
+
+                          // Send Body
+                          $out = "Hello world!".microtime(true);
+                          fwrite($client, $out);
+
+                          fclose($client);
+                      }
+                  }
+                  fclose($socket);
+                }
+
+                // HTTPS - END
+            } else {
+                $php = popen("php -S 127.0.0.1:8080 -t public 2>&1", 'r');
+                while (!feof($php) == true) {
+                    echo fread($php, 4096);
+                    // if(fread($php, 4096) != PHP_EOL) {
+                    // logAccess();
+                    // }
+                    flush();
+                }
+    
+                pclose($php);
             }
 
             break;
@@ -198,18 +304,19 @@ for ($i = 1; $i <= $n; $i++) {
             /**
              * WRAP
              */
-            switch($step) {
+            switch ($step) {
                 case 0:
                     // \GWM\Core\Utils\Wrap::isStringNotEmpty(function (string $retval) use(&$steps) {
                     //     out("Wrap::isStringNotEmpty ({string: $retval}, OK)", Colors::COLOR_WHITE, Colors::Background(Colors::COLOR_GREEN));
                     //     $steps += 1;
                     // }, 'test');
                     $steps += 1;
+                    // no break
                 case 1:
 
             }
 
-            if($steps != 1) {
+            if ($steps != 1) {
                 out("Application safe-startup tests failed.");
             } else {
                 out("Done!", Colors::COLOR_WHITE, Colors::Background(Colors::COLOR_GREEN));

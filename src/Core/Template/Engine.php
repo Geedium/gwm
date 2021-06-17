@@ -36,6 +36,7 @@ namespace GWM\Core\Template {
 
             switch ($engine) {
                 case 'latte':
+                case 'latte/latte':
                     if (class_exists('Latte\Engine') == true) {
                         return Latte::Get();
                     } else {

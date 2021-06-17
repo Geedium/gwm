@@ -4,6 +4,8 @@ namespace GWM\Core\Errors
 {
     use GWM\Core\Utils\Debug;
 
+    use function fastcgi_finish_request;
+
     /**
      * Undocumented class
      */
@@ -27,7 +29,9 @@ namespace GWM\Core\Errors
 
 ERROR;
 
-                fastcgi_finish_request();
+                if (\function_exists('fastcgi_finish_request')) {
+                    fastcgi_finish_request();
+                }
 
                 die("[$this->line, $this->file]: " . $message . '</div>');
             }

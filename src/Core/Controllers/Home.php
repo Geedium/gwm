@@ -2,16 +2,19 @@
 
 namespace GWM\Core\Controllers {
 
-    use GWM\Core\{Reader, Schema, Session, Response, Errors\Basic, Template\Engine};
+    use GWM\Core\Reader;
+use GWM\Core\Schema;
+use GWM\Core\Session;
+use GWM\Core\Response;
+use GWM\Core\Errors\Basic;
+use GWM\Core\Template\Engine;
 
     use GWM\Mapper;
 
     use GWM\Core\Models\User;
 
-    use GWM\Core\Utils\ {
-        Form,
-        Table
-    };
+    use GWM\Core\Utils\Form;
+use GWM\Core\Utils\Table;
 
     class Home
     {
@@ -20,13 +23,16 @@ namespace GWM\Core\Controllers {
             return (ini_get('mbstring.func_overload') & 2) ? mb_substr($str, $start, ($length === null) ? mb_strlen($str, '8bit') : $length, '8bit') : substr($str, $start, ($length === null) ? strlen($str) : $length);
         }
 
-        function pingDomain($domain){
+        public function pingDomain($domain)
+        {
             $starttime = microtime(true);
-            $file      = fsockopen ($domain, 80, $errno, $errstr, 10);
+            $file      = fsockopen($domain, 80, $errno, $errstr, 10);
             $stoptime  = microtime(true);
             $status    = 0;
         
-            if (!$file) $status = -1;  // Site is down
+            if (!$file) {
+                $status = -1;
+            }  // Site is down
             else {
                 fclose($file);
                 $status = ($stoptime - $starttime) * 1000;
@@ -76,8 +82,8 @@ namespace GWM\Core\Controllers {
             
             $removeAt = [];
 
-            for($i = 0; $i < count($adverts); $i++) {
-                if(!$adverts[$i]->active) {
+            for ($i = 0; $i < count($adverts); $i++) {
+                if (!$adverts[$i]->active) {
                     $removeAt[] = $i;
                     continue;
                 }
@@ -87,15 +93,15 @@ namespace GWM\Core\Controllers {
                 }
             }
 
-            foreach($removeAt as $i) {
+            foreach ($removeAt as $i) {
                 \array_splice($adverts, $i);
             }
 
-            if($projects[0]->link) {
+            if ($projects[0]->link) {
                 $projects[0]->ping = $this->pingDomain($projects[0]->link);
             }
 
-            if($projects[0]->ping < 0) {
+            if ($projects[0]->ping < 0) {
                 $projects[0]->ping = 0;
             }
 
@@ -118,8 +124,7 @@ namespace GWM\Core\Controllers {
         {
             Session::Get();
 
-            if(!isset(Schema::$PRIMARY_SCHEMA))
-            {
+            if (!isset(Schema::$PRIMARY_SCHEMA)) {
                 Schema::$PRIMARY_SCHEMA = new Schema($_ENV['DB_NAME']);
             }
 
@@ -144,41 +149,8 @@ namespace GWM\Core\Controllers {
             }
             Schema::$PRIMARY_SCHEMA = $schema;
 
-            $stmt = $schema->prepare("SELECT COUNT(*)
-                FROM  ${_ENV['DB_PREFIX']}_articles
-            ");
+            $articles = @include_once(GWM['DIR_ROOT'].'/src/modules/core/articles/index.php');
 
-            $stmt->execute();
-            
-            $total = $stmt->fetchColumn(0);
-
-            $page = $offset;
-            $offset *= 5;
-            $paginations = ceil($total / 5) - 1;
-
-            if ($page > $paginations && $paginations != -1) {
-                $response->Redirect('/');
-            }
-
-            $stmt = $schema->prepare("SELECT * 
-                FROM ${_ENV['DB_PREFIX']}_articles
-                ORDER BY pinned DESC, created_at DESC
-                LIMIT 5 
-                OFFSET $offset
-            ");
-
-            $stmt->execute();
-            
-            
-            $articles = $stmt->fetchAll(\PDO::FETCH_CLASS, \GWM\Core\Models\Article::class);
-            
-            foreach ($articles as &$article) {
-                $article->content = html_entity_decode($article->content, ENT_NOQUOTES | ENT_HTML5, 'ISO-8859-1');
-                $article->content = preg_replace('~[\r\n]+~', '', $article->content);
-                $article->content = stripslashes($article->content);
-                $article->{'slug'} = wordwrap(strtolower($article->title), 1, '-', 0);
-            }
-            
             $params = array_merge(self::ContextChain(), [
                 'articles' => $articles,
                 'paginations' => $paginations,
@@ -187,16 +159,26 @@ namespace GWM\Core\Controllers {
             ]);
 
             try {
-                 //$html = file_get_contents(GWM['DIR_ROOT'].'/res/emberjs.theme.bundle/src/index.html');
-                 $html = Engine::Get()->Parse('res/'.$_ENV['FALLBACK_THEME'].'/src/core/index.html.latte', $params);
-                 $response->setContent($html)->send();
+                //$html = file_get_contents(GWM['DIR_ROOT'].'/res/emberjs.theme.bundle/src/index.html');
+                $default_template = $_ENV['CORE_FALLBACK_TEMPLATE'];
+                 
+                // Validation of manifest
+                $jsondoc = file_get_contents("resources/templates/$default_template/manifest.json");
+                $json = json_decode($jsondoc);
+
+                if ($json->scope !== 'Core') {
+                    throw new Basic('Incorrect template scope.', true);
+                }
+                
+                // Rewrites: resources/templates/__LAYOUT__/pages/__FUNCTION__.latte
+                $html = Engine::Get($json->engine)->Parse("resources/templates/$default_template/pages/home.latte", $params);
+                $response->setContent($html)->send();
             } catch (\Exception $e) {
                 if (true) {
                     die($e->getMessage());
                 }
                 $response->Astray();
             }
-            
         }
     }
 }

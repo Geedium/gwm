@@ -4,6 +4,7 @@ namespace GWM\Core\Models;
 
 use GWM\Core\Model;
 use GWM\Core\Schema;
+use GWM\Core\Session;
 
 /**
  * Class User
@@ -91,6 +92,13 @@ class User extends Model
     public $created_at;
 
     /**
+     * PHPSESSID
+     *
+     * @var string (256)
+     */
+    public $session_id;
+
+    /**
      * @magic
      * @throws \Exception
      */
@@ -130,6 +138,12 @@ class User extends Model
     public function setUserName(string $username) : self
     {
         $this->username = $username;
+        return $this;
+    }
+
+    public function setSessionID(string $session_id) : self
+    {
+        $this->session_id = $session_id;
         return $this;
     }
 
@@ -230,6 +244,6 @@ class User extends Model
 
     function register($schema)
     {
-        return $schema->InsertUser($this->username, $this->password, $this->email, $this->firstname, $this->lastname, $this->token);
+        return $schema->InsertUser($this->username, $this->password, $this->email, $this->firstname, $this->lastname, $this->token, $this->session_id);
     }
 }

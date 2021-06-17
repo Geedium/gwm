@@ -2,6 +2,46 @@
 
 {block styles}
 <style>
+*, *::before, *::after {
+    outline: none;
+}
+
+input[type="checkbox"] {
+    margin: 0;
+}
+
+.table-sm {
+    width: 64px;
+}
+
+.switch {
+    width: 48px !important;
+    height: 27px !important;
+}
+
+.switch input[type="checkbox"]:checked + .slider::before {
+    -webkit-transform: translateX(20px) !important;
+    -ms-transform: translateX(20px) !important;
+    transform: translateX(20px) !important;
+}
+
+.switch .slider::before {
+    width: 20px !important;
+    height: 20px !important;
+}
+
+.first, th:first-child, td:first-child {
+    padding-left: 20px;
+    width: 3.25rem;
+}
+th:last-child:not(.first), td:last-child:not(.first) {
+    padding-right: 20px;
+}
+
+.wcms-table {
+    font-size: 0.85em;
+}
+
 [data-6b0cc904] .text-center {
     text-align: center;
 }
@@ -9,8 +49,16 @@
     margin: 0.625rem;
     font-weight: bold;
 }
+
+td:nth-child(even) {
+    color: #748edb;
+    font-weight: 550;
+}
+
 [data-6b0cc904] .ov-w {
-    overflow-x: auto;
+    overflow-x: visible;
+    padding-right: 0 !important;
+    margin-right: .875rem;
 }
 [data-6b0cc904] .col-md {
     width: 35%;
@@ -29,9 +77,11 @@
 [data-6b0cc904] .avatar-wrapper {
     width: 48px;
     height: 48px;
+    overflow: hidden;
 }
 [data-6b0cc904] .avatar-wrapper > img {
     object-fit: cover;
+    image-rendering: optimizequality;
 }
 [data-6b0cc904] .avatar-letter {
     text-align: center;
@@ -41,7 +91,11 @@
 }
 [data-6b0cc904] .rounded-circle {
     border-radius: 50%;
-    clip-path: circle(50%);
+    box-shadow: 0 0 1px rgba(255,255,255,0);
+    outline: 1px solid transparent;
+    -webkit-backface-visibility: hidden;
+    -webkit-transform-style: preserve-3d;
+    will-change: transform;
 }
 </style>
 
@@ -51,6 +105,18 @@
     {/if}
 {/foreach}
 
+{/block}
+
+{block scripts}
+<script>
+function selectAll(e) {
+    const ids = document.getElementsByClassName('selector');
+    console.log(ids);
+    for (var i = 0; i < ids.length; i++) {
+        ids[i].checked = e.checked;
+    }
+}
+</script>
 {/block}
 
 {block content}
@@ -65,28 +131,89 @@
                 <table class="wcms-table">
                     <thead>
                         <tr>
-                            <th scope="row">ID</th>
-                            <th>Avatar</th>
-                            <th>Name</th>
-                            <th class="text-center">Created At</th>
+                            <th class="table-sm">Name</th>
+                            <th class="table-sm">Email</th>
+                            <th class="table-sm">ID</th>
+                            <th class="text-right"></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr>
+                            <td class="table-sm"><input type="text" /></td>
+                            <td class="table-sm"><input type="text" /></td>
+                            <td class="table-sm"><input type="number" /></td>
+                            <td class="text-right"><button class="btn tooltip-btn simptip-position-top" data-tooltip="Search">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="p-8 ov-w">
+                <table class="wcms-table">
+                    <thead>
+                        <tr>
+                            <th class="table-sm text-center" scope="row"><i class="fa fa-sort"></i></th>
+                            <th class="table-sm text-center"><input onclick="selectAll(this);" type="checkbox"></th>
+                            <th class="table-sm text-center">Avatar</th>
+                            <th class="text-center">Name <a href="#"><i class="fa fa-sort-up"></i></a> </th>
+                            <th class="text-center">ID <a href="#"><i class="fa fa-sort-up"></i></a></th>
+                            <th class="text-center">Last Session ID</th>
+                            <th class="text-center">Email <a href="#"><i class="fa fa-sort-up"></i></a> </th>
+                            <th style="width: 48px; !important;" class="text-center">Activated <a href="#"><i class="fa fa-sort-up"></i></a></th>
+                            <th class="text-center">Created At <a href="#"><i class="fa fa-sort-up"></i></a></th>
+                            <th style="width: 48px; !important;" class="text-center">Suspended <a href="#"><i class="fa fa-sort-up"></i></a></th>
+                            <th class="text-center">Last Visit Date <a href="#"><i class="fa fa-sort-up"></i></a></th>
+                            <th class="text-center">Registration Date <a href="#"><i class="fa fa-sort-up"></i></a></th>
                             <th class="text-right">Actions</th>
                         </tr>
                     </thead>
 
                     <tbody>
                         <tr n:foreach="$users as $user">
-                            <td>{$user->id}</td>
-                            <td>
-                                <div style='background: #{$user->username|avatarColor}' class="avatar-wrapper rounded-circle">
+                            <td class="table-sm text-center"><i class="fa fa-ellipsis-v"></i></td>
+                            <td class="table-sm text-center"><input class="selector" type="checkbox"></td>
+                            <td class="table-sm">
+                                <div style="margin: auto; width: 48px;">
                                     {if $user->avatar}
-                                        <img class="d-flex rounded-circle" width="48" height="48" src="/images/avatars/{$user->avatar}" alt="..." />
+                                    <div class="avatar-wrapper rounded-circle">
                                     {else}
-                                        <span class="avatar-letter">{$user->username|avatarLetter}</span>
+                                    <div style='background: #{$user->username|avatarColor}' class="avatar-wrapper rounded-circle">
                                     {/if}
+                                        {if $user->avatar}
+                                            <img class="d-flex rounded-circle" width="48" height="48" src="/images/avatars/{$user->avatar}" alt="..." />
+                                        {else}
+                                            <span class="avatar-letter">{$user->username|avatarLetter}</span>
+                                        {/if}
+                                    </div>
                                 </div>
                             </td>
-                            <td>{$user->username}</td>
+                            <td class="text-center">{$user->username}</td>
+                            <td class="text-center">{$user->id}</td>
+                            <td class="text-center">{$user->session_id}</td>
+                            <td class="text-center">{$user->email}</td>
+                            <td>
+                                <div style="margin: auto; width: 48px;">
+                                    <div class="switch">
+                                        <input type="checkbox" checked="true">
+                                        <span class="slider round"></span>
+                                    </div>
+                                </div>
+                            </td>
                             <td class="text-center">{$user->created_at}</td>
+                            <td>
+                                <div style="margin: auto; width: 48px;">
+                                    <div class="switch">
+                                        <input type="checkbox">
+                                        <span class="slider round"></span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="text-center"></td>
+                            <td class="text-center"></td>
                             <td class="text-right">
                                 <button class="btn tooltip-btn simptip-position-top" data-tooltip="Manage Permissions">
                                     <i class="fa fa-user-lock"></i>
@@ -96,6 +223,9 @@
                                 </button>
                                 <button class="btn tooltip-btn simptip-position-top" data-tooltip="Remove">
                                     <i class="fa fa-user-times"></i>
+                                </button>
+                                <button class="btn tooltip-btn simptip-position-top" data-tooltip="Revoke Session">
+                                    <i class="fa fa-unlink"></i>
                                 </button>
                             </td>
                         </tr>

@@ -1,4 +1,39 @@
+# Third party dependencies which can be
+# installed/updated/removed using
+# Composer package manager.
 /vendor/
+
+# .key files are generally the private
+# key, used by the server to encrypt and
+# package data for verification by
+# clients.
+/resources/certs/*.key
+
+# .pem files are generally the public
+# key, used by the client to verify and
+# decrypt data sent by servers.
+/resources/certs/*.pem
+
+# .crt files are certificate signing
+# requests, used by a trusted third party
+# to verify the ownership of a keypair
+# without having direct access to the
+# private key (this is what allows end
+# users, who have no direct knowledge of
+# your website, confident that the
+# certificate is valid).
+/resources/certs/*.crt
+
+# .csr is the certificate signing request.
+/resources/certs/*.csr
+
+
+
+# ./ FILES
+/resources/templates/*/
+!/resources/templates/core/
+!/resources/templates/admin/
+!/resources/templates/setup/
 
 INSTALL.txt
 

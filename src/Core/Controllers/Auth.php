@@ -130,6 +130,7 @@ namespace GWM\Core\Controllers {
                                 $user->setEmail($email);
                                 $user->setFirstname($firstname);
                                 $user->setLastname($lastname);
+                                $user->setSessionID(\session_id());
                                 $user->token = $jwt_token;
 
                                 $user->register($schema);
@@ -148,6 +149,8 @@ namespace GWM\Core\Controllers {
 
                         $google->revokeToken();
                         session_destroy();
+                    } else {
+                        Session::Get()->Logout();
                     }
                 }
 
@@ -159,7 +162,8 @@ namespace GWM\Core\Controllers {
                 ]
                 ))->send();
             } catch (\Exception $e) {
-                die($e->getMessage());
+                Session::Get()->Logout();
+                $response->Redirect('/');
             }
         }
 

@@ -23,8 +23,11 @@ namespace GWM\Core {
 
         function Logout()
         {
-            if (session_status() != PHP_SESSION_ACTIVE)
-                session_start();
+            if (session_status() == PHP_SESSION_ACTIVE)
+            {
+                session_unset();
+                session_destroy();
+            }
 
                 // Set cookie expired.
             setcookie("JWT_TOKEN", false, 
@@ -32,9 +35,6 @@ namespace GWM\Core {
                 \GWM\Core\App::DEBUG_MODE ? '127.0.0.1':'.geedium.com',
                 true,
                 true);
-
-            session_unset();
-            session_destroy();
         }
 
         /**
@@ -130,9 +130,8 @@ namespace GWM\Core {
                 \JSON_OBJECT_AS_ARRAY);
             }
 
-            if (session_status() == PHP_SESSION_ACTIVE) {
-                session_regenerate_id();
-            } else {
+            if (session_status() != PHP_SESSION_ACTIVE) 
+            {
                 session_set_cookie_params([
                     'samesite' => 'lax'
                 ]);
