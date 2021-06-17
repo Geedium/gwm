@@ -1,4 +1,4 @@
-name: PHP Composer
+name: PHP
 
 on:
   push:
@@ -30,5 +30,11 @@ jobs:
       if: steps.composer-cache.outputs.cache-hit != 'true'
       run: composer install --prefer-dist --no-progress --no-suggest
 
-    - name: Validate
-      run: php gwm diag
+    - name: Validate and setup
+      run: |
+        php gwm diag
+        git config user.name github-actions
+        git config add ./resources
+        git commit -m "Updating resources"
+        git push
+      
